@@ -4,6 +4,63 @@
  * @package Polylang-Pro
  */
 /**
+ * A class to manage the Polylang Pro text domain and license key
+ * and load all modules and integrations.
+ *
+ * @since 2.6
+ */
+class PLL_Pro
+{
+    /**
+     * Constructor.
+     * Manages the compatibility with some plugins.
+     * It is loaded as soon as possible as we may need to act before other plugins are loaded.
+     *
+     * @since 2.6
+     */
+    public function __construct()
+    {
+    }
+    /**
+     * Manages the Polylang Pro translations and license key.
+     * Loads the modules.
+     *
+     * @since 2.8
+     *
+     * @param object $polylang Polylang object.
+     * @return void
+     */
+    public function init(&$polylang)
+    {
+    }
+    /**
+     * Hack to download Polylang languages packs
+     *
+     * @since 1.9
+     *
+     * @param array  $args HTTP request args.
+     * @param string $url  The url of the request.
+     * @return array
+     */
+    public function http_request_args($args, $url)
+    {
+    }
+    /**
+     * Remove Polylang from the list of plugins to update if it is not installed
+     *
+     * @since 2.1.1
+     *
+     * @param stdClass[] $value The value stored in the update_plugins site transient.
+     * @return stdClass[]
+     */
+    public function pre_set_site_transient_update_plugins($value)
+    {
+    }
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
  * Manages the ability to enable or disable a language
  *
  * @since 1.9
@@ -1289,13 +1346,6 @@ class PLL_Export_Strings_Translation
      * @var PLL_Export_File_Interface
      */
     private $export;
-    /**
-     * Holds the strings registered for translation.
-     * Formatted by {@see PLL_Admin_Strings::get_strings()}.
-     *
-     * @var array
-     */
-    private $strings;
     /**
      * Used to query languages and translations.
      *
@@ -10954,6 +11004,39 @@ class PLL_REST_Request extends \PLL_Base
  */
 class PLL_Switcher
 {
+    const DEFAULTS = array(
+        'dropdown' => 0,
+        // Display as list and not as dropdown.
+        'echo' => 1,
+        // Echoes the list.
+        'hide_if_empty' => 1,
+        // Hides languages with no posts (or pages).
+        'show_flags' => 0,
+        // Don't show flags.
+        'show_names' => 1,
+        // Show language names.
+        'display_names_as' => 'name',
+        // Display the language name.
+        'force_home' => 0,
+        // Tries to find a translation.
+        'hide_if_no_translation' => 0,
+        // Don't hide the link if there is no translation.
+        'hide_current' => 0,
+        // Don't hide the current language.
+        'post_id' => \null,
+        // Link to the translations of the current page.
+        'raw' => 0,
+        // Build the language switcher.
+        'item_spacing' => 'preserve',
+        // Preserve whitespace between list items.
+        'admin_render' => 0,
+        // Make the switcher in a frontend context.
+        'admin_current_lang' => \null,
+    );
+    /**
+     * @var PLL_Links
+     */
+    protected $links;
     /**
      * Returns options available for the language switcher - menu or widget
      * either strings to display the options or default values
@@ -10968,15 +11051,37 @@ class PLL_Switcher
     {
     }
     /**
+     * Returns the current language code.
+     *
+     * @since 3.0
+     *
+     * @param array $args Arguments passed to {@see PLL_Switcher::the_languages()}.
+     * @return string
+     */
+    protected function get_current_language($args)
+    {
+    }
+    /**
+     * Returns the link for a given language.
+     *
+     * @since 3.0
+     *
+     * @param PLL_Language $language Language.
+     * @param array        $args     Arguments passed to {@see PLL_Switcher::the_languages()}.
+     * @return string|null
+     */
+    protected function get_link($language, $args)
+    {
+    }
+    /**
      * Get the language elements for use in a walker
      *
      * @since 1.2
      *
-     * @param PLL_Frontend_Links $links Instance of PLL_Frontend_Links.
-     * @param array              $args  Arguments passed to {@see PLL_Switcher::the_languages()}.
+     * @param array $args  Arguments passed to {@see PLL_Switcher::the_languages()}.
      * @return array Language switcher elements.
      */
-    protected function get_elements($links, $args)
+    protected function get_elements($args)
     {
     }
     /**
@@ -10985,8 +11090,8 @@ class PLL_Switcher
      *
      * @since 0.1
      *
-     * @param PLL_Frontend_Links $links Instance of PLL_Frontend_Links.
-     * @param array              $args {
+     * @param PLL_Links $links Instance of PLL_Links.
+     * @param array     $args {
      *   Optional array of arguments.
      *
      *   @type int    $dropdown               The list is displayed as dropdown if set, defaults to 0.
@@ -15574,63 +15679,6 @@ class PLL_Table_String extends \WP_List_Table
      * @return void
      */
     public function save_translations()
-    {
-    }
-}
-/**
- * @package Polylang-Pro
- */
-/**
- * A class to manage the Polylang Pro text domain and license key
- * and load all modules and integrations.
- *
- * @since 2.6
- */
-class PLL_Pro
-{
-    /**
-     * Constructor.
-     * Manages the compatibility with some plugins.
-     * It is loaded as soon as possible as we may need to act before other plugins are loaded.
-     *
-     * @since 2.6
-     */
-    public function __construct()
-    {
-    }
-    /**
-     * Manages the Polylang Pro translations and license key.
-     * Loads the modules.
-     *
-     * @since 2.8
-     *
-     * @param object $polylang Polylang object.
-     * @return void
-     */
-    public function init(&$polylang)
-    {
-    }
-    /**
-     * Hack to download Polylang languages packs
-     *
-     * @since 1.9
-     *
-     * @param array  $args HTTP request args.
-     * @param string $url  The url of the request.
-     * @return array
-     */
-    public function http_request_args($args, $url)
-    {
-    }
-    /**
-     * Remove Polylang from the list of plugins to update if it is not installed
-     *
-     * @since 2.1.1
-     *
-     * @param stdClass[] $value The value stored in the update_plugins site transient.
-     * @return stdClass[]
-     */
-    public function pre_set_site_transient_update_plugins($value)
     {
     }
 }

@@ -23,8 +23,8 @@ Include the stubs in the PHPStan configuration file.
 
 ```yaml
 parameters:
-	bootstrapFiles:
-		- vendor/wpsyntex/polylang-stubs/polylang-stubs.php
+  bootstrapFiles:
+    - vendor/wpsyntex/polylang-stubs/polylang-stubs.php
 ```
 
 It's also recommended to use the Polylang PHPStan extension [wpsyntex/polylang-phpstan](https://github.com/polylang/polylang-phpstan)

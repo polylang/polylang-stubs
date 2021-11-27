@@ -10688,17 +10688,15 @@ class PLL_CRUD_Posts
     {
     }
     /**
-     * Make sure that the post parent is in the correct language when using bulk edit
+     * Make sure that the post parent is in the correct language.
      *
      * @since 1.8
      *
-     * @param int   $post_parent Post parent ID.
-     * @param int   $post_id     Post ID.
-     * @param array $new_postarr Array of parsed post data.
-     * @param array $postarr     Array of sanitized, but otherwise unmodified post data.
+     * @param int $post_parent Post parent ID.
+     * @param int $post_id     Post ID.
      * @return int
      */
-    public function wp_insert_post_parent($post_parent, $post_id, $new_postarr, $postarr)
+    public function wp_insert_post_parent($post_parent, $post_id)
     {
     }
     /**
@@ -14009,6 +14007,85 @@ class PLL_Upgrade
      * @return void
      */
     protected function upgrade_2_8_1()
+    {
+    }
+}
+/**
+ * @package Polylang
+ */
+/**
+ * Class to manage Lingotek ads
+ *
+ * @since 1.7.7
+ */
+class PLL_Lingotek
+{
+    const LINGOTEK = 'lingotek-translation/lingotek.php';
+    /**
+     * Init
+     *
+     * @since 1.7.7
+     *
+     * @return void
+     */
+    public function init()
+    {
+    }
+    /**
+     * Adds the Lingotek tab in Polylang settings
+     *
+     * @since 1.7.7
+     *
+     * @param array $tabs list of tabs
+     * @return array modified liste of tabs
+     */
+    public function add_tab($tabs)
+    {
+    }
+    /**
+     * Displays the content in the Lingotek tab
+     *
+     * @since 1.7.7
+     *
+     * @return void
+     */
+    public function display_tab()
+    {
+    }
+    /**
+     * Styles the content of the Lingotek tab
+     *
+     * @since 1.7.7
+     *
+     * @return void
+     */
+    public function print_css()
+    {
+    }
+    /**
+     * Outputs the content of each box
+     *
+     * @since 1.7.7
+     *
+     * @param string $title
+     * @param string $desc
+     * @param array  $list
+     * @param array  $links
+     * @param string $img
+     * @return void
+     */
+    protected function box($title, $desc, $list, $links, $img)
+    {
+    }
+    /**
+     * Get a link to install / activate Lingotek
+     * depending on user rights and if plugin is already installed
+     *
+     * @since 1.7.7
+     *
+     * @return string
+     */
+    protected function get_activate_link()
     {
     }
 }

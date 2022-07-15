@@ -1201,118 +1201,6 @@ class PLL_Bulk_Translate
 /**
  * @package Polylang-Pro
  */
-// phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-/**
- * Class PLL_DOM_Document
- *
- * Extends the PHP's {@see DOMDocument} to include safe instantiation through its factory function.
- * Adds internal error management for each instance.
- *
- * @since 3.1
- */
-class PLL_DOM_Document extends \DOMDocument
-{
-    /**
-     * Store the errors that happenned during the loading process.
-     *
-     * @since 3.1
-     * @var array
-     */
-    private $errors = array();
-    /**
-     * Creates a PLL_DOM_Document instance from an XML string.
-     *
-     * @since 3.1
-     *
-     * @param string $xml      A XML valid string.
-     * @param string $version  Optional. XML version to use.
-     * @param string $encoding Optional. Encoding to use.
-     * @return PLL_DOM_Document|WP_Error
-     */
-    public static function from_xml($xml, $version = '1.0', $encoding = 'UTF-8')
-    {
-    }
-    /**
-     * Creates a PLL_DOM_Document instance from an HTML string.
-     *
-     * @since 3.1
-     *
-     * Doctype declaration is disallowed for security reasons (XEE vulnerability).
-     *
-     * @param string $html A HTML valid string.
-     * @return PLL_DOM_Document
-     */
-    public static function from_html($html)
-    {
-    }
-    /**
-     * Factory function to safely generate DOMDocument from strings.
-     *
-     * @since 3.1
-     *
-     * Entity loading is disabled to prevent External Entity Injections {@link https://phpsecurity.readthedocs.io/en/latest/Injection-Attacks.html#xml-external-entity-injection}.
-     *
-     * @param string           $string   A XML content to load.
-     * @param PLL_DOM_Document $document A document parameterized to load the content into.
-     * @param string           $function Method name which will handle the loading.
-     * @param int              $flags    A series of libxml flags to parameterize the loading. {@link https://www.php.net/manual/en/libxml.constants.php}.
-     * @return PLL_DOM_Document
-     */
-    private static function from_string($string, $document, $function, $flags = 0)
-    {
-    }
-    /**
-     * Loads the string into the given document, returns the document if it's safe, or return an empty document with errors.
-     *
-     * @since 3.1
-     *
-     * @param string           $string   A string to be loaded and parsed as the document.
-     * @param PLL_DOM_Document $document A configured instance of PLL_DOM_Document to load the string into.
-     * @param string           $function Name of the loading method to use.
-     * @param int              $flags    A series of libxml flags to parameterize the loading. {@link https://www.php.net/manual/en/libxml.constants.php}.
-     * @return PLL_DOM_Document
-     */
-    private static function safe_load_string($string, $document, $function, $flags = 0)
-    {
-    }
-    /**
-     * Verifies that the document contains only nodes of allowed types.
-     *
-     * @since 3.1
-     *
-     * @see https://www.php.net/manual/en/dom.constants.php.
-     *
-     * @return bool
-     */
-    public function contains_not_allowed_node()
-    {
-    }
-    /**
-     * Returns the first level HTML nodes of the document.
-     *
-     * @since 3.1
-     *
-     * Note: DOMDocument automatically wraps the loaded nodes in a <body> element.
-     *
-     * @return DOMNodeList
-     */
-    public function get_first_level_html_nodes()
-    {
-    }
-    /**
-     * Whether the document contains errors or not
-     *
-     * @since 3.1
-     *
-     * @return bool
-     */
-    public function has_errors()
-    {
-    }
-}
-/**
- * @package Polylang-Pro
- */
 /**
  * A trait to implement the duplicate action.
  *
@@ -1557,468 +1445,6 @@ class PLL_Duplicate extends \PLL_Metabox_Button
      * @param object $polylang Polylang object.
      */
     public function __construct(&$polylang)
-    {
-    }
-}
-/**
- * @package Polylang-Pro
- */
-/**
- * Handles file download.
- *
- * @since 2.7
- */
-class PLL_Export_Download_Zip
-{
-    /**
-     * Name of the zipped file.
-     *
-     * @var string
-     */
-    private $zip_name;
-    /**
-     * Size of the zipped file.
-     *
-     * @var int
-     */
-    private $zip_size;
-    /**
-     * The file path.
-     *
-     * @var string
-     */
-    private $filepath;
-    /**
-     * Creates a new zip containing several files
-     *
-     * @since 2.7
-     *
-     * @see https://www.php.net/manual/class.ziparchive.php PHP ZipArchive library
-     *
-     * @param PLL_Export_Multi_Files $export A collection of files to be exported as zip.
-     * @return bool true if file have been created.
-     */
-    public function create($export)
-    {
-    }
-    /**
-     * Wrapper for {@see PLL_Export_Download_Zip::send_headers()} and {@see PLL_Export_Download_Zip::download()}
-     * Also exits the current script.
-     *
-     * @since 2.7
-     *
-     * @return void
-     */
-    public function send_response()
-    {
-    }
-    /**
-     * Set correct headers for downloading a file in the browser.
-     *
-     * @since 2.7
-     *
-     * @return void
-     */
-    private function send_headers()
-    {
-    }
-    /**
-     * Outputs in the buffer the zipped file and delete the local zip.
-     *
-     * @since 2.7
-     *
-     * @return void
-     */
-    private function download()
-    {
-    }
-}
-/**
- * @package Polylang-Pro
- */
-/**
- * The export interface file which implement the interface.
- *
- * Each class implementing this interface shall be the representation of a single file to be exported
- *
- * @since 3.2
- */
-interface PLL_Export_File_Interface
-{
-    /**
-     * @since 3.1
-     *
-     * @return string
-     */
-    public function get_extension();
-    /**
-     * @since 3.1
-     *
-     * @return string
-     */
-    public function get_source_language();
-    /**
-     *
-     * Set source language to export
-     *
-     * @since 2.7
-     *
-     * @param string $source_language Locale.
-     * @return void
-     */
-    public function set_source_language($source_language);
-    /**
-     * @since 3.1
-     *
-     * @return string
-     */
-    public function get_target_language();
-    /**
-     *
-     * Set target languages to export
-     *
-     * @since 2.7
-     *
-     * @param string $target_language Target language.
-     * @return void
-     */
-    public function set_target_language($target_language);
-    /**
-     *
-     * Add a translation source and target to the current translation file.
-     *
-     * @since 2.7
-     *
-     * @param string $type   Describe what does this data corresponds to, such as a post title, a meta reference etc...
-     * @param string $source The source to be translated.
-     * @param string $target Optional, a preexisting translation, if any.
-     * @param array  $args   Optional, an array of additional arguments, like an identifier for the string, its context, comments for translators, etc.
-     * @return void
-     */
-    public function add_translation_entry($type, $source, $target = '', $args = array());
-    /**
-     * Adds a reference to a source of translations entries.
-     *
-     * @since 2.7
-     *
-     * @param string $type Type of data to be exported.
-     * @param string $id   Optional, a unique identifier to retrieve the data in the database.
-     * @return void
-     */
-    public function set_source_reference($type, $id = '');
-    /**
-     * Adds a reference to the site from which the file has been exported.
-     *
-     * @since 2.7
-     *
-     * @param string $url Absolute URL of the current site exporting content.
-     * @return void
-     */
-    public function set_site_reference($url);
-    /**
-     * Returns the content of the file
-     *
-     * @since 2.7
-     *
-     * @return string
-     */
-    public function export();
-    /**
-     * Returns the name of the file to export.
-     *
-     * @since 3.1
-     *
-     * @return string
-     */
-    public function get_filename();
-}
-/**
- * @package Polylang-Pro
- */
-/**
- * Class PLL_Export_File
- *
- * @since 3.1
- */
-abstract class PLL_Export_File implements \PLL_Export_File_Interface
-{
-    /**
-     * Returns the name of the file to export.
-     *
-     * @since 2.7
-     *
-     * @return string
-     */
-    public function get_filename()
-    {
-    }
-}
-/**
- * @package Polylang-Pro
- */
-/**
- * Handles the logic for generating translations files and assigning values to those.
- *
- * @since 2.7
- */
-class PLL_Export_Multi_Files implements \Iterator
-{
-    /**
-     * Contains all the different files to export
-     *
-     * Each file is referenced with a key composed of its source and target languages
-     *
-     * @var array Associative array of PLL_Export_File_Interface
-     */
-    private $export_files = array();
-    /**
-     * Contains the names of the different files to export.
-     *
-     * FIXME: This only serves to know if a file for a certain source and target language pair exists. This could if we choose to name export files for any reason.
-     *
-     * @var string[]
-     */
-    private $export_filenames;
-    /**
-     * Index of the PLL_Export_File_Interface instance being currently processed. This instanc is stored in {@see PLL_Export_Multi_Files::$export_files}.
-     *
-     * @var int
-     */
-    private $current_index;
-    /**
-     * The export file currently in use to add translations into.
-     *
-     * @var PLL_Export_File_Interface
-     */
-    private $current_file;
-    /**
-     * The selected language to be the source for the translation.
-     *
-     * @var string
-     */
-    private $source_language;
-    /**
-     * An instance of the class defining an individual export file.
-     *
-     * FIXME: At this point, only the class matters, as a new instance will be generated for each new target language, {@see PLL_Export_Multi_Files::set_target_language()}.
-     *
-     * @var PLL_Export_File_Interface
-     */
-    private $base_instance;
-    /**
-     * Constructor.
-     *
-     * @since 2.7
-     *
-     * @param PLL_Export_File_Interface $base_instance An instance of the class that defines an individual export file.
-     */
-    public function __construct($base_instance)
-    {
-    }
-    /**
-     * Set the current file source language
-     *
-     * @since 2.7
-     *
-     * @param string $source_language A language locale formatted string.
-     * @return void
-     */
-    public function set_source_language($source_language)
-    {
-    }
-    /**
-     * Set the target language for the current file
-     *
-     * If an export with a matching target language already exists, use this export instead.
-     *
-     * @since 2.7
-     *
-     * @param string $target_language A language locale formatted string.
-     * @return void
-     */
-    public function set_target_language($target_language)
-    {
-    }
-    /**
-     * Add a translation source and target to the current translation file.
-     *
-     * @since 2.7
-     *
-     * @param string $type   Describe what does this data corresponds to, such as a post title, a meta reference etc...
-     * @param string $source The source to be translated.
-     * @param string $target Optional, a preexisting translation, if any.
-     * @param array  $args   Optional, an array of additional arguments, like an identifier for the string, its context, comments for translators, etc.
-     * @return void
-     */
-    public function add_translation_entry($type, $source, $target = '', $args = array())
-    {
-    }
-    /**
-     * Adds a reference to a source of translations entries.
-     *
-     * @since 2.7
-     *
-     * @param string $type Type of data to be exported.
-     * @param string $id   Optional, a unique identifier to retrieve the data in the database.
-     * @return void
-     */
-    public function set_source_reference($type, $id = '')
-    {
-    }
-    /**
-     * Returns the content of the file
-     *
-     * @since 2.7
-     *
-     * @return string
-     */
-    public function export()
-    {
-    }
-    /**
-     * From {@see Iterator}. Returns the current instance of the export file abstraction.
-     *
-     * @since 2.7
-     *
-     * @return PLL_Export_File_Interface
-     */
-    #[\ReturnTypeWillChange]
-    public function current()
-    {
-    }
-    /**
-     *
-     * From {@see Iterator}.
-     *
-     * @since 2.7
-     *
-     * @return void
-     */
-    #[\ReturnTypeWillChange]
-    public function next()
-    {
-    }
-    /**
-     *
-     * From {@see Iterator}.
-     *
-     * @since 2.7
-     *
-     * @return string
-     */
-    #[\ReturnTypeWillChange]
-    public function key()
-    {
-    }
-    /**
-     * From {@see Iterator}.
-     *
-     * @since 2.7
-     *
-     * @return bool
-     */
-    #[\ReturnTypeWillChange]
-    public function valid()
-    {
-    }
-    /**
-     * From {@see Iterator}
-     *
-     * @since 2.7
-     *
-     * @return void
-     */
-    #[\ReturnTypeWillChange]
-    public function rewind()
-    {
-    }
-    /**
-     * Adds a reference to the site from which the file has been exported.
-     *
-     * @since 2.7
-     *
-     * @param string $url Absolute URL of the current site exporting content.
-     * @return void
-     */
-    public function set_site_reference($url)
-    {
-    }
-}
-/**
- * @package Polylang-Pro
- */
-/**
- * Handles the admin action of exporting strings translations.
- *
- * @since 2.7
- * @since 3.1 Renamed from 'PLL_Export_Strings_Translation'
- */
-class PLL_Export_Strings_Translations
-{
-    /**
-     * Used to set the action's name in forms.
-     *
-     * @var string
-     */
-    const ACTION_NAME = 'pll_translate';
-    /**
-     * Used to create nonces for the action.
-     *
-     * @var string
-     */
-    const NONCE_NAME = '_pll_translate_nonce';
-    /**
-     * A class to handle file download.
-     *
-     * @var PLL_Export_Download_Zip
-     */
-    private $downloader;
-    /**
-     * Represents an export file.
-     *
-     * @var PLL_Export_Multi_Files
-     */
-    private $export;
-    /**
-     * Used to query languages and translations.
-     *
-     * @var PLL_Model
-     */
-    private $model;
-    /**
-     * Stores the plugin options.
-     *
-     * @var array
-     */
-    private $options;
-    /**
-     * @var PLL_File_Format_Factory
-     */
-    private $file_format_factory;
-    /**
-     * PLL_Export_Strings_Translation constructor.
-     *
-     * @param string    $file_extension The file's extension, {@see PLL_File_Format_Factory::from_extension()}.
-     * @param PLL_Model $model Polylang model.
-     * @param array     $polylang_options Polylang options.
-     *
-     * @return void
-     * @since 2.7
-     * @since 3.1 Add the $string parameter.
-     */
-    public function __construct($file_extension, $model, $polylang_options)
-    {
-    }
-    /**
-     * Prepare and export the selected strings translations.
-     *
-     * @since 2.7
-     *
-     * @param array  $target_languages Array of languages slugs.
-     * @param string $group            String translation context to export.
-     * @return void
-     */
-    public function send_strings_translation_to_export($target_languages, $group)
     {
     }
 }
@@ -3825,6 +3251,580 @@ class PLL_FSE_Tools
 /**
  * @package Polylang-Pro
  */
+// phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+/**
+ * Class PLL_DOM_Document
+ *
+ * Extends the PHP's {@see DOMDocument} to include safe instantiation through its factory function.
+ * Adds internal error management for each instance.
+ *
+ * @since 3.1
+ */
+class PLL_DOM_Document extends \DOMDocument
+{
+    /**
+     * Store the errors that happenned during the loading process.
+     *
+     * @since 3.1
+     * @var array
+     */
+    private $errors = array();
+    /**
+     * Creates a PLL_DOM_Document instance from an XML string.
+     *
+     * @since 3.1
+     *
+     * @param string $xml      A XML valid string.
+     * @param string $version  Optional. XML version to use.
+     * @param string $encoding Optional. Encoding to use.
+     * @return PLL_DOM_Document
+     */
+    public static function from_xml($xml, $version = '1.0', $encoding = 'UTF-8')
+    {
+    }
+    /**
+     * Creates a PLL_DOM_Document instance from an HTML string.
+     *
+     * @since 3.1
+     *
+     * Doctype declaration is disallowed for security reasons (XEE vulnerability).
+     *
+     * @param string $html A HTML valid string.
+     * @return PLL_DOM_Document
+     */
+    public static function from_html($html)
+    {
+    }
+    /**
+     * Factory function to safely generate DOMDocument from strings.
+     *
+     * @since 3.1
+     *
+     * Entity loading is disabled to prevent External Entity Injections {@link https://phpsecurity.readthedocs.io/en/latest/Injection-Attacks.html#xml-external-entity-injection}.
+     *
+     * @param string           $string   A XML content to load.
+     * @param PLL_DOM_Document $document A document parameterized to load the content into.
+     * @param callable         $function Method name which will handle the loading.
+     * @param int              $flags    A series of libxml flags to parameterize the loading. {@link https://www.php.net/manual/en/libxml.constants.php}.
+     * @return PLL_DOM_Document
+     */
+    private static function from_string($string, $document, $function, $flags = 0)
+    {
+    }
+    /**
+     * Loads the string into the given document, returns the document if it's safe, or return an empty document with errors.
+     *
+     * @since 3.1
+     *
+     * @param string           $string   A string to be loaded and parsed as the document.
+     * @param PLL_DOM_Document $document A configured instance of PLL_DOM_Document to load the string into.
+     * @param callable         $function Name of the loading method to use.
+     * @param int              $flags    A series of libxml flags to parameterize the loading. {@link https://www.php.net/manual/en/libxml.constants.php}.
+     * @return PLL_DOM_Document
+     */
+    private static function safe_load_string($string, $document, $function, $flags = 0)
+    {
+    }
+    /**
+     * Verifies that the document contains only nodes of allowed types.
+     *
+     * @since 3.1
+     *
+     * @see https://www.php.net/manual/en/dom.constants.php.
+     *
+     * @return bool
+     */
+    public function contains_not_allowed_node()
+    {
+    }
+    /**
+     * Returns the first level HTML nodes of the document.
+     *
+     * @since 3.1
+     *
+     * Note: DOMDocument automatically wraps the loaded nodes in a <body> element.
+     *
+     * @return DOMNodeList
+     */
+    public function get_first_level_html_nodes()
+    {
+    }
+    /**
+     * Whether the document contains errors or not
+     *
+     * @since 3.1
+     *
+     * @return bool
+     */
+    public function has_errors()
+    {
+    }
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
+ * Handles file download.
+ *
+ * @since 2.7
+ */
+class PLL_Export_Download_Zip
+{
+    /**
+     * Name of the zipped file.
+     *
+     * @var string
+     */
+    private $zip_name;
+    /**
+     * Size of the zipped file.
+     *
+     * @var int
+     */
+    private $zip_size;
+    /**
+     * The file path.
+     *
+     * @var string
+     */
+    private $filepath;
+    /**
+     * Creates a new zip containing several files
+     *
+     * @since 2.7
+     *
+     * @see https://www.php.net/manual/class.ziparchive.php PHP ZipArchive library
+     *
+     * @param PLL_Export_Multi_Files $export A collection of files to be exported as zip.
+     * @return bool true if file have been created.
+     */
+    public function create($export)
+    {
+    }
+    /**
+     * Wrapper for {@see PLL_Export_Download_Zip::send_headers()} and {@see PLL_Export_Download_Zip::download()}
+     * Also exits the current script.
+     *
+     * @since 2.7
+     *
+     * @return void
+     */
+    public function send_response()
+    {
+    }
+    /**
+     * Set correct headers for downloading a file in the browser.
+     *
+     * @since 2.7
+     *
+     * @return void
+     */
+    private function send_headers()
+    {
+    }
+    /**
+     * Outputs in the buffer the zipped file and delete the local zip.
+     *
+     * @since 2.7
+     *
+     * @return void
+     */
+    private function download()
+    {
+    }
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
+ * The export interface file which implement the interface.
+ *
+ * Each class implementing this interface shall be the representation of a single file to be exported
+ *
+ * @since 3.2
+ */
+interface PLL_Export_File_Interface
+{
+    /**
+     * @since 3.1
+     *
+     * @return string
+     */
+    public function get_extension();
+    /**
+     * @since 3.1
+     *
+     * @return string
+     */
+    public function get_source_language();
+    /**
+     *
+     * Set source language to export
+     *
+     * @since 2.7
+     *
+     * @param string $source_language Locale.
+     * @return void
+     */
+    public function set_source_language($source_language);
+    /**
+     * @since 3.1
+     *
+     * @return string
+     */
+    public function get_target_language();
+    /**
+     *
+     * Set target languages to export
+     *
+     * @since 2.7
+     *
+     * @param string $target_language Target language.
+     * @return void
+     */
+    public function set_target_language($target_language);
+    /**
+     *
+     * Add a translation source and target to the current translation file.
+     *
+     * @since 2.7
+     *
+     * @param string $type   Describe what does this data corresponds to, such as a post title, a meta reference etc...
+     * @param string $source The source to be translated.
+     * @param string $target Optional, a preexisting translation, if any.
+     * @param array  $args   Optional, an array of additional arguments, like an identifier for the string, its context, comments for translators, etc.
+     * @return void
+     */
+    public function add_translation_entry($type, $source, $target = '', $args = array());
+    /**
+     * Adds a reference to a source of translations entries.
+     *
+     * @since 2.7
+     *
+     * @param string $type Type of data to be exported.
+     * @param string $id   Optional, a unique identifier to retrieve the data in the database.
+     * @return void
+     */
+    public function set_source_reference($type, $id = '');
+    /**
+     * Adds a reference to the site from which the file has been exported.
+     *
+     * @since 2.7
+     *
+     * @param string $url Absolute URL of the current site exporting content.
+     * @return void
+     */
+    public function set_site_reference($url);
+    /**
+     * Returns the content of the file
+     *
+     * @since 2.7
+     *
+     * @return string
+     */
+    public function export();
+    /**
+     * Returns the name of the file to export.
+     *
+     * @since 3.1
+     *
+     * @return string
+     */
+    public function get_filename();
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
+ * Class PLL_Export_File
+ *
+ * @since 3.1
+ */
+abstract class PLL_Export_File implements \PLL_Export_File_Interface
+{
+    /**
+     * Returns the name of the file to export.
+     *
+     * @since 2.7
+     *
+     * @return string
+     */
+    public function get_filename()
+    {
+    }
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
+ * Handles the logic for generating translations files and assigning values to those.
+ *
+ * @since 2.7
+ */
+class PLL_Export_Multi_Files implements \Iterator
+{
+    /**
+     * Contains all the different files to export
+     *
+     * Each file is referenced with a key composed of its source and target languages
+     *
+     * @var array Associative array of PLL_Export_File_Interface
+     */
+    private $export_files = array();
+    /**
+     * Contains the names of the different files to export.
+     *
+     * FIXME: This only serves to know if a file for a certain source and target language pair exists. This could if we choose to name export files for any reason.
+     *
+     * @var string[]
+     */
+    private $export_filenames;
+    /**
+     * Index of the PLL_Export_File_Interface instance being currently processed. This instance is stored in {@see PLL_Export_Multi_Files::$export_files}.
+     *
+     * @var int
+     */
+    private $current_index;
+    /**
+     * The export file currently in use to add translations into.
+     *
+     * @var PLL_Export_File_Interface
+     */
+    private $current_file;
+    /**
+     * The selected language to be the source for the translation.
+     *
+     * @var string
+     */
+    private $source_language;
+    /**
+     * An instance of the class defining an individual export file.
+     *
+     * FIXME: At this point, only the class matters, as a new instance will be generated for each new target language, {@see PLL_Export_Multi_Files::set_target_language()}.
+     *
+     * @var PLL_Export_File_Interface
+     */
+    private $base_instance;
+    /**
+     * Constructor.
+     *
+     * @since 2.7
+     *
+     * @param PLL_Export_File_Interface $base_instance An instance of the class that defines an individual export file.
+     */
+    public function __construct($base_instance)
+    {
+    }
+    /**
+     * Set the current file source language
+     *
+     * @since 2.7
+     *
+     * @param string $source_language A language locale formatted string.
+     * @return void
+     */
+    public function set_source_language($source_language)
+    {
+    }
+    /**
+     * Set the target language for the current file
+     *
+     * If an export with a matching target language already exists, use this export instead.
+     *
+     * @since 2.7
+     *
+     * @param string $target_language A language locale formatted string.
+     * @return void
+     */
+    public function set_target_language($target_language)
+    {
+    }
+    /**
+     * Add a translation source and target to the current translation file.
+     *
+     * @since 2.7
+     *
+     * @param string $type   Describe what does this data corresponds to, such as a post title, a meta reference etc...
+     * @param string $source The source to be translated.
+     * @param string $target Optional, a preexisting translation, if any.
+     * @param array  $args   Optional, an array of additional arguments, like an identifier for the string, its context, comments for translators, etc.
+     * @return void
+     */
+    public function add_translation_entry($type, $source, $target = '', $args = array())
+    {
+    }
+    /**
+     * Adds a reference to a source of translations entries.
+     *
+     * @since 2.7
+     *
+     * @param string $type Type of data to be exported.
+     * @param string $id   Optional, a unique identifier to retrieve the data in the database.
+     * @return void
+     */
+    public function set_source_reference($type, $id = '')
+    {
+    }
+    /**
+     * Returns the content of the file
+     *
+     * @since 2.7
+     *
+     * @return string
+     */
+    public function export()
+    {
+    }
+    /**
+     * From {@see Iterator}. Returns the current instance of the export file abstraction.
+     *
+     * @since 2.7
+     *
+     * @return PLL_Export_File_Interface
+     */
+    #[\ReturnTypeWillChange]
+    public function current()
+    {
+    }
+    /**
+     *
+     * From {@see Iterator}.
+     *
+     * @since 2.7
+     *
+     * @return void
+     */
+    #[\ReturnTypeWillChange]
+    public function next()
+    {
+    }
+    /**
+     *
+     * From {@see Iterator}.
+     *
+     * @since 2.7
+     *
+     * @return string
+     */
+    #[\ReturnTypeWillChange]
+    public function key()
+    {
+    }
+    /**
+     * From {@see Iterator}.
+     *
+     * @since 2.7
+     *
+     * @return bool
+     */
+    #[\ReturnTypeWillChange]
+    public function valid()
+    {
+    }
+    /**
+     * From {@see Iterator}
+     *
+     * @since 2.7
+     *
+     * @return void
+     */
+    #[\ReturnTypeWillChange]
+    public function rewind()
+    {
+    }
+    /**
+     * Adds a reference to the site from which the file has been exported.
+     *
+     * @since 2.7
+     *
+     * @param string $url Absolute URL of the current site exporting content.
+     * @return void
+     */
+    public function set_site_reference($url)
+    {
+    }
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
+ * Handles the admin action of exporting strings translations.
+ *
+ * @since 2.7
+ * @since 3.1 Renamed from 'PLL_Export_Strings_Translation'
+ */
+class PLL_Export_Strings_Translations
+{
+    /**
+     * Used to set the action's name in forms.
+     *
+     * @var string
+     */
+    const ACTION_NAME = 'pll_translate';
+    /**
+     * Used to create nonces for the action.
+     *
+     * @var string
+     */
+    const NONCE_NAME = '_pll_translate_nonce';
+    /**
+     * A class to handle file download.
+     *
+     * @var PLL_Export_Download_Zip
+     */
+    private $downloader;
+    /**
+     * Represents an export file.
+     *
+     * @var PLL_Export_Multi_Files
+     */
+    private $export;
+    /**
+     * Used to query languages and translations.
+     *
+     * @var PLL_Model
+     */
+    private $model;
+    /**
+     * Stores the plugin options.
+     *
+     * @var array
+     */
+    private $options;
+    /**
+     * @var PLL_File_Format_Factory
+     */
+    private $file_format_factory;
+    /**
+     * PLL_Export_Strings_Translation constructor.
+     *
+     * @param string    $file_extension The file's extension, {@see PLL_File_Format_Factory::from_extension()}.
+     * @param PLL_Model $model Polylang model.
+     * @param array     $polylang_options Polylang options.
+     *
+     * @return void
+     * @since 2.7
+     * @since 3.1 Add the $string parameter.
+     */
+    public function __construct($file_extension, $model, $polylang_options)
+    {
+    }
+    /**
+     * Prepare and export the selected strings translations.
+     *
+     * @since 2.7
+     *
+     * @param PLL_Language[] $target_languages Array of PLL_Language.
+     * @param string         $group            String translation context to export.
+     * @return void
+     */
+    public function send_strings_translation_to_export($target_languages, $group)
+    {
+    }
+}
+/**
+ * @package Polylang-Pro
+ */
 /**
  * Class PLL_File_Format_Factory
  *
@@ -3837,7 +3837,7 @@ class PLL_File_Format_Factory
     /**
      * Names of child classes of {@see PLL_File_Format}.
      *
-     * @var string[]
+     * @var array<class-string<PLL_File_Format>>
      */
     protected $base_formats = array(\PLL_PO_Format::class, \PLL_Xliff_Format::class);
     /**
@@ -3970,6 +3970,12 @@ class PLL_Import_Export
      */
     private $options;
     /**
+     * The class that handles user's import actions.
+     *
+     * @var PLL_Import_Action
+     */
+    private $import_action;
+    /**
      * Constructor
      * Registers the hooks
      *
@@ -4051,6 +4057,17 @@ class PLL_Import_Export
     public function admin_enqueue_style()
     {
     }
+    /**
+     * Sanitizes and validates the target languages.
+     *
+     * @since 3.3
+     *
+     * @param array $export_form An array of $_POST values, including the target languages slug.
+     * @return PLL_Language[]|false An array of PLL_Language, or false if there is no valid target languages.
+     */
+    private function get_sanitized_target_languages($export_form)
+    {
+    }
 }
 /**
  * @package Polylang-Pro
@@ -4087,13 +4104,21 @@ class PLL_Import_Action
      */
     private $import_factory;
     /**
+     * The various import types.
+     *
+     * @var array<PLL_Import_Object_Interface>
+     */
+    private $imports;
+    /**
      * PLL_Import_Action constructor.
      *
      * @since 2.7
+     * @since 3.3 Add $imports parameter to handle the various import types.
      *
-     * @param PLL_Model $model Polylang model, used to query languages and translations.
+     * @param PLL_Model                          $model    Instance of PLL_Model.
+     * @param array<PLL_Import_Object_Interface> $imports  The import types.
      */
-    public function __construct($model)
+    public function __construct($model, $imports)
     {
     }
     /**
@@ -4111,7 +4136,7 @@ class PLL_Import_Action
      *
      * @since 2.7
      *
-     * @return WP_Error|true
+     * @return WP_Error
      */
     protected function _import()
     {
@@ -4136,29 +4161,6 @@ class PLL_Import_Action
      * @return PLL_Language|WP_Error
      */
     public function get_target_language($import)
-    {
-    }
-    /**
-     * Remove the context for the translation entries.
-     *
-     * @since 3.2
-     *
-     * @param  array $translations Array containing the entries.
-     * @return array               The same entries with an empty context.
-     */
-    private function remove_context_from_translations($translations)
-    {
-    }
-    /**
-     * Handles the strings translations saving in the database.
-     *
-     * @since 2.7
-     *
-     * @param PO           $translations Contains all translations entries.
-     * @param PLL_Language $language     Target Language.
-     * @return int|WP_Error The number of updated strings.
-     */
-    public function create_string_translations_on_import($translations, $language)
     {
     }
 }
@@ -4216,6 +4218,119 @@ interface PLL_Import_File_Interface
      * @return string|false
      */
     public function get_site_reference();
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
+ * Interface for the import strategy.
+ *
+ * @since 3.3
+ */
+interface PLL_Import_Object_Interface
+{
+    /**
+     * Handles the import of a content type.
+     *
+     * @since 3.3
+     *
+     * @param array        $entry {
+     *     @type string       $type Either 'post', 'term' or 'string_translations'
+     *     @type int          $id   Id of the object in the database (if applicable)
+     *     @type Translations $data Objects holding all the retrieved Translations
+     * }
+     *
+     * @param PLL_Language $target_language The targeted language for import.
+     * @return void
+     */
+    public function translate($entry, $target_language);
+    /**
+     * Get update notices to display.
+     *
+     * @since 3.3
+     *
+     * @return WP_Error
+     */
+    public function get_updated_notice();
+    /**
+     * Get warnings notices to display.
+     *
+     * @since 3.3
+     *
+     * @return WP_Error
+     */
+    public function get_warning_notice();
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
+ * A class to handle strings translations import.
+ *
+ * @since 3.3
+ */
+class PLL_Import_Strings implements \PLL_Import_Object_Interface
+{
+    /**
+     * The success counter.
+     *
+     * @var int
+     */
+    protected $success;
+    /**
+     * The strings that couldn't be imported due to warnings.
+     *
+     * @var string[]
+     */
+    protected $non_imported_strings = array();
+    /**
+     * Handles the import of strings translations.
+     *
+     * @since 3.3
+     *
+     * @param array        $entry {
+     *     An array containing the translations data.
+     *     @type string       $type Either 'post', 'term' or 'string_translations'.
+     *     @type int          $id   Id of the object in the database (if applicable).
+     *     @type Translations $data Objects holding all the retrieved Translation_Entry objects.
+     * }
+     * @param PLL_Language $target_language The targeted language for import.
+     */
+    public function translate($entry, $target_language)
+    {
+    }
+    /**
+     * Removes the context for the translation entries.
+     *
+     * @since 3.2
+     * @since 3.3 Moved from PLL_Import_Action to PLL_Import_Strings.
+     *
+     * @param  Translation_Entry[] $translations An array with all the entries.
+     * @return Translation_Entry[]               An array with the same entries with an empty context.
+     */
+    private function remove_context_from_translations($translations)
+    {
+    }
+    /**
+     * Gets update notices to display.
+     *
+     * @since 3.3
+     *
+     * @return WP_Error
+     */
+    public function get_updated_notice()
+    {
+    }
+    /**
+     * Gets warnings notices to display.
+     *
+     * @since 3.3
+     *
+     * @return WP_Error
+     */
+    public function get_warning_notice()
+    {
+    }
 }
 /**
  * @package Polylang-Pro
@@ -4280,6 +4395,792 @@ class PLL_Import_Uploader
      * @return array Modified list of allowed mime types.
      */
     public function allowed_mimes($mimes)
+    {
+    }
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
+ * PO file, generated from exporting Polylang translations
+ *
+ * Handles the construction of a PO files.
+ *
+ * @since 2.7
+ */
+class PLL_PO_Export extends \PLL_Export_File
+{
+    /**
+     * The registered target languages
+     *
+     * @var string
+     */
+    protected $target_language;
+    /**
+     * The registered source_language
+     *
+     * @var string
+     */
+    protected $source_language;
+    /**
+     * Po object.
+     *
+     * @var PO
+     */
+    private $po;
+    /**
+     * PLL_Export_Interface constructor.
+     * Creates a PO object.
+     *
+     * @since 2.7
+     */
+    public function __construct()
+    {
+    }
+    /**
+     * @since 3.1
+     *
+     * @return string
+     */
+    public function get_source_language()
+    {
+    }
+    /**
+     *
+     * Set a source language to the export
+     *
+     * @since 2.7
+     *
+     * @param string $source_language Locale.
+     * @return void
+     */
+    public function set_source_language($source_language)
+    {
+    }
+    /**
+     * @since 3.1
+     *
+     * @return string
+     */
+    public function get_target_language()
+    {
+    }
+    /**
+     * Set a target language to the export
+     *
+     * @since 2.7
+     *
+     * @param string $target_language Target language.
+     * @return void
+     */
+    public function set_target_language($target_language)
+    {
+    }
+    /**
+     * Set the site reference to the export.
+     *
+     * @since 2.7
+     *
+     * @param string $url Absolute url of the current site.
+     * @return void
+     */
+    public function set_site_reference($url)
+    {
+    }
+    /**
+     * Add a translation source and target to the current translation file
+     *
+     * @since 2.7
+     *
+     * @param string $type   Describe what does this data corresponds to, such as a post title, a meta reference etc...
+     * @param string $source The source to be translated.
+     * @param string $target Optional, preexisting translation, if any.
+     * @param array  $args   Optional, an array containing the name and the context of the string.
+     * @return void
+     */
+    public function add_translation_entry($type, $source, $target = '', $args = array())
+    {
+    }
+    /**
+     * Assign a reference to the PO file.
+     *
+     * @since 2.7
+     *
+     * @param string $type Type of data to be exported.
+     * @param string $id   Optional, unique identifier to retrieve the data in the database.
+     * @return void
+     */
+    public function set_source_reference($type, $id = '')
+    {
+    }
+    /**
+     * Writes the file in the output buffer
+     *
+     * @since 2.7
+     *
+     * @return string
+     */
+    public function export()
+    {
+    }
+    /**
+     * Assigns the necessary headers to the PO file.
+     *
+     * @see https://www.gnu.org/software/trans-coord/manual/gnun/html_node/PO-Header.html
+     *
+     * @since 2.7
+     *
+     * @return void
+     */
+    protected function set_file_headers()
+    {
+    }
+    /**
+     *
+     * Get the necessary text comment to add to the PO file.
+     *
+     * @return string
+     */
+    protected function get_comment_before_headers()
+    {
+    }
+    /**
+     * @since 3.1
+     *
+     * @return string
+     */
+    public function get_extension()
+    {
+    }
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
+ * Class PLL_PO_Format
+ *
+ * @since 3.1
+ *
+ * Manages the support for Po format for Polylang Import / Export feature.
+ */
+class PLL_PO_Format extends \PLL_File_Format
+{
+    /**
+     * @var string
+     */
+    public $extension = 'po';
+    /**
+     * @var string[]
+     */
+    public $mime_type = array('po' => 'text/x-po');
+    /**
+     * Po format is always supported.
+     *
+     * @since 3.1
+     *
+     * @return true
+     */
+    public function is_supported()
+    {
+    }
+    /**
+     * Returns the associated import class.
+     *
+     * @since 3.1
+     *
+     * @return PLL_PO_Import
+     */
+    public function get_import()
+    {
+    }
+    /**
+     * Returns the associated export class.
+     *
+     * @since 3.1
+     *
+     * @return PLL_PO_Export
+     */
+    public function get_export()
+    {
+    }
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
+ * PO file, generated from importing translations
+ *
+ * Handles the reading of a PO file.
+ *
+ * @since 2.7
+ */
+class PLL_PO_Import implements \PLL_Import_File_Interface
+{
+    /**
+     * Po object.
+     *
+     * @var PO
+     */
+    private $po;
+    /**
+     * If we have already retrieved the entry or not.
+     *
+     * @var bool
+     */
+    private $once;
+    /**
+     * Constructor.
+     *
+     * Creates a PO object from an imported file.
+     *
+     * @since 2.7
+     */
+    public function __construct()
+    {
+    }
+    /**
+     * Import the translations from a file.
+     *
+     * Relies on {@see PO::import_from_file()}
+     *
+     * @since 2.7
+     *
+     * @param string $filepath The path on the filesystem where the import file is located.
+     * @return WP_Error|true
+     */
+    public function import_from_file($filepath)
+    {
+    }
+    /**
+     * Get the source language
+     *
+     * @since 2.7
+     * @since 3.1 Renamed from PLL_PO_Import::get_source_lang()
+     *
+     * @return string|false
+     */
+    public function get_source_language()
+    {
+    }
+    /**
+     * Get the target language
+     *
+     * @since 2.7
+     *
+     * @return string|false
+     */
+    public function get_target_language()
+    {
+    }
+    /**
+     * Get the site reference.
+     *
+     * @since 2.7
+     *
+     * @return string|false
+     */
+    public function get_site_reference()
+    {
+    }
+    /**
+     * Get the next string translation to import.
+     *
+     * @since 2.7
+     *
+     * @return array
+     */
+    public function get_next_entry()
+    {
+    }
+}
+/**
+ * @package Polylang-Pro
+ *
+ * @since 3.1
+ */
+/**
+ * Class PLL_Import_Xliff_Iterator
+ *
+ * @since 3.1
+ */
+class PLL_Import_Xliff_Iterator implements \RecursiveIterator
+{
+    /**
+     * The node.
+     *
+     * @var DOMNodeList.
+     */
+    private $nodes;
+    /**
+     * The offset.
+     *
+     * @var int.
+     */
+    private $offset = 0;
+    /**
+     * PLL_Import_Xliff_Iterator constructor.
+     *
+     * @since 3.1
+     *
+     * @param DOMNodeList $nodes Nodes.
+     */
+    public function __construct($nodes)
+    {
+    }
+    /**
+     * Replace the cursor at position 0.
+     *
+     * @since 3.1
+     *
+     * @return int|void offset.
+     */
+    #[\ReturnTypeWillChange]
+    public function rewind()
+    {
+    }
+    /**
+     * Get the current element.
+     *
+     * @since 3.1
+     *
+     * @return DOMNode|null
+     */
+    #[\ReturnTypeWillChange]
+    public function current()
+    {
+    }
+    /**
+     * Get the key.
+     *
+     * @since 3.1
+     *
+     * @return mixed|string
+     */
+    #[\ReturnTypeWillChange]
+    public function key()
+    {
+    }
+    /**
+     * Place the cursor to the next element.
+     *
+     * @since 3.1
+     *
+     * @return int|void
+     */
+    #[\ReturnTypeWillChange]
+    public function next()
+    {
+    }
+    /**
+     * Check the node validity.
+     *
+     * @since 3.1
+     *
+     * @return bool
+     */
+    #[\ReturnTypeWillChange]
+    public function valid()
+    {
+    }
+    /**
+     * Check if the node has children.
+     *
+     * @since 3.1
+     *
+     * @return bool
+     */
+    #[\ReturnTypeWillChange]
+    public function hasChildren()
+    {
+    }
+    /**
+     * Get the node's children
+     *
+     * @since 3.1
+     *
+     * @return RecursiveIterator
+     */
+    #[\ReturnTypeWillChange]
+    public function getChildren()
+    {
+    }
+}
+/**
+ * @package Polylang-Pro
+ *
+ * @since 3.1
+ */
+/**
+ * Xliff file, generated from exporting Polylang translations
+ *
+ * Use set_source_reference before settings adding translations entries for that reference
+ *
+ * @since 2.7
+ */
+class PLL_Xliff_Export extends \PLL_Export_File
+{
+    /**
+     * @var DOMAttr
+     */
+    protected $source_language;
+    /**
+     * @var DOMAttr
+     */
+    protected $target_language;
+    /**
+     * The root element of the XML tree.
+     *
+     * @var DOMDocument The root element of the XML tree
+     */
+    private $document;
+    /**
+     * The file element in the XML tree.
+     *
+     * @var DOMElement The <file> element in the XML tree
+     */
+    private $file;
+    /**
+     * The body element in the Xliff structure, this is where groups of translation are added
+     *
+     * @var DOMElement
+     */
+    private $body;
+    /**
+     * This represents the different sources that can be added into an export
+     *
+     * @var DOMElement[]
+     */
+    private $translation_groups = array();
+    /**
+     * Each group will reference a source
+     *
+     * @var DOMElement A group of translations pertaining to the same WP data object.
+     */
+    private $current_group;
+    /**
+     * Holds the reference towards each of the translations units, mainly for counting their number
+     *
+     * @var DOMElement[]
+     */
+    private $translation_units = array();
+    /**
+     * Declares xml version
+     *
+     * @since 3.1
+     *
+     * Creates the root element for the document
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+    }
+    /**
+     * Helper function to insert new elements in our DOMDocument
+     *
+     * @since 3.1
+     *
+     * @see https://www.php.net/manual/fr/domdocument.createcdatasection.php
+     *
+     * @param DOMNode $parent     Could be a DOMDocument or a DOMElement.
+     * @param string  $tag_name   Name of the attribute to set.
+     * @param array   $attributes Optional. {
+     *                              string $name The name of an attribute to set
+     *                              string $value The value to set the attribute to
+     *                            }
+     * @param string  $content    Optional. Could specify some text content to insert into the new node
+     *                            /!\ This works only for text content, CDATA section has to be created with DOMDocument::createCDATASection() and appended.
+     * @return DOMElement         The newly created DOMElement
+     */
+    private function add_child_element($parent, $tag_name, $attributes = array(), $content = '')
+    {
+    }
+    /**
+     * Set a source language to the file
+     *
+     * @since 3.1
+     *
+     * @param string $source_language A valid W3C locale.
+     */
+    public function set_source_language($source_language)
+    {
+    }
+    /**
+     * Retrieves the file's source language
+     *
+     * @since 3.1
+     *
+     * @return string A language locale.
+     */
+    public function get_source_language()
+    {
+    }
+    /**
+     * Set one target languages to the file
+     *
+     * @since 3.1
+     *
+     * @param string $target_language A valid W3C locale.
+     */
+    public function set_target_language($target_language)
+    {
+    }
+    /**
+     * Retrieves the file's target language
+     *
+     * @since 3.1
+     *
+     * @return string A language locales.
+     */
+    public function get_target_language()
+    {
+    }
+    /**
+     * Add a translation unit to the current translation group
+     *
+     * @since 3.1
+     *
+     * First verifies that the passed parameter are correct.
+     *
+     * @throws LogicException If no source object is referenced before hand, @see PLL_Xliff_Export::set_source_reference() .
+     * @throws InvalidArgumentException If no source data is passed to the function, it cannot translate anything.
+     * @param string $type Additional info to help the translation.
+     * @param string $source Translation source.
+     * @param string $target Translation target.
+     * @param array  $args Extra data for the context.
+     * @return DOMElement The trans-unit node created
+     */
+    public function add_translation_entry($type, $source, $target = '', $args = array())
+    {
+    }
+    /**
+     * Assign a reference to the resource used to create the translation group
+     *
+     * @since 3.1
+     *
+     * A new translation group is then created each time this function is called
+     *
+     * @throws InvalidArgumentException Exception.
+     * @param string $type The type of WordPress objects used.
+     * @param string $id (optional) An id used to identify the object / row in database.
+     * @return void
+     */
+    public function set_source_reference($type, $id = '')
+    {
+    }
+    /**
+     * Writes the document into a file
+     *
+     * @since 3.1
+     *
+     * @throws Exception When no document has previously been created, throws an exception.
+     * @return string|false An XML formatted string.
+     */
+    public function export()
+    {
+    }
+    /**
+     * Set site reference to xliff.
+     *
+     * @since 3.1
+     *
+     * @param string $url Absolute URL of the current site exporting content.
+     * @return void
+     */
+    public function set_site_reference($url)
+    {
+    }
+    /**
+     * @since 3.1
+     *
+     * @return string
+     */
+    public function get_extension()
+    {
+    }
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
+ * Class PLL_Xliff_Format
+ *
+ * @since 3.1
+ *
+ * Manage support for the xliff file format
+ */
+class PLL_Xliff_Format extends \PLL_File_Format
+{
+    /**
+     * @var string
+     */
+    public $extension = 'xliff';
+    /**
+     * @var string[]
+     */
+    public $mime_type = array('xlf|xliff' => 'text/xml');
+    /**
+     * PLL_Xliff_Format constructor.
+     *
+     * @since 3.1
+     */
+    public function __construct()
+    {
+    }
+    /**
+     * Whether the xliff format is supported or not by the current environment.
+     *
+     * @since 3.1
+     *
+     * @return true|WP_Error
+     */
+    public function is_supported()
+    {
+    }
+    /**
+     * Returns the associated import class.
+     *
+     * @since 3.1
+     *
+     * @return PLL_Xliff_Import
+     */
+    public function get_import()
+    {
+    }
+    /**
+     * Returns the associated export class.
+     *
+     * @since 3.1
+     *
+     * @return PLL_Xliff_Export
+     */
+    public function get_export()
+    {
+    }
+}
+/**
+ * @package Polylang-Pro
+ *
+ * @since 3.1
+ */
+/**
+ * Class PLL_Xliff_Import
+ *
+ * @since 3.1
+ *
+ * This class uses PHP built in DOMDocument.
+ *
+ * @link https://www.php.net/manual/en/book.dom.php
+ * @uses libxml
+ */
+class PLL_Xliff_Import implements \PLL_Import_File_Interface
+{
+    /**
+     * The Xpath object.
+     *
+     * @var DOMXPath The Xpath object.
+     */
+    private $xpath;
+    /**
+     * The XML namespace.
+     *
+     * @var string Namespace of the XML file.
+     */
+    private $ns;
+    /**
+     * The imported file name.
+     *
+     * @var string
+     */
+    protected $filename;
+    /**
+     * An array of XLIFF iterators.
+     *
+     * @var array<PLL_Import_Xliff_Iterator>
+     */
+    private $iterators = array();
+    /**
+     * Imports translations from a file.
+     *
+     * @since 3.1
+     *
+     * @param string $filename The file's name.
+     *
+     * @return WP_Error|true True if no problem occurs during file import.
+     */
+    public function import_from_file($filename)
+    {
+    }
+    /**
+     * Parses an XML response body.
+     *
+     * @since 3.1
+     *
+     * @param DOMDocument $document A HTML document parsed by PHP DOMDocument.
+     * @return bool True if no problem occurs during the parsing, false otherwise.
+     */
+    private function parse_xml($document)
+    {
+    }
+    /**
+     * Get the language of the source
+     *
+     * @since 3.1
+     *
+     * @return string|false
+     */
+    public function get_source_language()
+    {
+    }
+    /**
+     * Get target language
+     *
+     * @since 3.1
+     *
+     * @return string|false
+     */
+    public function get_target_language()
+    {
+    }
+    /**
+     * Get site reference
+     *
+     * @since 3.1
+     *
+     * @return string|false
+     */
+    public function get_site_reference()
+    {
+    }
+    /**
+     * Get the next term, post or string translations to import.
+     *
+     * @since 3.1
+     *
+     * @return array {
+     *     string       $type Either 'post', 'term' or 'string_translations'
+     *     int          $id   Id of the object in the database (if applicable)
+     *     Translations $data Objects holding all the retrieved Translations
+     * }
+     */
+    public function get_next_entry()
+    {
+    }
+    /**
+     * Creates the translation entry object.
+     * And then returns it in an array with additional data.
+     *
+     * @since 3.3
+     *
+     * @param DOMNode $item The current element.
+     * @param string  $type The object type.
+     * @return array {
+     *     string       $type Either 'post', 'term' or 'string_translations'
+     *     int          $id   Id of the object in the database (if applicable)
+     *     Translations $data Objects holding all the retrieved Translations
+     * }
+     */
+    private function create_translation_entry($item, $type)
     {
     }
 }
@@ -4753,295 +5654,6 @@ class PLL_Settings_Advanced_Media extends \PLL_Settings_Module
      * @return string[]
      */
     protected function get_actions()
-    {
-    }
-}
-/**
- * @package Polylang-Pro
- */
-/**
- * PO file, generated from exporting Polylang translations
- *
- * Handles the construction of a PO files.
- *
- * @since 2.7
- */
-class PLL_PO_Export extends \PLL_Export_File
-{
-    /**
-     * The registered target languages
-     *
-     * @var string
-     */
-    protected $target_language;
-    /**
-     * The registered source_language
-     *
-     * @var string
-     */
-    protected $source_language;
-    /**
-     * Po object.
-     *
-     * @var PO
-     */
-    private $po;
-    /**
-     * PLL_Export_Interface constructor.
-     * Creates a PO object.
-     *
-     * @since 2.7
-     */
-    public function __construct()
-    {
-    }
-    /**
-     * @since 3.1
-     *
-     * @return string
-     */
-    public function get_source_language()
-    {
-    }
-    /**
-     *
-     * Set a source language to the export
-     *
-     * @since 2.7
-     *
-     * @param string $source_language Locale.
-     * @return void
-     */
-    public function set_source_language($source_language)
-    {
-    }
-    /**
-     * @since 3.1
-     *
-     * @return string
-     */
-    public function get_target_language()
-    {
-    }
-    /**
-     * Set a target language to the export
-     *
-     * @since 2.7
-     *
-     * @param string $target_language Target language.
-     * @return void
-     */
-    public function set_target_language($target_language)
-    {
-    }
-    /**
-     * Set the site reference to the export.
-     *
-     * @since 2.7
-     *
-     * @param string $url Absolute url of the current site.
-     * @return void
-     */
-    public function set_site_reference($url)
-    {
-    }
-    /**
-     * Add a translation source and target to the current translation file
-     *
-     * @since 2.7
-     *
-     * @param string $type   Describe what does this data corresponds to, such as a post title, a meta reference etc...
-     * @param string $source The source to be translated.
-     * @param string $target Optional, preexisting translation, if any.
-     * @param array  $args   Optional, an array containing the name and the context of the string.
-     * @return void
-     */
-    public function add_translation_entry($type, $source, $target = '', $args = array())
-    {
-    }
-    /**
-     * Assign a reference to the PO file.
-     *
-     * @since 2.7
-     *
-     * @param string $type Type of data to be exported.
-     * @param string $id   Optional, unique identifier to retrieve the data in the database.
-     * @return void
-     */
-    public function set_source_reference($type, $id = '')
-    {
-    }
-    /**
-     * Writes the file in the output buffer
-     *
-     * @since 2.7
-     *
-     * @return string
-     */
-    public function export()
-    {
-    }
-    /**
-     * Assigns the necessary headers to the PO file.
-     *
-     * @see https://www.gnu.org/software/trans-coord/manual/gnun/html_node/PO-Header.html
-     *
-     * @since 2.7
-     *
-     * @return void
-     */
-    protected function set_file_headers()
-    {
-    }
-    /**
-     *
-     * Get the necessary text comment to add to the PO file.
-     *
-     * @return string
-     */
-    protected function get_comment_before_headers()
-    {
-    }
-    /**
-     * @since 3.1
-     *
-     * @return string
-     */
-    public function get_extension()
-    {
-    }
-}
-/**
- * @package Polylang-Pro
- */
-/**
- * Class PLL_PO_Format
- *
- * @since 3.1
- *
- * Manages the support for Po format for Polylang Import / Export feature.
- */
-class PLL_PO_Format extends \PLL_File_Format
-{
-    /**
-     * @var string
-     */
-    public $extension = 'po';
-    /**
-     * @var string[]
-     */
-    public $mime_type = array('po' => 'text/x-po');
-    /**
-     * Po format is always supported.
-     *
-     * @since 3.1
-     *
-     * @return true
-     */
-    public function is_supported()
-    {
-    }
-    /**
-     * Returns the associated import class.
-     *
-     * @since 3.1
-     *
-     * @return PLL_PO_Import
-     */
-    public function get_import()
-    {
-    }
-    /**
-     * Returns the associated export class.
-     *
-     * @since 3.1
-     *
-     * @return PLL_PO_Export
-     */
-    public function get_export()
-    {
-    }
-}
-/**
- * @package Polylang-Pro
- */
-/**
- * PO file, generated from importing translations
- *
- * Handles the reading of a PO file.
- *
- * @since 2.7
- */
-class PLL_PO_Import implements \PLL_Import_File_Interface
-{
-    /**
-     * Po object.
-     *
-     * @var PO
-     */
-    private $po;
-    /**
-     * Constructor.
-     *
-     * Creates a PO object from an imported file.
-     *
-     * @since 2.7
-     */
-    public function __construct()
-    {
-    }
-    /**
-     * Import the translations from a file.
-     *
-     * Relies on {@see PO::import_from_file()}
-     *
-     * @since 2.7
-     *
-     * @param string $filepath The path on the filesystem where the import file is located.
-     * @return WP_Error|true
-     */
-    public function import_from_file($filepath)
-    {
-    }
-    /**
-     * Get the source language
-     *
-     * @since 2.7
-     * @since 3.1 Renamed from PLL_PO_Import::get_source_lang()
-     *
-     * @return string|false
-     */
-    public function get_source_language()
-    {
-    }
-    /**
-     * Get the target language
-     *
-     * @since 2.7
-     *
-     * @return string|false
-     */
-    public function get_target_language()
-    {
-    }
-    /**
-     * Get the site reference.
-     *
-     * @since 2.7
-     *
-     * @return string|false
-     */
-    public function get_site_reference()
-    {
-    }
-    /**
-     * Get the next string translation to import.
-     *
-     * @since 2.7
-     *
-     * @return array
-     */
-    public function get_next_entry()
     {
     }
 }
@@ -7339,480 +7951,6 @@ class PLL_Xdata_Subdomain extends \PLL_Xdata_Base
      * @return string
      */
     public function fix_cookie_in_redirect($location)
-    {
-    }
-}
-/**
- * @package Polylang-Pro
- *
- * @since 3.1
- */
-/**
- * Class PLL_Import_Xliff_Iterator
- *
- * @since 3.1
- */
-class PLL_Import_Xliff_Iterator implements \RecursiveIterator
-{
-    /**
-     * The node.
-     *
-     * @var DOMNodeList.
-     */
-    private $nodes;
-    /**
-     * The offset.
-     *
-     * @var int.
-     */
-    private $offset = 0;
-    /**
-     * PLL_Import_Xliff_Iterator constructor.
-     *
-     * @since 3.1
-     *
-     * @param DOMNodeList $nodes Nodes.
-     */
-    public function __construct($nodes)
-    {
-    }
-    /**
-     * Replace the cursor at position 0.
-     *
-     * @since 3.1
-     *
-     * @return int|void offset.
-     */
-    #[\ReturnTypeWillChange]
-    public function rewind()
-    {
-    }
-    /**
-     * Get the current element.
-     *
-     * @since 3.1
-     *
-     * @return DOMNode|mixed|null
-     */
-    #[\ReturnTypeWillChange]
-    public function current()
-    {
-    }
-    /**
-     * Get the key.
-     *
-     * @since 3.1
-     *
-     * @return mixed|string
-     */
-    #[\ReturnTypeWillChange]
-    public function key()
-    {
-    }
-    /**
-     * Place the cursor to the next element.
-     *
-     * @since 3.1
-     *
-     * @return int|void
-     */
-    #[\ReturnTypeWillChange]
-    public function next()
-    {
-    }
-    /**
-     * Check the node validity.
-     *
-     * @since 3.1
-     *
-     * @return bool
-     */
-    #[\ReturnTypeWillChange]
-    public function valid()
-    {
-    }
-    /**
-     * Check if the node has children.
-     *
-     * @since 3.1
-     *
-     * @return bool
-     */
-    #[\ReturnTypeWillChange]
-    public function hasChildren()
-    {
-    }
-    /**
-     * Get the node's children
-     *
-     * @since 3.1
-     *
-     * @return RecursiveIterator
-     */
-    #[\ReturnTypeWillChange]
-    public function getChildren()
-    {
-    }
-}
-/**
- * @package Polylang-Pro
- *
- * @since 3.1
- */
-/**
- * Xliff file, generated from exporting Polylang translations
- *
- * Use set_source_reference before settings adding translations entries for that reference
- *
- * @since 2.7
- */
-class PLL_Xliff_Export extends \PLL_Export_File
-{
-    /**
-     * @var DOMAttr
-     */
-    protected $source_language;
-    /**
-     * @var DOMAttr
-     */
-    protected $target_language;
-    /**
-     * The root element of the XML tree.
-     *
-     * @var DOMDocument The root element of the XML tree
-     */
-    private $document;
-    /**
-     * The file element in the XML tree.
-     *
-     * @var DOMElement The <file> element in the XML tree
-     */
-    private $file;
-    /**
-     * The body element in the Xliff structure, this is where groups of translation are added
-     *
-     * @var DOMElement
-     */
-    private $body;
-    /**
-     * This represents the different sources that can be added into an export
-     *
-     * @var DOMElement[]
-     */
-    private $translation_groups = array();
-    /**
-     * Each group will reference a source
-     *
-     * @var DOMElement A group of translations pertaining to the same WP data object.
-     */
-    private $current_group;
-    /**
-     * Holds the reference towards each of the translations units, mainly for counting their number
-     *
-     * @var DOMElement[]
-     */
-    private $translation_units = array();
-    /**
-     * Declares xml version
-     *
-     * @since 3.1
-     *
-     * Creates the root element for the document
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-    }
-    /**
-     * Helper function to insert new elements in our DOMDocument
-     *
-     * @since 3.1
-     *
-     * @see https://www.php.net/manual/fr/domdocument.createcdatasection.php
-     *
-     * @param DOMNode $parent     Could be a DOMDocument or a DOMElement.
-     * @param string  $tag_name   Name of the attribute to set.
-     * @param array   $attributes Optional. {
-     *                              string $name The name of an attribute to set
-     *                              string $value The value to set the attribute to
-     *                            }
-     * @param string  $content    Optional. Could specify some text content to insert into the new node
-     *                            /!\ This works only for text content, CDATA section has to be created with DOMDocument::createCDATASection() and appended.
-     * @return DOMElement         The newly created DOMElement
-     */
-    private function add_child_element($parent, $tag_name, $attributes = array(), $content = '')
-    {
-    }
-    /**
-     * Set a source language to the file
-     *
-     * @since 3.1
-     *
-     * @param string $source_language A valid W3C locale.
-     */
-    public function set_source_language($source_language)
-    {
-    }
-    /**
-     * Retrieves the file's source language
-     *
-     * @since 3.1
-     *
-     * @return string A language locale.
-     */
-    public function get_source_language()
-    {
-    }
-    /**
-     * Set one target languages to the file
-     *
-     * @since 3.1
-     *
-     * @param string $target_language A valid W3C locale.
-     */
-    public function set_target_language($target_language)
-    {
-    }
-    /**
-     * Retrieves the file's target language
-     *
-     * @since 3.1
-     *
-     * @return string A language locales.
-     */
-    public function get_target_language()
-    {
-    }
-    /**
-     * Add a translation unit to the current translation group
-     *
-     * @since 3.1
-     *
-     * First verifies that the passed parameter are correct.
-     *
-     * @throws LogicException If no source object is referenced before hand, @see PLL_Xliff_Export::set_source_reference() .
-     * @throws InvalidArgumentException If no source data is passed to the function, it cannot translate anything.
-     * @param string $type Additional info to help the translation.
-     * @param string $source Translation source.
-     * @param string $target Translation target.
-     * @param array  $args Extra data for the context.
-     * @return DOMElement The trans-unit node created
-     */
-    public function add_translation_entry($type, $source, $target = '', $args = array())
-    {
-    }
-    /**
-     * Assign a reference to the resource used to create the translation group
-     *
-     * @since 3.1
-     *
-     * A new translation group is then created each time this function is called
-     *
-     * @throws InvalidArgumentException Exception.
-     * @param string $type The type of WordPress objects used.
-     * @param string $id (optional) An id used to identify the object / row in database.
-     * @return void
-     */
-    public function set_source_reference($type, $id = '')
-    {
-    }
-    /**
-     * Writes the document into a file
-     *
-     * @since 3.1
-     *
-     * @throws Exception When no document has previously been created, throws an exception.
-     * @return string An XML formatted string.
-     */
-    public function export()
-    {
-    }
-    /**
-     * Set site reference to xliff.
-     *
-     * @since 3.1
-     *
-     * @param string $url Absolute URL of the current site exporting content.
-     * @return void
-     */
-    public function set_site_reference($url)
-    {
-    }
-    /**
-     * @since 3.1
-     *
-     * @return string
-     */
-    public function get_extension()
-    {
-    }
-}
-/**
- * @package Polylang-Pro
- */
-/**
- * Class PLL_Xliff_Format
- *
- * @since 3.1
- *
- * Manage support for the xliff file format
- */
-class PLL_Xliff_Format extends \PLL_File_Format
-{
-    /**
-     * @var string
-     */
-    public $extension = 'xliff';
-    /**
-     * @var string[]
-     */
-    public $mime_type = array('xlf|xliff' => 'text/xml');
-    /**
-     * PLL_Xliff_Format constructor.
-     *
-     * @since 3.1
-     */
-    public function __construct()
-    {
-    }
-    /**
-     * Whether the xliff format is supported or not by the current environment.
-     *
-     * @since 3.1
-     *
-     * @return true|WP_Error
-     */
-    public function is_supported()
-    {
-    }
-    /**
-     * Returns the associated import class.
-     *
-     * @since 3.1
-     *
-     * @return PLL_Xliff_Import
-     */
-    public function get_import()
-    {
-    }
-    /**
-     * Returns the associated export class.
-     *
-     * @since 3.1
-     *
-     * @return PLL_Xliff_Export
-     */
-    public function get_export()
-    {
-    }
-}
-/**
- * @package Polylang-Pro
- *
- * @since 3.1
- */
-/**
- * Class PLL_Xliff_Import
- *
- * @since 3.1
- *
- * This class uses PHP built in DOMDocument.
- *
- * @link https://www.php.net/manual/en/book.dom.php
- * @uses libxml
- */
-class PLL_Xliff_Import implements \PLL_Import_File_Interface
-{
-    /**
-     * The Xpath object.
-     *
-     * @var DOMXPath The Xpath object.
-     */
-    private $xpath;
-    /**
-     * The XML namespace.
-     *
-     * @var string Namespace of the XML file.
-     */
-    private $ns;
-    /**
-     * The node list.
-     *
-     * @var PLL_Import_Xliff_Iterator
-     */
-    private $string_translation_iterator;
-    /**
-     * The imported file name.
-     *
-     * @var string
-     */
-    protected $filename;
-    /**
-     * Imports translations from a file.
-     *
-     * @since 3.1
-     *
-     * @param string $filename The file's name.
-     *
-     * @return WP_Error|true True if no problem occurs during file import.
-     */
-    public function import_from_file($filename)
-    {
-    }
-    /**
-     * Parses an XML response body.
-     *
-     * @since 3.1
-     *
-     * @param DOMDocument $document A HTML document parsed by PHP DOMDocument.
-     * @return void
-     */
-    private function parse_xml($document)
-    {
-    }
-    /**
-     * Get the language of the source
-     *
-     * @since 3.1
-     *
-     * @return string
-     */
-    public function get_source_language()
-    {
-    }
-    /**
-     * Get target language
-     *
-     * @since 3.1
-     *
-     * @return string
-     */
-    public function get_target_language()
-    {
-    }
-    /**
-     * Get site reference
-     *
-     * @since 3.1
-     *
-     * @return string|false
-     */
-    public function get_site_reference()
-    {
-    }
-    /**
-     * Get the next term, post or string translations to import.
-     *
-     * @since 3.1
-     *
-     * @return false|array {
-     *     string       $type Either 'post', 'term' or 'string_translations'
-     *     int          $id   Id of the object in the database (if applicable)
-     *     Translations $data Objects holding all the retrieved Translations
-     * }
-     */
-    public function get_next_entry()
     {
     }
 }
@@ -15268,7 +15406,7 @@ class PLL_Walker_Dropdown extends \Walker
      *
      * @see https://developer.wordpress.org/reference/classes/walker/#properties Walker::$db_fields.
      *
-     * @var array
+     * @var string[]
      */
     public $db_fields = array('parent' => 'parent', 'id' => 'id');
     /**
@@ -15342,7 +15480,7 @@ class PLL_Walker_List extends \Walker
      *
      * @see https://developer.wordpress.org/reference/classes/walker/#properties Walker::$db_fields.
      *
-     * @var array
+     * @var string[]
      */
     public $db_fields = array('parent' => 'parent', 'id' => 'id');
     /**
@@ -16279,6 +16417,18 @@ class PLL_Admin_Site_Health
      * @return string
      */
     protected function format_array($array)
+    {
+    }
+    /**
+     * Transforms the option value to readable human sentence.
+     *
+     * @since 3.3
+     *
+     * @param string $key   Option name.
+     * @param mixed  $value Option value.
+     * @return mixed Option value.
+     */
+    public function format_value($key, $value)
     {
     }
     /**

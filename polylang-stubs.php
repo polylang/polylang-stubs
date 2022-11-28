@@ -98,9 +98,9 @@ class PLL_Active_Languages
      *
      * @since 1.9
      *
-     * @param array<string> $classes  CSS classes applied to a row in the languages list table.
-     * @param PLL_Language  $language The language.
-     * @return array<string> Modified list of classes.
+     * @param string[]     $classes  CSS classes applied to a row in the languages list table.
+     * @param PLL_Language $language The language.
+     * @return string[] Modified list of classes.
      */
     public function row_classes($classes, $language)
     {
@@ -378,8 +378,8 @@ abstract class PLL_Abstract_Language_Switcher_Block
      *
      * @since 3.2
      *
-     * @param array<mixed> $attributes The attributes of the currently rendered block.
-     * @return array<mixed> The modified attributes if rendered in the block editor.
+     * @param array $attributes The attributes of the currently rendered block.
+     * @return array The modified attributes if rendered in the block editor.
      */
     protected function set_attributes_for_block($attributes)
     {
@@ -789,10 +789,10 @@ class PLL_Navigation_Language_Switcher_Block extends \PLL_Abstract_Language_Swit
      *
      * @since 3.2
      *
-     * @param array<mixed>  $switcher_item Raw element of a language switcher.
-     * @param array<mixed>  $attributes    The attributes of the language switcher.
-     * @param array<string> $context       The pieces of context inherited from the 'core/navigation' block.
-     * @param array<mixed>  $inner_items   Elements of the submenu, used for dropdown. Default to empty array.
+     * @param array    $switcher_item Raw element of a language switcher.
+     * @param array    $attributes    The attributes of the language switcher.
+     * @param string[] $context       The pieces of context inherited from the 'core/navigation' block.
+     * @param array    $inner_items   Elements of the submenu, used for dropdown. Default to empty array.
      * @return string The rendered switcher.
      */
     protected function render_link_item($switcher_item, $attributes, $context = array(), $inner_items = array())
@@ -803,10 +803,22 @@ class PLL_Navigation_Language_Switcher_Block extends \PLL_Abstract_Language_Swit
      *
      * @since 3.2
      *
-     * @param  array<mixed> $switcher_items An array of raw switcher items.
-     * @return array<mixed>|false The item in the current language if found, false otherwise.
+     * @param array $switcher_items An array of raw switcher items.
+     * @return array|false The item in the current language if found, false otherwise.
      */
     protected function find_current_lang_item($switcher_items)
+    {
+    }
+    /**
+     * Formats a language item title based on attributes.
+     *
+     * @since 3.3
+     *
+     * @param array $item       A raw language switcher item.
+     * @param array $attributes The language switcher attributes.
+     * @return string Formatted menu item title
+     */
+    protected function get_item_title($item, $attributes)
     {
     }
 }
@@ -1464,7 +1476,7 @@ abstract class PLL_FSE_Abstract_Module
     /**
      * Plugin's options.
      *
-     * @var array<mixed>
+     * @var array
      */
     protected $options;
     /**
@@ -1493,7 +1505,7 @@ abstract class PLL_FSE_Abstract_Module
      *
      * @since 1.0
      *
-     * @return array<string>
+     * @return string[]
      */
     protected function get_languages_slugs()
     {
@@ -1511,9 +1523,9 @@ abstract class PLL_FSE_Abstract_Bulk_Edit_Template_Slugs_Module extends \PLL_FSE
      *
      * @since 3.2
      *
-     * @param  PLL_Language $lang          The language to use to find the templates to suffix.
-     * @param  string|null  $new_lang_slug Optionnal. The new lang slug to use. Default is `$lang`'s slug.
-     * @return int                         Number of posts updated.
+     * @param PLL_Language $lang          The language to use to find the templates to suffix.
+     * @param string|null  $new_lang_slug Optionnal. The new lang slug to use. Default is `$lang`'s slug.
+     * @return int Number of posts updated.
      */
     protected function update_language_suffix_in_post_names(\PLL_Language $lang, $new_lang_slug = \null)
     {
@@ -1523,8 +1535,8 @@ abstract class PLL_FSE_Abstract_Bulk_Edit_Template_Slugs_Module extends \PLL_FSE
      *
      * @since 3.2
      *
-     * @param  PLL_Language $lang The language to use to find the templates to unsuffix.
-     * @return int                Number of posts updated.
+     * @param PLL_Language $lang The language to use to find the templates to unsuffix.
+     * @return int Number of posts updated.
      */
     protected function remove_language_suffix_from_post_names(\PLL_Language $lang)
     {
@@ -1534,8 +1546,8 @@ abstract class PLL_FSE_Abstract_Bulk_Edit_Template_Slugs_Module extends \PLL_FSE
      *
      * @since 3.2
      *
-     * @param  PLL_Language $lang The language.
-     * @return array<stdClass>    {
+     * @param PLL_Language $lang The language.
+     * @return stdClass[] {
      *     An array of objects with the following properties.
      *
      *     @type int    $ID        A post ID.
@@ -1548,16 +1560,17 @@ abstract class PLL_FSE_Abstract_Bulk_Edit_Template_Slugs_Module extends \PLL_FSE
     /**
      * Updates the slug of the given post.
      *
-     * @since  3.2
+     * @since 3.2
+     *
      * @global wpdb $wpdb
      *
-     * @param  array<stdClass> $posts {
+     * @param stdClass[] $posts {
      *     An array of objects with the following properties.
      *
      *     @type int    $ID        A post ID.
      *     @type string $post_name The new post slug.
      * }
-     * @return int                    Number of posts updated.
+     * @return int Number of posts updated.
      */
     protected function update_template_post_slugs(array $posts)
     {
@@ -1662,7 +1675,7 @@ class PLL_FSE_Language_Slug_Change extends \PLL_FSE_Abstract_Bulk_Edit_Template_
      *
      * @since 3.2
      *
-     * @param  array<mixed> $args {
+     * @param array        $args {
      *     Arguments used to modify the language. @see PLL_Admin_Model::update_language().
      *
      *     @type string $name           Language name (used only for display).
@@ -1673,7 +1686,7 @@ class PLL_FSE_Language_Slug_Change extends \PLL_FSE_Abstract_Bulk_Edit_Template_
      *     @type string $no_default_cat Optional, if set, no default category has been created for this language.
      *     @type string $flag           Optional, country code, @see flags.php.
      * }
-     * @param  PLL_Language $lang Previous value of the language beeing edited.
+     * @param PLL_Language $lang Previous value of the language beeing edited.
      * @return void
      */
     public function change_template_slugs($args, $lang)
@@ -1763,9 +1776,9 @@ class PLL_FSE_Post_Types implements \PLL_Module_Interface
      *
      * @since 3.2
      *
-     * @param  array<string> $post_types  List of post type names.
-     * @param  bool          $is_settings True when displaying the list of custom post types in Polylang settings.
-     * @return array<string>
+     * @param string[] $post_types  List of post type names.
+     * @param bool     $is_settings True when displaying the list of custom post types in Polylang settings.
+     * @return string[]
      */
     public function add_post_types($post_types = array(), $is_settings = \false)
     {
@@ -1775,8 +1788,8 @@ class PLL_FSE_Post_Types implements \PLL_Module_Interface
      *
      * @since 3.2
      *
-     * @param  array<array<mixed>> $post_types An array of arrays with post types as keys and options as values.
-     * @return array<array<mixed>>             The post types without the translated template post type.
+     * @param array[] $post_types An array of arrays with post types as keys and options as values.
+     * @return array[] The post types without the translated template post type.
      */
     public function remove_post_types_from_post_rest_api($post_types)
     {
@@ -1826,7 +1839,7 @@ class PLL_FSE_Query_Filters extends \PLL_FSE_Abstract_Module implements \PLL_Mod
      * @since 3.2
      *
      * @param  WP_Query $query Reference to the `WP_Query` object.
-     * @return array<mixed>    {
+     * @return array {
      *     An array containing the language object and its array index from the tax query.
      *
      *     @type PLL_Language|false $language Language object, false if no valid language has been found.
@@ -1846,8 +1859,8 @@ class PLL_FSE_Query_Filters extends \PLL_FSE_Abstract_Module implements \PLL_Mod
      *
      * @since 3.2
      *
-     * @param  array<mixed> $tax_query An array of taxonomy queries.
-     * @return array<mixed> {
+     * @param array $tax_query An array of taxonomy queries.
+     * @return array {
      *     An array containing the language object and its array index from the tax query.
      *
      *     @type PLL_Language|false $language Language object, false if no valid language has been found.
@@ -1902,7 +1915,7 @@ class PLL_FSE_Recreate_Language extends \PLL_FSE_Abstract_Module implements \PLL
      * @since  3.2
      * @global wpdb $wpdb
      *
-     * @param array<string|int> $args {
+     * @param array $args {
      *     Arguments used to create the language.
      *
      *     @type string $name           Language name (used only for display).
@@ -1925,20 +1938,20 @@ class PLL_FSE_Recreate_Language extends \PLL_FSE_Abstract_Module implements \PLL
      *
      * @since 3.2
      *
-     * @param  PLL_Language $language A language object.
-     * @return array<array<string>>   A set of post IDs and post names, grouped by theme ID (term_taxonomy_id of the
-     *                                'wp_theme' taxonomy). Each result uses the post ID as array key and the post name
-     *                                (without lang suffix) as array value.
-     * Example of returned value:
-     * array(
-     *     {theme_id} => array(
-     *         {post_id} => '{post_name}',
-     *         {post_id} => '{post_name}',
-     *     ),
-     *     {theme_id} => array(
-     *         {post_id} => '{post_name}',
-     *     ),
-     * )
+     * @param PLL_Language $language A language object.
+     * @return string[][] A set of post IDs and post names, grouped by theme ID (term_taxonomy_id of the
+     *                    'wp_theme' taxonomy). Each result uses the post ID as array key and the post name
+     *                    (without lang suffix) as array value.
+     *                    Example of returned value:
+     *                    array(
+     *                        {theme_id} => array(
+     *                            {post_id} => '{post_name}',
+     *                            {post_id} => '{post_name}',
+     *                        ),
+     *                        {theme_id} => array(
+     *                            {post_id} => '{post_name}',
+     *                        ),
+     *                    )
      */
     private function get_posts_with_lang_suffix(\PLL_Language $language)
     {
@@ -1949,18 +1962,20 @@ class PLL_FSE_Recreate_Language extends \PLL_FSE_Abstract_Module implements \PLL
      *
      * @since 3.2
      *
-     * @param  array<string> $post_names              List of post names.
-     * @param  int           $theme_id                `term_taxonomy_id` of the 'wp_theme' taxonomy.
-     * @return array<array<string|int|array<string>>> {
+     * @param  string[] $post_names List of post names.
+     * @param  int      $theme_id   `term_taxonomy_id` of the 'wp_theme' taxonomy.
+     * @return array[]              {
      *     Array of arrays containing the translation groups and their `term_taxonomy_id`.
      *
      *     @type int           $post_id      Post ID (post in default language).
      *     @type string        $post_name    Post slug.
      *     @type int           $tt_id        `term_taxonomy_id` of the 'post_translations' taxonomy.`0` means the term
      *                                       doesn't exist.
-     *     @type array<string> $translations List of translations. IDs are not sanitized to keep it simple (the array
+     *     @type string[]      $translations List of translations. IDs are not sanitized to keep it simple (the array
      *                                       can contain other things).
      * }
+     *
+     * @phpstan-return array<array{post_id:int<0,max>,post_name:string,tt_id:int<0,max>,translations:array<string>}>
      */
     private function get_translation_groups(array $post_names, $theme_id)
     {
@@ -1970,9 +1985,9 @@ class PLL_FSE_Recreate_Language extends \PLL_FSE_Abstract_Module implements \PLL
      *
      * @since 3.2
      *
-     * @param  mixed $translations Raw translation group from the database.
-     * @return array<string>       Translation IDs are not sanitized to keep it simple (the array can contain other
-     *                             things).
+     * @param mixed $translations Raw translation group from the database.
+     * @return string[] Translation IDs are not sanitized to keep it simple
+     *                  (the array can contain other things).
      */
     private function format_translations($translations)
     {
@@ -2039,8 +2054,16 @@ class PLL_FSE_REST_Duplicate_Template extends \PLL_FSE_Abstract_Module implement
      *
      * @since 3.2
      *
-     * @param array<array<mixed>> $blocks   An array of blocks arrays.
-     * @param string              $language Slug language of the target post.
+     * @param array[] $blocks {
+     *     An array of blocks arrays.
+     *
+     *     @type string $blockName    Name of block.
+     *     @type array  $attrs        List of block attributes.
+     *     @type array  $innerBlocks  List of inner blocks.
+     *     @type string $innerHTML    Resultant HTML from inside block comment delimiters after removing inner blocks.
+     *     @type array  $innerContent List of string fragments and null markers where inner blocks were found.
+     * }
+     * @param string  $language Slug language of the target post.
      * @return array Array of translated blocks.
      */
     public function translate_blocks($blocks, $language)
@@ -2052,11 +2075,11 @@ class PLL_FSE_REST_Duplicate_Template extends \PLL_FSE_Abstract_Module implement
      *
      * @since 3.2
      *
-     * @param array<string> $attrs    {
+     * @param string[] $attrs    {
      *     string $slug  Template part slug.
      *     string $theme Template part theme slug.
      * }
-     * @param string        $language Slug language of the target post.
+     * @param string   $language Slug language of the target post.
      * @return string Slug of the translated template part.
      */
     public function translate_template_part($attrs, $language)
@@ -2163,7 +2186,7 @@ class PLL_FSE_REST_Route
     /**
      * The route after regex matching.
      *
-     * @var array<int|string|null> {
+     * @var array {
      *     @type int|null    $post_id   The post ID.
      *     @type string|null $post_type The post type.
      *     @type string|null $rest_base The REST base matching the supported template types.
@@ -2178,9 +2201,12 @@ class PLL_FSE_REST_Route
      */
     private $match_done = \false;
     /**
-     * List of REST bases for the template (part) post type(s).
+     * List of REST bases for the template (part) post type(s)
+     * with post type as array key.
      *
-     * @var array<string> Post type as array key and REST base as array value.
+     * @var string[]
+     *
+     * @phpstan-var array<string,string>
      */
     private $rest_bases = array();
     /**
@@ -2260,8 +2286,10 @@ class PLL_FSE_REST_Route
      *
      * @since 3.2
      *
-     * @return array<string> Post type as array key and REST "namespace + base" as array value, in the form of
-     *                       `/{namespace}/{base}`.
+     * @return string[] Post type as array key and REST "namespace + base" as array value,
+     *                  in the form of `/{namespace}/{base}`.
+     *
+     * @phpstan-return array<string,string>
      */
     private function get_template_rest_bases()
     {
@@ -2403,8 +2431,8 @@ abstract class PLL_REST_Translated_Object extends \PLL_REST_Filtered_Object
      *
      * @since 2.2
      *
-     * @param array<mixed> $object Post or Term array.
-     * @return string|false        Language slug. False if no language is assigned to the object.
+     * @param array $object Post or Term array.
+     * @return string|false Language slug. False if no language is assigned to the object.
      */
     public function get_language($object)
     {
@@ -2630,8 +2658,8 @@ class PLL_FSE_REST_Template extends \PLL_REST_Post
      *
      * @since 3.2
      *
-     * @param PLL_REST_API  $rest_api      Instance of PLL_REST_API.
-     * @param array<string> $content_types Array with post types as keys and values.
+     * @param PLL_REST_API $rest_api      Instance of PLL_REST_API.
+     * @param string[]     $content_types Array with post types as keys and values.
      * @return void
      */
     public function __construct(\PLL_REST_API &$rest_api, array $content_types)
@@ -2695,9 +2723,9 @@ class PLL_FSE_REST_Template extends \PLL_REST_Post
      *
      * @since 3.2
      *
-     * @param array<mixed> $object Post array.
-     * @return string|false        Template's language slug. Default language slug if no language is assigned to the
-     *                             template yet. False on failure.
+     * @param array $object Post array.
+     * @return string|false Template's language slug. Default language slug if no language
+     *                      is assigned to the template yet. False on failure.
      */
     public function get_language($object)
     {
@@ -2707,7 +2735,7 @@ class PLL_FSE_REST_Template extends \PLL_REST_Post
      *
      * @since 3.2
      *
-     * @param  WP_Query $query WP_Query object.
+     * @param WP_Query $query WP_Query object.
      * @return void
      */
     public function parse_query($query)
@@ -2738,10 +2766,10 @@ class PLL_FSE_REST_Template extends \PLL_REST_Post
      *
      * @since 3.2
      *
-     * @param  mixed           $result  Response to replace the requested version with. Can be anything a normal
-     *                                  endpoint can return, or null to not hijack the request.
-     * @param  WP_REST_Request $request Request used to generate the response.
-     * @return mixed                    Unchanged value.
+     * @param mixed           $result  Response to replace the requested version with. Can be anything a normal
+     *                                 endpoint can return, or null to not hijack the request.
+     * @param WP_REST_Request $request Request used to generate the response.
+     * @return mixed                   Unchanged value.
      */
     public function get_current_post_type_from_route($result, $request)
     {
@@ -2901,12 +2929,13 @@ class PLL_FSE_Template_Slug_Sync extends \PLL_FSE_Abstract_Module implements \PL
      * Modifies the template's slug when the template's language changes.
      *
      * @since 3.2
-     * @see   wp_set_object_terms()
      *
-     * @param  int               $object_id Object ID.
-     * @param  array<int|string> $terms     An array of object term IDs or slugs, provided as argument to `wp_set_object_terms()`.
-     * @param  array<int>        $tt_ids    An array of term taxonomy IDs.
-     * @param  string            $taxonomy  Taxonomy slug.
+     * @see wp_set_object_terms()
+     *
+     * @param  int            $object_id Object ID.
+     * @param  (int|string)[] $terms     An array of object term IDs or slugs, provided as argument to `wp_set_object_terms()`.
+     * @param  int[]          $tt_ids    An array of term taxonomy IDs.
+     * @param  string         $taxonomy  Taxonomy slug.
      * @return void
      */
     public function modify_template_slug_on_lang_assigning($object_id, $terms, $tt_ids, $taxonomy)
@@ -2915,9 +2944,9 @@ class PLL_FSE_Template_Slug_Sync extends \PLL_FSE_Abstract_Module implements \PL
     /**
      * Synchronizes the template slugs among translations after translations have been set or updated.
      *
-     * @since  3.2
+     * @since 3.2
      *
-     * @param  int $term_id Term ID.
+     * @param int $term_id Term ID.
      * @return void
      */
     public function sync_template_slugs_on_translations_save($term_id)
@@ -2928,12 +2957,12 @@ class PLL_FSE_Template_Slug_Sync extends \PLL_FSE_Abstract_Module implements \PL
      *
      * @since 3.2
      *
-     * @param  string $override_slug The filtered value of the slug (starts as `null` from `apply_filters()`).
-     * @param  string $desired_slug  The desired slug (post_name).
-     * @param  int    $post_ID       Post ID.
-     * @param  string $post_status   Post status.
-     * @param  string $post_type     Post type.
-     * @return string                The original or desired slug.
+     * @param string $override_slug The filtered value of the slug (starts as `null` from `apply_filters()`).
+     * @param string $desired_slug  The desired slug (post_name).
+     * @param int    $post_ID       Post ID.
+     * @param string $post_status   Post status.
+     * @param string $post_type     Post type.
+     * @return string The original or desired slug.
      */
     public function unique_template_slug($override_slug, $desired_slug, $post_ID, $post_status, $post_type)
     {
@@ -2943,8 +2972,8 @@ class PLL_FSE_Template_Slug_Sync extends \PLL_FSE_Abstract_Module implements \PL
      *
      * @since 3.2
      *
-     * @param  int     $post_ID       Post ID.
-     * @param  WP_Post $template_post Post object after being updated.
+     * @param int     $post_ID       Post ID.
+     * @param WP_Post $template_post Post object after being updated.
      * @return void
      */
     public function sync_template_slugs_on_post_update($post_ID, $template_post)
@@ -2955,7 +2984,7 @@ class PLL_FSE_Template_Slug_Sync extends \PLL_FSE_Abstract_Module implements \PL
      *
      * @since 3.2
      *
-     * @param  string $post_name The post name.
+     * @param string $post_name The post name.
      * @return string
      */
     private function remove_language_from_post_name($post_name)
@@ -2966,8 +2995,8 @@ class PLL_FSE_Template_Slug_Sync extends \PLL_FSE_Abstract_Module implements \PL
      *
      * @since 3.2
      *
-     * @param  string $post_name The post name.
-     * @param  string $lang_slug The lang code.
+     * @param string $post_name The post name.
+     * @param string $lang_slug The lang code.
      * @return string
      */
     private function add_language_to_post_name($post_name, $lang_slug)
@@ -2978,9 +3007,9 @@ class PLL_FSE_Template_Slug_Sync extends \PLL_FSE_Abstract_Module implements \PL
      *
      * @since 3.2
      *
-     * @param  int    $template_id   A template's ID.
-     * @param  string $lang_slug     A language slug.
-     * @param  string $fallback_slug Fallback slug to return if no template slug is found for the given language.
+     * @param int    $template_id   A template's ID.
+     * @param string $lang_slug     A language slug.
+     * @param string $fallback_slug Fallback slug to return if no template slug is found for the given language.
      * @return string
      */
     private function get_translation_slug($template_id, $lang_slug, $fallback_slug)
@@ -2990,11 +3019,12 @@ class PLL_FSE_Template_Slug_Sync extends \PLL_FSE_Abstract_Module implements \PL
      * Update a template's slug in the database.
      * Also clears the post's cache.
      *
-     * @since  3.2
+     * @since 3.2
+     *
      * @global wpdb $wpdb
      *
-     * @param  WP_Post $template_post A post ID.
-     * @param  string  $slug        The new slug.
+     * @param WP_Post $template_post A post ID.
+     * @param string  $slug        The new slug.
      * @return void
      */
     private function update_template_slug(\WP_Post $template_post, $slug)
@@ -3005,8 +3035,8 @@ class PLL_FSE_Template_Slug_Sync extends \PLL_FSE_Abstract_Module implements \PL
      *
      * @since 3.2
      *
-     * @param  array<int> $translations An associative array of translations with language code as key and
-     *                                  translation id as value.
+     * @param int[] $translations An associative array of translations with language code as key
+     *                            and translation id as value.
      * @return void
      */
     private function sync_translation_slugs(array $translations)
@@ -3017,10 +3047,10 @@ class PLL_FSE_Template_Slug_Sync extends \PLL_FSE_Abstract_Module implements \PL
      *
      * @since 3.2
      *
-     * @param  array<int> $translations An associative array of translations with language code as key and
-     *                                  translation id as value.
-     * @return array<WP_Post>           An associative array of translations with language code as key and
-     *                                  WP_Post object as value.
+     * @param int[] $translations An associative array of translations with language code as key
+     *                            and translation id as value.
+     * @return WP_Post[] An associative array of translations with language code as key
+     *                   and WP_Post object as value.
      */
     private function get_translation_posts(array $translations)
     {
@@ -3054,7 +3084,7 @@ class PLL_FSE_Template_Slug
     /**
      * The template slug after regex matching.
      *
-     * @var array<string> {
+     * @var string[] {
      *     @type string $slug The template slug without language suffix.
      *     @type string $lang The language slug.
      * }
@@ -3065,8 +3095,8 @@ class PLL_FSE_Template_Slug
      *
      * @since 3.2
      *
-     * @param  string        $slug       A template slug.
-     * @param  array<string> $lang_slugs List of language slugs to use.
+     * @param string   $slug       A template slug.
+     * @param string[] $lang_slugs List of language slugs to use.
      * @return void
      */
     public function __construct($slug, array $lang_slugs = array())
@@ -3117,8 +3147,8 @@ class PLL_FSE_Template_Slug
      *
      * @since 3.2
      *
-     * @param  string $language_slug A language slug.
-     * @return string                The template slug with its new language suffix.
+     * @param string $language_slug A language slug.
+     * @return string The template slug with its new language suffix.
      */
     public function update_language($language_slug)
     {
@@ -3157,7 +3187,7 @@ class PLL_FSE_Tools
      *
      * @since 3.2
      *
-     * @return array<string> Array keys and array values are identical.
+     * @return string[] Array keys and array values are identical.
      */
     public static function get_post_types()
     {
@@ -3167,7 +3197,7 @@ class PLL_FSE_Tools
      *
      * @since 3.2
      *
-     * @param  string $post_type A post type name.
+     * @param string $post_type A post type name.
      * @return bool
      */
     public static function is_template_post_type($post_type)
@@ -3178,7 +3208,7 @@ class PLL_FSE_Tools
      *
      * @since 3.2
      *
-     * @param  WP_Query $query Instance of `WP_Query`.
+     * @param WP_Query $query Instance of `WP_Query`.
      * @return bool
      */
     public static function is_template_query(\WP_Query $query)
@@ -3187,7 +3217,8 @@ class PLL_FSE_Tools
     /**
      * Returns the template post object currently being edited.
      *
-     * @since  3.2
+     * @since 3.2
+     *
      * @global WP_Post $post
      *
      * @return WP_Post|null
@@ -3200,8 +3231,8 @@ class PLL_FSE_Tools
      *
      * @since 3.2
      *
-     * @param  string $template_id   Template ID, in the form of `{themeSlug}//{templateSlug}`.
-     * @param  string $template_type Template type, either 'wp_template' or 'wp_template_part'.
+     * @param string $template_id   Template ID, in the form of `{themeSlug}//{templateSlug}`.
+     * @param string $template_type Template type, either 'wp_template' or 'wp_template_part'.
      * @return WP_Post|null
      */
     public static function get_post_from_template_id($template_id, $template_type)
@@ -3212,8 +3243,8 @@ class PLL_FSE_Tools
      *
      * @since 3.2
      *
-     * @param  string $template_id Template ID, in the form of `{themeSlug}//{templateSlug}`.
-     * @return array<string>       {
+     * @param string $template_id Template ID, in the form of `{themeSlug}//{templateSlug}`.
+     * @return string[] {
      *     An array containing the theme name and the template name. An empty array if the template ID is invalid.
      *
      *     @type string $theme The theme name (slug).
@@ -3228,9 +3259,9 @@ class PLL_FSE_Tools
      *
      * @since 3.2
      *
-     * @param  string $post_name  Post name (slug).
-     * @param  string $theme_name Theme name (slug).
-     * @param  string $post_type  Post type, either 'wp_template' or 'wp_template_part'.
+     * @param string $post_name  Post name (slug).
+     * @param string $theme_name Theme name (slug).
+     * @param string $post_type  Post type, either 'wp_template' or 'wp_template_part'.
      * @return WP_Post|null
      */
     public static function query_template_post($post_name, $theme_name, $post_type)
@@ -3239,7 +3270,8 @@ class PLL_FSE_Tools
     /**
      * Tells if we're in the site editor.
      *
-     * @since  3.2
+     * @since 3.2
+     *
      * @global string $pagenow
      *
      * @return bool
@@ -3251,7 +3283,6 @@ class PLL_FSE_Tools
 /**
  * @package Polylang-Pro
  */
-// phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 /**
  * Class PLL_DOM_Document
  *
@@ -3270,29 +3301,40 @@ class PLL_DOM_Document extends \DOMDocument
      */
     private $errors = array();
     /**
-     * Creates a PLL_DOM_Document instance from an XML string.
+     * Creates a PLL_DOM_Document instance from a XML string.
      *
      * @since 3.1
+     * @since 3.3 Added parameter $flags.
      *
      * @param string $xml      A XML valid string.
-     * @param string $version  Optional. XML version to use.
-     * @param string $encoding Optional. Encoding to use.
+     * @param string $version  Optional. XML version to use. Default is '1.0'.
+     * @param string $encoding Optional. Encoding to use. Default is 'UTF-8'.
+     * @param int    $flags    Optional. A series of libxml flags to parameterize the loading. Default is 0.
+     *                         {@link https://www.php.net/manual/en/libxml.constants.php}.
      * @return PLL_DOM_Document
      */
-    public static function from_xml($xml, $version = '1.0', $encoding = 'UTF-8')
+    public static function from_xml($xml, $version = '1.0', $encoding = 'UTF-8', $flags = 0)
     {
     }
     /**
-     * Creates a PLL_DOM_Document instance from an HTML string.
+     * Creates a PLL_DOM_Document instance from a HTML string.
      *
      * @since 3.1
+     * @since 3.3 Added parameters $version, $encoding, and $flags.
+     * @since 3.3 Doesn't format the output anymore.
+     * @since 3.3 Doesn't add the `<html>` and `<body>` tags by default anymore.
      *
      * Doctype declaration is disallowed for security reasons (XEE vulnerability).
      *
-     * @param string $html A HTML valid string.
+     * @param string $html     A HTML valid string.
+     * @param string $version  Optional. XML version to use. Default is '1.0'.
+     * @param string $encoding Optional. Encoding to use. Default is 'UTF-8'.
+     * @param int    $flags    Optional. A series of libxml flags to parameterize the loading.
+     *                         Default is `LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD`.
+     *                         {@link https://www.php.net/manual/en/libxml.constants.php}.
      * @return PLL_DOM_Document
      */
-    public static function from_html($html)
+    public static function from_html($html, $version = '1.0', $encoding = 'UTF-8', $flags = 0)
     {
     }
     /**
@@ -3357,6 +3399,186 @@ class PLL_DOM_Document extends \DOMDocument
      * @return bool
      */
     public function has_errors()
+    {
+    }
+    /**
+     * Returns the document's errors.
+     *
+     * @since 3.3
+     *
+     * @return LibXMLError[]
+     */
+    public function get_errors()
+    {
+    }
+}
+/**
+ * Export actions class file
+ *
+ * @package exportActions
+ */
+/**
+ * A class that handles export actions
+ *
+ * @file
+ *
+ * @since 3.3
+ */
+class PLL_Export_Bulk_Option extends \PLL_Bulk_Translate_Option
+{
+    /**
+     * Represents the current file or multiple files to export.
+     *
+     * @var PLL_Export_Multi_Files
+     */
+    protected $export;
+    /**
+     * Allows to add post data to exported file.
+     *
+     * @var PLL_Export_Post
+     */
+    protected $post;
+    /**
+     * Allows to add term data to exported file.
+     *
+     * @var PLL_Export_Terms
+     */
+    protected $term;
+    /**
+     * PLL_Export_Bulk_Option constructor.
+     *
+     * @since 3.3
+     *
+     * @param PLL_Model $model Used to query languages and post translations.
+     */
+    public function __construct($model)
+    {
+    }
+    /**
+     * Defines wether the export Bulk Translate option is available given the admin panel and user logged.
+     * Do not add the 'export' bulk translate option if LIBXML extension is not loaded, no matter the screen.
+     *
+     * @since 3.3
+     *
+     * @return bool
+     */
+    public function is_available()
+    {
+    }
+    /**
+     *
+     * Export post content for converter.
+     *
+     * @since 3.3
+     *
+     * @param int[]    $post_ids         The ids of the posts selected for export.
+     * @param string[] $target_languages The target languages.
+     *
+     * @throws Exception Exception.
+     *
+     * @return void|array {
+     *     array PLL_Bulk_Translate::ERROR Error notices to be displayed to the user when something wrong occurs when exporting.
+     * }
+     *
+     * @phpstan-param non-empty-array<int<1,max>> $post_ids
+     * @phpstan-param non-empty-array<string> $target_languages
+     * @phpstan-return void|array{
+     *     error: non-empty-array<0,string>
+     * }
+     */
+    public function do_bulk_action($post_ids, $target_languages)
+    {
+    }
+    /**
+     * Exports the posts with their related items and creates the files before redirecting.
+     *
+     * @since 3.3
+     *
+     * @param PLL_Export_Download_Zip $downloader       Handles the creation of a zip file containing the export.
+     * @param int[]                   $post_ids         The ids of the posts selected for export.
+     * @param string[]                $target_languages The target languages.
+     * @param array                   $args             {
+     *     Optional. A list of optional arguments.
+     *
+     *     @type bool $include_translated_items Tells if items that are already translated in the target languages must
+     *                                          also be exported. This applies only to linked items (like assigned
+     *                                          terms, items from reusable blocks, etc). Default is false.
+     * }
+     * @return void
+     *
+     * @phpstan-param array{include_translated_items?:bool} $args
+     */
+    protected function export(\PLL_Export_Download_Zip $downloader, array $post_ids, array $target_languages, array $args = array())
+    {
+    }
+    /**
+     * Get post data from id
+     *
+     * @since 3.3
+     *
+     * @param int    $post_id         The ID of the post to export.
+     * @param string $target_language Targeted languages.
+     *
+     * @throws Exception Exception.
+     */
+    public function translate($post_id, $target_language)
+    {
+    }
+    /**
+     * Groups `WP_Post` objects by their language.
+     *
+     * @since 3.3
+     *
+     * @param WP_Post[] $posts            An array of `WP_Post` objects to translate.
+     * @param string[]  $target_languages The target language slugs for translation.
+     * @return array[]                    An array, keyed with lang slugs, and containing arrays of `WP_Post` objects.
+     *
+     * @phpstan-return array<string, non-empty-array<int, WP_Post>>
+     */
+    protected function sort_posts_by_language(array $posts, array $target_languages)
+    {
+    }
+    /**
+     * Checks there is no ambiguity in the selected posts to export.
+     * Ambiguity happens when 2 posts that are translations of each other are selected to be translated.
+     *
+     * @since 3.3
+     *
+     * @param int[] $post_ids The ids of the posts selected for export.
+     * @return WP_Error|false An error if an ambiguity is found, false otherwise. The error message should not be
+     *                        escaped: it contains `<br>` tags and the texts are already escaped.
+     *
+     * @phpstan-param array<int<1,max>> $post_ids
+     */
+    protected function is_ambiguous(array $post_ids)
+    {
+    }
+    /**
+     * Find duplicate translations among the given list of post IDs.
+     *
+     * @since 3.3
+     *
+     * @param int[] $post_ids The ids of the posts selected for export.
+     * @return int[][] A list of arrays of post IDs.
+     *
+     * @phpstan-param array<int<1,max>> $post_ids
+     * @phpstan-return array<non-empty-array<int<1,max>>>
+     */
+    protected function find_duplicate_translations(array $post_ids)
+    {
+    }
+    /**
+     * Returns a list of post titles, given a list of post IDs.
+     *
+     * @since 3.3
+     *
+     * @param int[] $post_ids The ids of the posts selected for export.
+     * @return string[] An array of post titles, keyed by post ID.
+     *
+     * @phpstan-param array<int<1,max>> $post_ids
+     * @phpstan-return array<int<1,max>,string>
+     */
+    protected function get_post_titles(array $post_ids)
     {
     }
 }
@@ -3510,6 +3732,7 @@ interface PLL_Export_File_Interface
      * Adds a reference to the site from which the file has been exported.
      *
      * @since 2.7
+     * @since 3.3 Also adds a reference to the application that generated the export file (name + version).
      *
      * @param string $url Absolute URL of the current site exporting content.
      * @return void
@@ -3550,6 +3773,77 @@ abstract class PLL_Export_File implements \PLL_Export_File_Interface
      * @return string
      */
     public function get_filename()
+    {
+    }
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
+ * Abstract class to manage the export of metas.
+ *
+ * @since 3.3
+ */
+abstract class PLL_Export_Metas
+{
+    /**
+     * Meta type. Typically 'post' or 'term' and must be filled by the child class.
+     *
+     * @var string
+     */
+    protected $meta_type;
+    /**
+     * Import/Export meta type. {@see PLL_Import_Export::POST_META} or {@see PLL_Import_Export::POST_META} and must be filled by the child class.
+     *
+     * @var string
+     */
+    protected $import_export_meta_type;
+    /**
+     * Get the meta names to export.
+     *
+     * @since 3.3
+     *
+     * @return array List of custom fields names.
+     */
+    protected function get_meta_names_to_export()
+    {
+    }
+    /**
+     * Export metas to translate, along their translated values if possible.
+     *
+     * @since 3.3
+     *
+     * @param PLL_Export_Multi_Files $export The export file.
+     * @param int                    $from   Id of the source object.
+     * @param int                    $to     Id of the target object.
+     * @return PLL_Export_Multi_Files Export file with corresponding metas added.
+     */
+    public function export($export, $from, $to = 0)
+    {
+    }
+    /**
+     * Maybe exports metas sub fields recursively if the given meta values is contained in the fields to export.
+     *
+     * @since 3.3
+     *
+     * @param array                  $fields_to_export  A recursive array containing nested meta sub keys to translate.
+     *     @example array(
+     *        'sub_key_to_translate_1' => 1,
+     *        'sub_key_to_translate_2' => array(
+     *             'sub_sub_key_to_translate_1' => 1,
+     *         ),
+     *      ),
+     *    )
+     * @param string                 $parent_key_string A string containing parent keys separated with pipes. Each pipe
+     *                                                  in key should be escaped to avoid conflicts.
+     * @param int                    $index             Index of the current meta value. Usefull when a meta has several
+     *                                                  values.
+     * @param array|string           $source_metas      The source post metas.
+     * @param array|string           $tr_metas          The translated post metas.
+     * @param PLL_Export_Multi_Files $export            Represents the export file.
+     * @return bool True if the meta value has been exported, false otherwise.
+     */
+    protected function maybe_export_metas_sub_fields(array $fields_to_export, $parent_key_string, $index, $source_metas, $tr_metas, \PLL_Export_Multi_Files $export)
     {
     }
 }
@@ -3736,11 +4030,88 @@ class PLL_Export_Multi_Files implements \Iterator
      * Adds a reference to the site from which the file has been exported.
      *
      * @since 2.7
+     * @since 3.3 Also adds a reference to the application that generated the export file (name + version).
      *
      * @param string $url Absolute URL of the current site exporting content.
      * @return void
      */
     public function set_site_reference($url)
+    {
+    }
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
+ * Class PLL_Export_Post_Meta
+ *
+ * @since 3.3
+ */
+class PLL_Export_Post_Metas extends \PLL_Export_Metas
+{
+    /**
+     * Constructor.
+     *
+     * @since 3.3
+     */
+    public function __construct()
+    {
+    }
+    /**
+     * Get the meta names to export.
+     *
+     * @since 3.3
+     *
+     * @return string[] List of custom fields names.
+     */
+    protected function get_meta_names_to_export()
+    {
+    }
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
+ * Class PLL_Export_Post
+ *
+ * @since 3.3
+ */
+class PLL_Export_Post
+{
+    /**
+     * Allows to add post metas to export file.
+     *
+     * @var PLL_Export_Post_Metas
+     */
+    protected $post_meta;
+    /**
+     * A reference to the current PLL_Model.
+     *
+     * @var PLL_Model
+     */
+    protected $model;
+    /**
+     * PLL_Export_Post constructor.
+     *
+     * @since 3.3
+     *
+     * @param PLL_Model $model A reference to the current PLL_Model.
+     */
+    public function __construct($model)
+    {
+    }
+    /**
+     * Yield all the piece of information required for the translation
+     * and add them to the export file.
+     *
+     * @since 3.3
+     *
+     * @param PLL_Export_Multi_Files $export          The export file.
+     * @param int                    $post_id         The post id.
+     * @param string                 $target_language Targeted languages.
+     * @return PLL_Export_Multi_Files The given export file with added data.
+     */
+    public function export($export, $post_id, $target_language)
     {
     }
 }
@@ -3826,6 +4197,73 @@ class PLL_Export_Strings_Translations
  * @package Polylang-Pro
  */
 /**
+ * Class PLL_Export_Term_Metas
+ *
+ * @since 3.3
+ */
+class PLL_Export_Term_Metas extends \PLL_Export_Metas
+{
+    /**
+     * Constructor.
+     *
+     * @since 3.3
+     */
+    public function __construct()
+    {
+    }
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
+ *
+ * Class that send the taxonomies that will be exported.
+ *
+ * @since 3.3
+ */
+class PLL_Export_Terms
+{
+    /**
+     * Used to query languages and translations.
+     *
+     * @var PLL_Model
+     */
+    private $model;
+    /**
+     * Term Metas
+     *
+     * @var PLL_Export_Term_Metas
+     */
+    private $term_metas;
+    /**
+     * Constructor.
+     *
+     * @since 3.3
+     *
+     * @param PLL_Model $model Needed to access the translated taxonomies list.
+     */
+    public function __construct($model)
+    {
+    }
+    /**
+     *
+     * Export taxonomy terms.
+     *
+     * @since 3.3
+     *
+     * @param PLL_Export_Multi_Files $export          Represent export file.
+     * @param WP_Term[]              $terms           A list of term objects.
+     * @param PLL_Language           $target_language Language of the translated post.
+     * @return PLL_Export_Multi_Files
+     */
+    public function export(\PLL_Export_Multi_Files $export, array $terms, \PLL_Language $target_language)
+    {
+    }
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
  * Class PLL_File_Format_Factory
  *
  * @since 3.1
@@ -3837,7 +4275,9 @@ class PLL_File_Format_Factory
     /**
      * Names of child classes of {@see PLL_File_Format}.
      *
-     * @var array<class-string<PLL_File_Format>>
+     * @var string[]
+     *
+     * @phpstan-var array<class-string<PLL_File_Format>>
      */
     protected $base_formats = array(\PLL_PO_Format::class, \PLL_Xliff_Format::class);
     /**
@@ -3956,6 +4396,12 @@ class PLL_Import_Export
     const POST_META = 'postmeta';
     const STRINGS_TRANSLATIONS = 'strings-translations';
     /**
+     * Name of the app that generates the export files.
+     *
+     * @var string
+     */
+    const APP_NAME = 'Polylang';
+    /**
      * @since 2.7
      *
      * @var PLL_Model
@@ -3969,6 +4415,12 @@ class PLL_Import_Export
      * @var array
      */
     private $options;
+    /**
+     * Reference to the instance of PLL_Bulk_Translate
+     *
+     * @var PLL_Bulk_Translate
+     */
+    private $bulk_translate;
     /**
      * The class that handles user's import actions.
      *
@@ -3984,6 +4436,16 @@ class PLL_Import_Export
      * @param PLL_Base $polylang Current instance of the Polylang context.
      */
     public function __construct(&$polylang)
+    {
+    }
+    /**
+     * Adds 'export' bulk option in Translate bulk action {@see PLL_Bulk_Translate::register_options()}
+     *
+     * @since 2.7
+     *
+     * @return void
+     */
+    public function add_bulk_export()
     {
     }
     /**
@@ -4106,7 +4568,7 @@ class PLL_Import_Action
     /**
      * The various import types.
      *
-     * @var array<PLL_Import_Object_Interface>
+     * @var PLL_Import_Object_Interface[]
      */
     private $imports;
     /**
@@ -4115,8 +4577,8 @@ class PLL_Import_Action
      * @since 2.7
      * @since 3.3 Add $imports parameter to handle the various import types.
      *
-     * @param PLL_Model                          $model    Instance of PLL_Model.
-     * @param array<PLL_Import_Object_Interface> $imports  The import types.
+     * @param PLL_Model                     $model   Instance of PLL_Model.
+     * @param PLL_Import_Object_Interface[] $imports The import types.
      */
     public function __construct($model, $imports)
     {
@@ -4153,6 +4615,17 @@ class PLL_Import_Action
     {
     }
     /**
+     * Check if the import file has been generated by Polylang Pro.
+     *
+     * @since 3.3
+     *
+     * @param PLL_Import_File_Interface $import Import file.
+     * @return true|WP_Error
+     */
+    public function is_valid_generator($import)
+    {
+    }
+    /**
      * Check if the targeted language is valid for the import.
      *
      * @since 3.3
@@ -4186,15 +4659,6 @@ interface PLL_Import_File_Interface
      */
     public function import_from_file($filepath);
     /**
-     *
-     * Get the language of the source
-     *
-     * @since 2.7
-     *
-     * @return string|false
-     */
-    public function get_source_language();
-    /**
      * Get the target language
      *
      * @since 2.7
@@ -4218,6 +4682,23 @@ interface PLL_Import_File_Interface
      * @return string|false
      */
     public function get_site_reference();
+    /**
+     * Returns the name of the application that generated the file.
+     *
+     * @since 3.3
+     *
+     * @return string The application name. An empty string if it couldn't be found.
+     */
+    public function get_generator_name();
+    /**
+     * Returns the version of the application that generated the file.
+     *
+     * @since 3.3
+     *
+     * @return string The application version. An empty string if it couldn't be found or the name of the application.
+     *                couldn't be found.
+     */
+    public function get_generator_version();
 }
 /**
  * @package Polylang-Pro
@@ -4260,6 +4741,147 @@ interface PLL_Import_Object_Interface
      * @return WP_Error
      */
     public function get_warning_notice();
+    /**
+     * Returns the object type.
+     *
+     * @since 3.3
+     *
+     * @return string
+     */
+    public function get_type();
+    /**
+     * Returns the imported object ids.
+     *
+     * @since 3.3
+     *
+     * @return array
+     */
+    public function get_imported_object_ids();
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
+ * A class to handle posts import.
+ *
+ * @since 3.3
+ */
+class PLL_Import_Posts implements \PLL_Import_Object_Interface
+{
+    /**
+     * Handle translation of posts
+     *
+     * @var PLL_Translation_Post_Model
+     */
+    protected $translation_post_model;
+    /**
+     * The success counter.
+     *
+     * @var int
+     */
+    protected $success;
+    /**
+     * The posts status to import with.
+     *
+     * @var string
+     */
+    private $post_status;
+    /**
+     * The non existing post ids for the warning.
+     *
+     * @var int[]
+     */
+    protected $non_existing_post_ids = array();
+    /**
+     * The imported source post ids.
+     *
+     * @var int[]
+     */
+    protected $post_ids = array();
+    /**
+     * Constructor
+     *
+     * @since 3.3
+     *
+     * @param PLL_Translation_Post_Model $translation_post_model The PLL_Translation_Post_Model object.
+     */
+    public function __construct($translation_post_model)
+    {
+    }
+    /**
+     * Handles the import of posts.
+     *
+     * @since 3.3
+     *
+     * @param array        $entry           The current entry to import.
+     * @param PLL_Language $target_language The targeted language for import.
+     */
+    public function translate($entry, $target_language)
+    {
+    }
+    /**
+     * Performs actions on imported posts.
+     * Translates posts parent.
+     *
+     * @since 3.3
+     *
+     * @param PLL_Language $target_language The targeted language for import.
+     * @param int[]        $post_ids        The imported post ids of the import.
+     * @return void
+     */
+    public function process_translated_post($target_language, $post_ids)
+    {
+    }
+    /**
+     * Retrieves the status for the imported posts in the HTTP request.
+     *
+     * @since 3.3
+     *
+     * @return string The post status, publish or draft.
+     */
+    protected function get_post_status()
+    {
+    }
+    /**
+     * Get update notices to display.
+     *
+     * @since 3.3
+     *
+     * @return WP_Error
+     */
+    public function get_updated_notice()
+    {
+    }
+    /**
+     * Get warnings notices to display.
+     *
+     * @since 3.3
+     *
+     * @return WP_Error
+     */
+    public function get_warning_notice()
+    {
+    }
+    /**
+     * Returns the object type.
+     *
+     * @since 3.3
+     *
+     * @return string
+     */
+    public function get_type()
+    {
+    }
+    /**
+     * Returns the imported post ids.
+     *
+     * @since 3.3
+     *
+     * @return int[]
+     */
+    public function get_imported_object_ids()
+    {
+    }
 }
 /**
  * @package Polylang-Pro
@@ -4278,11 +4900,11 @@ class PLL_Import_Strings implements \PLL_Import_Object_Interface
      */
     protected $success;
     /**
-     * The strings that couldn't be imported due to warnings.
+     * The imported source string.
      *
      * @var string[]
      */
-    protected $non_imported_strings = array();
+    protected $imported_strings = array();
     /**
      * Handles the import of strings translations.
      *
@@ -4329,6 +4951,129 @@ class PLL_Import_Strings implements \PLL_Import_Object_Interface
      * @return WP_Error
      */
     public function get_warning_notice()
+    {
+    }
+    /**
+     * Returns the object type.
+     *
+     * @since 3.3
+     *
+     * @return string
+     */
+    public function get_type()
+    {
+    }
+    /**
+     * Returns the imported source strings as ids.
+     *
+     * @since 3.3
+     *
+     * @return string[]
+     */
+    public function get_imported_object_ids()
+    {
+    }
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
+ * A class to handle terms import.
+ *
+ * @since 3.3
+ */
+class PLL_Import_Terms implements \PLL_Import_Object_Interface
+{
+    /**
+     * Handle translation of terms
+     *
+     * @var PLL_Translation_Term_Model
+     */
+    private $translation_term_model;
+    /**
+     * The success counter.
+     *
+     * @var int
+     */
+    protected $success;
+    /**
+     * The imported source term ids.
+     *
+     * @var int[]
+     */
+    protected $term_ids = array();
+    /**
+     * Constructor.
+     *
+     * @since 3.3
+     *
+     * @param PLL_Translation_Term_Model $translation_term_model The PLL_Translation_Term_Model object.
+     */
+    public function __construct($translation_term_model)
+    {
+    }
+    /**
+     * Handles the import of terms.
+     *
+     * @since 3.3
+     *
+     * @param array        $entry           The current entry to import.
+     * @param PLL_Language $target_language The targeted language for import.
+     */
+    public function translate($entry, $target_language)
+    {
+    }
+    /**
+     * Performs actions on imported terms.
+     * Translates terms parent.
+     *
+     * @since 3.3
+     *
+     * @param PLL_Language $target_language The targeted language for import.
+     * @param int[]        $term_ids        The imported term ids of the import.
+     * @return void
+     */
+    public function process_translated_terms($target_language, $term_ids)
+    {
+    }
+    /**
+     * Get update notices to display.
+     *
+     * @since 3.3
+     *
+     * @return WP_Error
+     */
+    public function get_updated_notice()
+    {
+    }
+    /**
+     * Get warnings notices to display.
+     *
+     * @since 3.3
+     *
+     * @return WP_Error
+     */
+    public function get_warning_notice()
+    {
+    }
+    /**
+     * Returns the object type.
+     *
+     * @since 3.3
+     *
+     * @return string
+     */
+    public function get_type()
+    {
+    }
+    /**
+     * Returns the imported term ids.
+     *
+     * @since 3.3
+     *
+     * @return int[]
+     */
+    public function get_imported_object_ids()
     {
     }
 }
@@ -4480,6 +5225,7 @@ class PLL_PO_Export extends \PLL_Export_File
      * Set the site reference to the export.
      *
      * @since 2.7
+     * @since 3.3 Also adds a reference to the application that generated the export file (name + version).
      *
      * @param string $url Absolute url of the current site.
      * @return void
@@ -4652,17 +5398,6 @@ class PLL_PO_Import implements \PLL_Import_File_Interface
     {
     }
     /**
-     * Get the source language
-     *
-     * @since 2.7
-     * @since 3.1 Renamed from PLL_PO_Import::get_source_lang()
-     *
-     * @return string|false
-     */
-    public function get_source_language()
-    {
-    }
-    /**
      * Get the target language
      *
      * @since 2.7
@@ -4683,6 +5418,27 @@ class PLL_PO_Import implements \PLL_Import_File_Interface
     {
     }
     /**
+     * Returns the reference to the name of the application that generated the file.
+     *
+     * @since 3.3
+     *
+     * @return string The application name. An empty string if it couldn't be found.
+     */
+    public function get_generator_name()
+    {
+    }
+    /**
+     * Returns the reference to the version of the application that generated the file.
+     *
+     * @since 3.3
+     *
+     * @return string The application version. An empty string if it couldn't be found or the name of the application.
+     *                couldn't be found.
+     */
+    public function get_generator_version()
+    {
+    }
+    /**
      * Get the next string translation to import.
      *
      * @since 2.7
@@ -4690,6 +5446,1509 @@ class PLL_PO_Import implements \PLL_Import_File_Interface
      * @return array
      */
     public function get_next_entry()
+    {
+    }
+    /**
+     * Returns the reference to the application that generated the file (name + version).
+     *
+     * @since 3.3
+     *
+     * @return array {
+     *     An array containing the application's name and version.
+     *
+     *     @type string $name    The application's name.
+     *     @type string $version The application's version.
+     * }
+     *
+     * @phpstan-return array{name:string,version:string}
+     */
+    private function get_generator()
+    {
+    }
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
+ * A Service to collect linked post ids.
+ *
+ * @since 3.3
+ */
+class PLL_Collect_Linked_Posts
+{
+    /**
+     * Stores the plugin options.
+     *
+     * @var array
+     */
+    protected $options;
+    /**
+     * PLL_Collect_Linked_Posts constructor.
+     *
+     * @since 3.3
+     *
+     * @param array $options The plugin options.
+     */
+    public function __construct($options)
+    {
+    }
+    /**
+     * Gets all the post ids linked to a set of posts.
+     *
+     * @since 3.3
+     *
+     * @param int[] $post_ids An array of post ids.
+     * @return int[] An array of linked post ids.
+     */
+    public function get_linked_post_ids($post_ids)
+    {
+    }
+    /**
+     * Gets the post ids from a post, wether it's classic or block edited.
+     *
+     * @since 3.3
+     *
+     * @param WP_Post $post A given WP_Post object.
+     * @return int[] An array of post ids.
+     */
+    protected function get_post_ids_from_post($post)
+    {
+    }
+    /**
+     * Gets the post ids from block type content.
+     *
+     * @since 3.3
+     *
+     * @param string $post_content The content of the post.
+     * @return int[] An array of post ids.
+     */
+    protected function get_post_ids_from_block_content($post_content)
+    {
+    }
+    /**
+     * Gets the post ids from blocks.
+     *
+     * @since 3.3
+     *
+     * @param array $blocks An array of blocks.
+     * @return int[] An array of post ids.
+     */
+    protected function get_post_ids_from_blocks_deep($blocks)
+    {
+    }
+    /**
+     * Gets the media ids from a block.
+     *
+     * @since 3.3
+     *
+     * @param array $block A representative array of a block.
+     * @return int[] An array of media ids, empty if none found.
+     */
+    protected function get_media_ids_from_block($block)
+    {
+    }
+    /**
+     * Gets the media ids from classic type content.
+     *
+     * @since 3.3
+     *
+     * @param string $post_content The content of the post.
+     * @return int[]
+     */
+    protected function get_medias_from_html_content($post_content)
+    {
+    }
+    /**
+     * Gets media ids from shortcodes.
+     *
+     * @since 3.3
+     *
+     * @param string $post_content The content of the required post.
+     * @return int[] The media ids.
+     */
+    protected function get_medias_from_shortcodes($post_content)
+    {
+    }
+    /**
+     * Gets media ids from img tags
+     *
+     * @since 3.3
+     *
+     * @param string $post_content The content of the post to search from.
+     * @return int[] An array of media ids (empty if no media is found).
+     */
+    protected function get_medias_from_img_tags($post_content)
+    {
+    }
+    /**
+     * Gets id from a reusable block.
+     * Also recursively get contained reusable block ids.
+     *
+     * @since 3.3
+     *
+     * @param array $block An array containing block data.
+     * @return int[] An array of reusable block ids, empty if none found.
+     */
+    protected function get_reusable_block_ids($block)
+    {
+    }
+    /**
+     * Returns the ID from a navigation block.
+     *
+     * @since 3.3
+     *
+     * @param array $block An array containing block data.
+     * @return int[] An array of navigation post IDs, empty if none found.
+     */
+    protected function get_navigation_block_ids($block)
+    {
+    }
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
+ * A Service to collect linked terms.
+ *
+ * @since 3.3
+ */
+class PLL_Collect_Linked_Terms
+{
+    /**
+     * Stores the ID's of the posts that have been parsed already.
+     * The idea is to prevent processing the same posts several times via the reusable block, or worse, infinite loops.
+     *
+     * @var int[]
+     * @phpstan-var array<int, int>
+     */
+    protected $processed_posts = array();
+    /**
+     * Gets all the term objects linked to a set of posts.
+     *
+     * @since 3.3
+     *
+     * @param  WP_Post[] $posts      An array of post objects.
+     * @param  string[]  $taxonomies Optional. Terms will be limited to the given taxonomies.
+     * @return WP_Term[]             An array of linked term objects.
+     */
+    public function get_linked_terms(array $posts, array $taxonomies = array())
+    {
+    }
+    /**
+     * Returns all the term IDs linked in a post.
+     *
+     * @since 3.3
+     *
+     * @param WP_Post $post A given WP_Post object.
+     * @return int[] An array of term IDs.
+     * @phpstan-return array<int<0, max>, positive-int>
+     */
+    protected function get_term_ids_from_post(\WP_Post $post)
+    {
+    }
+    /**
+     * Returns the term IDs from block type content.
+     *
+     * @since 3.3
+     *
+     * @param string $post_content The content of the post.
+     * @return int[] An array of term IDs.
+     *
+     * @phpstan-return array<int<0, max>, positive-int>
+     */
+    protected function get_term_ids_from_block_content($post_content)
+    {
+    }
+    /**
+     * Returns the term IDs from blocks.
+     *
+     * @since 3.3
+     *
+     * @param array[] $blocks An array of blocks.
+     * @return int[] An array of term IDs.
+     *
+     * @phpstan-return array<int<0, max>, positive-int>
+     */
+    protected function get_term_ids_from_blocks(array $blocks)
+    {
+    }
+    /**
+     * Returns the term IDs from a block.
+     *
+     * @since 3.3
+     *
+     * @param array $block A representative array of a block.
+     * @return int[] An array of term IDs.
+     *
+     * @phpstan-return array<int<0, max>, positive-int>
+     */
+    protected function get_term_ids_from_block(array $block)
+    {
+    }
+    /**
+     * Returns the term IDs from a reusable block.
+     *
+     * @since 3.3
+     *
+     * @param array $block A representative array of a block.
+     * @return int[] An array of term IDs.
+     *
+     * @phpstan-return array<int<0, max>, positive-int>
+     */
+    protected function get_term_ids_from_reusable_block(array $block)
+    {
+    }
+    /**
+     * Returns the term IDs from a latest posts block.
+     *
+     * @since 3.3
+     *
+     * @param array $block A representative array of a block.
+     * @return int[] An array of term IDs.
+     *
+     * @phpstan-return array<int<0, max>, positive-int>
+     */
+    protected function get_term_ids_from_latest_posts_block(array $block)
+    {
+    }
+    /**
+     * Returns the term IDs from a query block.
+     *
+     * @since 3.3
+     *
+     * @param array $block A representative array of a block.
+     * @return int[] An array of term IDs.
+     *
+     * @phpstan-return array<int<0, max>, positive-int>
+     */
+    protected function get_term_ids_from_query_block(array $block)
+    {
+    }
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
+ * A Service to manage current user capabilities.
+ *
+ * @since 3.3
+ */
+class PLL_Manage_User_Capabilities
+{
+    /**
+     * Removes the 'unfiltered_html' capability from the current user.
+     *
+     * @since 3.3
+     *
+     * @param WP_Post $source_post The source post about to be translated.
+     * @return void
+     */
+    public function forbid_unfiltered_html($source_post)
+    {
+    }
+    /**
+     * Sets 'unfiltered_html' capability to default for users.
+     *
+     * @since 3.3
+     *
+     * @return void
+     */
+    public function allow_unfiltered_html()
+    {
+    }
+    /**
+     * Disallows 'unfiltered_html' capability.
+     *
+     * @since 3.3
+     *
+     * @param string[] $caps Primitive capabilities required of the user.
+     * @param string   $cap  Capability being checked.
+     * @return string[] Filtered primitive capabilities.
+     */
+    public function remove_unfiltered_html_cap($caps, $cap)
+    {
+    }
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
+ * Provides a few tools to manipulate content by using `DOMDocument`.
+ *
+ * @since 3.3
+ */
+class PLL_DOM_Content
+{
+    /**
+     * The content to work with.
+     *
+     * @var string
+     */
+    private $content;
+    /**
+     * The site's charset.
+     *
+     * @var string
+     */
+    private $charset;
+    /**
+     * Placeholder used in {@see PLL_DOM_Content::replace_content()}.
+     *
+     * @var string
+     * @phpstan-var non-empty-string
+     */
+    private $placeholder;
+    /**
+     * Constructor.
+     *
+     * @since 3.3
+     *
+     * @param string $content The content to work with.
+     */
+    public function __construct($content)
+    {
+    }
+    /**
+     * Extracts strings from content, given a list of parsing rules.
+     *
+     * @since 3.3
+     *
+     * @uses DOMXPath
+     *
+     * @param string[] $rules Parsing rules. Ex: `[ '//figure/img/@alt' ]`.
+     * @return string[] Path to matching nodes as array keys, extracted strings as array values.
+     *                  Ex: `[ '/figure/img[1]/@alt' => 'Image alt text.' ]`.
+     *
+     * @phpstan-return array<string,string>
+     */
+    public function get_strings(array $rules)
+    {
+    }
+    /**
+     * Replaces strings in the content, given a list of parsing rules.
+     *
+     * @since 3.3
+     *
+     * @uses DOMXPath
+     *
+     * @param string[] $new_strings Path to matching nodes as array keys, new strings as array values.
+     *                              Ex: `[ '/figure/img[1]/@alt' => 'New image alt text.' ]`.
+     * @return string Content with replaced strings.
+     *
+     * @phpstan-param array<string,string> $new_strings
+     */
+    public function replace_content(array $new_strings)
+    {
+    }
+    /**
+     * Returns the first `DOMNode` element from a `DOMNodeList`.
+     *
+     * @since 3.3
+     *
+     * @param DOMNodeList $node_list A `DOMNodeList` element.
+     * @return DOMNode|null A `DOMNode` element, or null if no elements have been found.
+     */
+    private function get_first_dom_node(\DOMNodeList $node_list)
+    {
+    }
+    /**
+     * Returns a node's content.
+     * If the node is an attribute, the attribute's value is returned.
+     * If the node is a tag, the tag's HTML is returned.
+     *
+     * @since 3.3
+     *
+     * @param DOMNode $node A node.
+     * @return string
+     */
+    private function get_node_content(\DOMNode $node)
+    {
+    }
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
+ * Holds the rules defining which part of a block should be "translated".
+ * Translated may mean different actions, like exporting it into a translation file, or updating the database...
+ *
+ * @since 3.3
+ */
+class PLL_Translation_Block_Parsing_Rules
+{
+    /**
+     * Caches values about parsable and non-parsable blocks.
+     *
+     * @var array
+     * @phpstan-var array<string,mixed>
+     */
+    private $cache = array();
+    /**
+     * Holds some rules for block attributes to translate.
+     * Keep this list alphabetically sorted when adding entries.
+     *
+     * @var string[][]
+     * @phpstan-var array<string,array<string>>
+     */
+    private $parsing_rules_attributes = array('core/more' => array('customText'), 'core/navigation-link' => array('description'), 'core/post-navigation-link' => array('label'), 'core/read-more' => array('content'), 'core/search' => array('label', 'placeholder', 'buttonText'));
+    /**
+     * Holds some rules as Xpath expressions to evaluate in the blocks content.
+     * Keep this list alphabetically sorted when adding entries.
+     *
+     * @var string[][]
+     * @phpstan-var array<string,array<string>>
+     */
+    private $parsing_rules = array('core/audio' => array('//figure/figcaption'), 'core/button' => array('//a', '//a/@href'), 'core/cover' => array('//div/p'), 'core/cover-image' => array('//div/p'), 'core/embed' => array('//figure/figcaption'), 'core/file' => array('//div/a'), 'core/gallery' => array('//figure/figcaption', '//figure/img/@alt'), 'core/heading' => array('//*[self::h1 or self::h2 or self::h3 or self::h4 or self::h5 or self::h6]'), 'core/image' => array('//figure/figcaption', '//figure/img/@alt|//figure/a/img/@alt', '//figure/img/@title|//figure/a/img/@title', '//figure/a/@href'), 'core/list' => array('//ul/li|//ol/li'), 'core/media-text' => array('//figure/img/@alt'), 'core/paragraph' => array('//p'), 'core/preformatted' => array('//pre'), 'core/pullquote' => array('//blockquote/p', '//blockquote/cite'), 'core/quote' => array('//blockquote/p', '//blockquote/cite'), 'core/subhead' => array('//p'), 'core/table' => array('//th', '//td', '//figure/figcaption'), 'core/text-columns' => array('//div[@class="wp-block-column"]'), 'core/verse' => array('//pre'), 'core/video' => array('//figure/figcaption'));
+    /**
+     * List of known blocks that don't need to be parsed, because they don't contain contents to be translated.
+     * Though, they may contain blocks that need to be parsed.
+     * Keep this list alphabetically sorted when adding entries.
+     *
+     * @var string[]
+     */
+    private $blocks_not_to_parse = array('core/buttons', 'core/code', 'core/column', 'core/columns', 'core/group', 'core/nextpage', 'core/separator', 'core/shortcode', 'core/spacer');
+    /**
+     * Holds the name of the block type being currently parsed.
+     *
+     * @var string $block_type Similar to {@see WP_Block_Parser_Block::$blockName}.
+     */
+    private $block_type;
+    /**
+     * Only keeps the rules matching a certain block type.
+     *
+     * @since 3.3
+     *
+     * @param string $block_type {@see WP_Block_Parser_Block::$blockName}.
+     * @return PLL_Translation_Block_Parsing_Rules $this This object with its $rules property updated.
+     */
+    public function set_block_name($block_type)
+    {
+    }
+    /**
+     * Extracts translatable parts from the block content.
+     * Returns an empty array if the parsing rules are not defined.
+     *
+     * @since 3.3
+     *
+     * @param string $content {@see WP_Block_Parser_Block::$innerContent}.
+     * @return string[] Parsing rules as array keys, strings to translate as array values.
+     *
+     * @phpstan-return array<string,string>
+     */
+    public function parse($content)
+    {
+    }
+    /**
+     * Tells if a block should be parsed using Xpath rules.
+     *
+     * @since 3.3
+     *
+     * @param array $block An array mimicking a {@see WP_Block_Parser_Block}.
+     * @return bool
+     */
+    public function has_parsing_rules($block)
+    {
+    }
+    /**
+     * Tells if a block needs to be parsed, because it contains contents to be translated.
+     * Though, even if not, it may contain blocks that need to be parsed.
+     *
+     * @since 3.3
+     *
+     * @param array $block An array mimicking a {@see WP_Block_Parser_Block}.
+     * @return bool
+     */
+    public function should_be_parsed($block)
+    {
+    }
+    /**
+     * Returns the rules as Xpath expressions to evaluate in the blocks content.
+     *
+     * @since 3.3
+     *
+     * @param string|null $block_name Optional. The block name we want to get the parsing rules for.
+     *                                Only necessary for back-compatibility with the old `core-embed/` blocks.
+     * @return string[][]
+     *
+     * @phpstan-return array<string,array<string>>
+     */
+    private function get_parsing_rules($block_name = \null)
+    {
+    }
+    /**
+     * Returns the rules for the attributes to translate.
+     *
+     * @since 3.3
+     *
+     * @return string[][]
+     *
+     * @phpstan-return array<string,array<string>>
+     */
+    private function get_parsing_rules_for_attributes()
+    {
+    }
+    /**
+     * Returns the list of blocks not to parse.
+     *
+     * @since 3.3
+     *
+     * @return string[]
+     */
+    private function get_blocks_not_to_parse()
+    {
+    }
+    /**
+     * Checks if a block has translatable attributes (or not) and returns them.
+     *
+     * @since 3.3
+     *
+     * @param array $block An array mimicking a {@see WP_Block_Parser_Block}.
+     * @return string[] An array with attributes to translate or an empty array.
+     *
+     * @phpstan-return array<string,string>
+     */
+    public function get_attributes_to_translate($block)
+    {
+    }
+}
+/**
+ * Class PLL_Translation_Content
+ *
+ * @package polylang-pro
+ */
+/**
+ * Translates content.
+ *
+ * @since 3.3
+ */
+class PLL_Translation_Content
+{
+    /**
+     * The translations used to transform the content.
+     *
+     * @since 3.3
+     *
+     * @var Translations
+     */
+    private $translations;
+    /**
+     * Setter
+     *
+     * @since 3.3
+     *
+     * @param Translations $translations Used to translate the content.
+     * @return void
+     */
+    public function set_translations($translations)
+    {
+    }
+    /**
+     * Translates the original's post title.
+     *
+     * @since 3.3
+     *
+     * @param string $from_post The post_content field of the original WP_Post.
+     * @return string
+     */
+    public function translate_title($from_post)
+    {
+    }
+    /**
+     * Uses a {@see PLL_Translation_Walker_Interface} subclass to iterate over each translatable part of the passed content, and applies a transformation callback to it. Then returns the transformed content.
+     *
+     * @since 3.3
+     *
+     * @param string $content The post_content field of the original WP_Post.
+     * @return string
+     */
+    public function translate_content($content)
+    {
+    }
+    /**
+     * Translates the original post's excerpt.
+     *
+     * @since 3.3
+     *
+     * @param string $post_excerpt The post_excerpt field of the original WP_Post.
+     * @return string
+     */
+    public function translate_excerpt($post_excerpt)
+    {
+    }
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
+ * Class PLL_Translation_Entry_Identified
+ *
+ * Extends Translation_Entry to allow the identification of the entry through the 'id' property.
+ */
+class PLL_Translation_Entry_Identified extends \Translation_Entry
+{
+    /**
+     * Uniquely identifies the translation, whether its string has changed or not.
+     *
+     * @var string $id
+     */
+    protected $id;
+    /**
+     * PLL_Translation_Entry_Identified constructor.
+     * Identify the translation entry automatically.
+     *
+     * @see https://developer.wordpress.org/reference/classes/translation_entry/
+     *
+     * @since 3.3
+     *
+     * @param array $entry A translation entry arguments. Default: empty array.
+     */
+    public function __construct($entry = array())
+    {
+    }
+    /**
+     * Returns the identifier of the entry.
+     *
+     * @since 3.3
+     *
+     * @return string
+     */
+    public function get_id()
+    {
+    }
+}
+/**
+ * Class PLL_Translation_Metas
+ *
+ * @package polylang-pro
+ */
+/**
+ * Abstract class to manage the import of metas.
+ *
+ * @since 3.3
+ */
+abstract class PLL_Translation_Metas
+{
+    /**
+     * Meta type. Typically 'post' or 'term' and must be filled by the child class.
+     *
+     * @var string
+     */
+    protected $meta_type;
+    /**
+     * The context to translate entry.
+     *
+     * @var string
+     */
+    protected $context;
+    /**
+     * Translations set where to look for the post metas translations.
+     *
+     * @var PLL_Translations_Identified
+     */
+    protected $translations;
+    /**
+     * Object to manage copied metas during import.
+     *
+     * @var PLL_Sync_Metas
+     */
+    protected $sync_metas;
+    /**
+     * Array containing meta keys to translate.
+     *
+     * @var array[] {
+     *     A list of arrays described as follow:
+     *
+     *     @type string   $meta_key       The name of the meta.
+     *     @type string[] $meta_sub_keys  The meta sub-fields to translate.
+     *     @type int      $value_position The position of the value in case of multiple values.
+     * }
+     * @phpstan-var array<int, array{meta_key: string, meta_sub_keys: array<int, string>, value_position: int}>
+     */
+    protected $metas_to_translate;
+    /**
+     * Constructor.
+     *
+     * @since 3.3
+     *
+     * @param PLL_Sync_Metas $sync_metas Object to manage copied metas during import.
+     */
+    public function __construct(\PLL_Sync_Metas $sync_metas)
+    {
+    }
+    /**
+     * Translates the metas from a given object, whether it's a copy or a real translation.
+     *
+     * @since 3.3
+     *
+     * @param int          $src_object_id   Source object to get the metas from.
+     * @param int          $tr_object_id    Translated object to translate the metas from.
+     * @param PLL_Language $target_language Target language object.
+     * @param bool         $copy            Whether to copy source metas. For instance, if the translation is updated, there is no need to copy source metas.
+     * @return void
+     */
+    public function translate($src_object_id, $tr_object_id, \PLL_Language $target_language, $copy)
+    {
+    }
+    /**
+     * Setter for translations.
+     * Translations of the matching context are sanitized.
+     *
+     * @since 3.3
+     *
+     * @param PLL_Translations_Identified $translations A set of translations to search the metas translations in.
+     * @return void
+     */
+    public function set_translations(\PLL_Translations_Identified $translations)
+    {
+    }
+    /**
+     * Removes meta keys to translate from an array of meta to copy.
+     *
+     * @since 3.3
+     *
+     * @param string[] $meta_keys Meta keys to copy.
+     * @return string[] Filtered array of meta to copy.
+     */
+    public function remove_metas_to_translate($meta_keys)
+    {
+    }
+    /**
+     * Translates metas values.
+     *
+     * @since 3.3
+     *
+     * @param int $src_object_id Source object id.
+     * @param int $tr_object_id  Translated object id.
+     * @return void
+     */
+    private function translate_metas_values($src_object_id, $tr_object_id)
+    {
+    }
+    /**
+     * Inserts the translated metas into the database and
+     * takes care to add multiples meta values if needed.
+     * Note that if a meta has several values that aren't scalar,
+     * they won't be inserted in the database to avoid to
+     * delete potential useful data.
+     *
+     * @since 3.3
+     *
+     * @param int   $tr_object_id Translated object id.
+     * @param array $tr_metas     Translated metas value(s).
+     * @return void
+     */
+    private function insert_translated_metas($tr_object_id, array $tr_metas)
+    {
+    }
+    /**
+     * Returns the metas to translate from the translations entries.
+     * Each meta translation entry is identified by a concatenation of
+     * meta key, sub fields and position (or index) of the meta.
+     * For instance: 'meta_key|with|sub|fields:2'.
+     *
+     * @since 3.3
+     *
+     * @return array[] {
+     *     A list of arrays described as follow:
+     *
+     *     @type string   $meta_key       The name of the meta.
+     *     @type string[] $meta_sub_keys  The meta sub-fields to translate.
+     *     @type int      $value_position The position of the value in case of multiple values.
+     * }
+     *
+     * @phpstan-return array<int, array{meta_key: string, meta_sub_keys: array<int, string>, value_position: int}>
+     */
+    private function get_metas_to_translate()
+    {
+    }
+    /**
+     * Translates meta sub fields recursively.
+     *
+     * @since 3.3
+     *
+     * @param mixed    $meta_value Meta value(s) to translate.
+     * @param string[] $sub_keys   Array of sub fields to translate, ordered by dimension.
+     * @return mixed Translated meta value(s).
+     */
+    private function maybe_translate_metas_sub_fields($meta_value, array $sub_keys)
+    {
+    }
+    /**
+     * Asserts an array contains only scalar values.
+     *
+     * @since 3.3
+     *
+     * @param array $array Array to check.
+     * @return bool True if the array contains only scalar values, false otherwise.
+     */
+    private function has_only_scalar_values(array $array)
+    {
+    }
+}
+/**
+ * @package polylang-pro
+ */
+/**
+ * Class PLL_Translation_Post_Metas
+ *
+ * @since 3.3
+ *
+ * Translate post metas from a set of translation entries.
+ */
+class PLL_Translation_Post_Metas extends \PLL_Translation_Metas
+{
+    /**
+     * The PLL_Translation_Post_Metas constructor that allows to define the meta type.
+     *
+     * @since 3.3
+     *
+     * @param PLL_Sync_Post_Metas $sync_metas Object to manage copied post metas during import.
+     */
+    public function __construct(\PLL_Sync_Post_Metas $sync_metas)
+    {
+    }
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
+ * Manages posts translations.
+ *
+ * @since 3.3
+ */
+class PLL_Translation_Post_Model
+{
+    /**
+     * @var PLL_Translation_Content
+     */
+    protected $translate_content;
+    /**
+     * @var PLL_Translation_Post_Metas
+     */
+    protected $translate_post_metas;
+    /**
+     * @var PLL_Sync_Content
+     */
+    protected $sync_content;
+    /**
+     * Used to query languages and translations.
+     *
+     * @var PLL_Model
+     */
+    protected $model;
+    /**
+     * @var PLL_Sync
+     */
+    protected $sync;
+    /**
+     * @var PLL_Sync_Post_Model
+     */
+    protected $sync_post_model;
+    /**
+     * Service to manage user capabilities, espcecially 'unfiltered_html'.
+     *
+     * @var PLL_Manage_User_Capabilities
+     */
+    protected $user_capabilities_manager;
+    /**
+     * Constructor.
+     *
+     * @since 3.3
+     *
+     * @param PLL_Settings|PLL_Admin $polylang Polylang object.
+     */
+    public function __construct(&$polylang)
+    {
+    }
+    /**
+     * Translates a post in a given language.
+     *
+     * @since 3.3
+     *
+     * @param  array        $entry           Properties array of an entry.
+     * @param  PLL_Language $target_language A language to translate into.
+     * @return int The translated post ID, 0 on failure.
+     */
+    public function translate_post($entry, $target_language)
+    {
+    }
+    /**
+     * Creates a new post translation.
+     *
+     * @since 3.3
+     *
+     * @param array        $data_import {
+     *    Import options.
+     *    string $post_status The post status of the imported posts.
+     * }.
+     * @param WP_Post      $source_post     The source post object.
+     * @param PLL_Language $target_language The language to translate into.
+     * @return int The translated post ID, 0 on failure.
+     */
+    protected function create_post_translation($data_import, $source_post, $target_language)
+    {
+    }
+    /**
+     * Saves the translations group.
+     *
+     * @since 3.3
+     *
+     * @param int    $from_id The post source id.
+     * @param int    $tr_id   The translated post id.
+     * @param string $lang    The language slug of the translated post.
+     * @return void
+     */
+    protected function save_translations_group($from_id, $tr_id, $lang)
+    {
+    }
+    /**
+     * Updates an existing post translation.
+     *
+     * @since 3.3
+     *
+     * @param WP_Post      $source_post     The source post object.
+     * @param WP_Post      $tr_post         The translated post object.
+     * @param PLL_Language $target_language The language to translate into.
+     * @return int The translated post ID, 0 on failure.
+     */
+    protected function update_post_translation($source_post, $tr_post, $target_language)
+    {
+    }
+    /**
+     * Translates all content type of a post (i.e. title, excerpt and content).
+     *
+     * @since 3.3
+     *
+     * @param WP_Post      $source_post     The source post object.
+     * @param WP_Post      $tr_post         The translated post object.
+     * @param PLL_Language $target_language The language to translate into.
+     * @return WP_Post|int The translated post object populated with new data. 0 otherwise.
+     */
+    protected function translate_content($source_post, $tr_post, $target_language)
+    {
+    }
+    /**
+     * Clones the source post giving a base for the later translated post.
+     *
+     * @since 3.3
+     *
+     * @param WP_Post $source_post The Source Post.
+     * @return WP_Post The cloned post.
+     */
+    protected function clone_source_post($source_post)
+    {
+    }
+    /**
+     * Translates post parent if there is one.
+     *
+     * @since 3.3
+     *
+     * @param int[]        $post_ids Array of source post ids.
+     * @param PLL_Language $language The target language.
+     * @return void
+     */
+    public function translate_parent_for_posts(array $post_ids, \PLL_Language $language)
+    {
+    }
+    /**
+     * Filters default query arguments when checking if a term exists.
+     * In `term_exists()`, WP 6.0 uses `get_terms()`, which is filtered by language by Polylang.
+     * This filter prevents `term_exists()` to be filtered by language.
+     * Copied from PLL_Filters::term_exists_default_query_args
+     *
+     * @since 3.3
+     *
+     * @param array      $defaults An array of arguments passed to get_terms().
+     * @param int|string $term     The term to check. Accepts term ID, slug, or name.
+     * @param string     $taxonomy The taxonomy name to use. An empty string indicates the search is against all taxonomies.
+     * @return array
+     */
+    public function term_exists_default_query_args($defaults, $term, $taxonomy)
+    {
+    }
+    /**
+     * Unsynchronizes translated post from the source.
+     *
+     * @since 3.3
+     *
+     * @param int          $source_post_id  Source post ID.
+     * @param int          $target_post_id  Translated post ID.
+     * @param PLL_Language $target_language Translated post language object.
+     * @return void
+     */
+    protected function maybe_unsync_posts($source_post_id, $target_post_id, $target_language)
+    {
+    }
+}
+/**
+ * @package polylang-pro
+ */
+/**
+ * Class PLL_Translation_Term_Metas
+ *
+ * @since 3.3
+ *
+ * Translate term metas from a set of translation entries.
+ */
+class PLL_Translation_Term_Metas extends \PLL_Translation_Metas
+{
+    /**
+     * The PLL_Translation_Term_Metas constructor that allows to define the meta type.
+     *
+     * @since 3.3
+     *
+     * @param PLL_Sync_Term_Metas $sync_metas Object to manage copied term metas during import.
+     */
+    public function __construct(\PLL_Sync_Term_Metas $sync_metas)
+    {
+    }
+}
+/**
+ * @package polylang-pro
+ */
+/**
+ * Translate post taxonomies from a set of translation entries.
+ *
+ * @since 3.3
+ */
+class PLL_Translation_Term_Model
+{
+    /**
+     * Translations set where to look for the post metas translations.
+     *
+     * @var Translations
+     */
+    private $translations;
+    /**
+     * Used to manage languages and translations.
+     *
+     * @var PLL_Model
+     */
+    private $model;
+    /**
+     * Used to translate term meta with a set an translation entries.
+     *
+     * @var PLL_Translation_Term_Metas
+     */
+    private $translation_term_metas;
+    /**
+     * Currently translated term language.
+     *
+     * @var PLL_Language|null
+     */
+    private $target_language;
+    /**
+     * Currently translated term taxonomy.
+     *
+     * @var string
+     */
+    private $taxonomy;
+    /**
+     * Used to set the term parent of an updated term.
+     *
+     * @var int
+     */
+    private $inserted_term_parent = 0;
+    /**
+     * PLL_Translation_Term_Model constructor.
+     *
+     * @since 3.3
+     *
+     * @param PLL_Settings|PLL_Admin $polylang Polylang object.
+     */
+    public function __construct(&$polylang)
+    {
+    }
+    /**
+     * Setter for translations.
+     *
+     * @since 3.3
+     *
+     * @param PLL_Translations_Identified $translations A set of translations to search the metas translations in.
+     * @return void
+     */
+    public function set_translations($translations)
+    {
+    }
+    /**
+     * Translates a term.
+     *
+     * @since 3.3
+     *
+     * @param array        $entry    Properties array of an entry.
+     * @param PLL_Language $language The target language.
+     * @return int The translated term id, 0 on failure.
+     */
+    public function translate_term($entry, $language)
+    {
+    }
+    /**
+     * Returns the translated term name if exists, the source name otherwise.
+     *
+     * @since 3.3
+     *
+     * @param WP_Term $source_term The source term object.
+     * @return string The translated name.
+     */
+    private function get_translated_term_name($source_term)
+    {
+    }
+    /**
+     * Returns the translated term description if exists, the source description otherwise.
+     *
+     * @since 3.3
+     *
+     * @param WP_Term $source_term The source term object.
+     * @return string The translated description.
+     */
+    private function get_translated_term_description($source_term)
+    {
+    }
+    /**
+     * Translates a given entry, returns the source string if no translation found.
+     *
+     * @since 3.3
+     *
+     * @param PLL_Translation_Entry_Identified $entry The entry to translate.
+     * @return string The translated string from the entry.
+     */
+    private function maybe_translate_term_entry($entry)
+    {
+    }
+    /**
+     * Translates term parent if there is one.
+     *
+     * @since 3.3
+     *
+     * @param int[]        $term_ids Array of source term ids.
+     * @param PLL_Language $language The target language.
+     * @return void
+     */
+    public function translate_parent_for_terms(array $term_ids, \PLL_Language $language)
+    {
+    }
+    /**
+     * Filters the currently inserted term language
+     * to allow sharing the same slug or to suffix it.
+     *
+     * @since 3.3
+     *
+     * @param PLL_Language|null $language Already found language object, null in none was found.
+     * @param string            $taxonomy Currently inserted term taxonomy.
+     * @return PLL_Language|null Overridden language object.
+     */
+    public function set_language_for_term_slug($language, $taxonomy)
+    {
+    }
+    /**
+     * Filters the inserted term ID parent during translation.
+     *
+     * @since 3.3
+     *
+     * @return int Term parent ID.
+     */
+    public function get_inserted_term_parent()
+    {
+    }
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
+ * Class PLL_Translation_Walker_Interface
+ *
+ * Define interface for classes that iterate over content.
+ *
+ * @since 3.3
+ */
+interface PLL_Translation_Walker_Interface
+{
+    /**
+     * Iterates over each translatable part of a content and applies a callback function on each part.
+     *
+     * @since 3.3
+     *
+     * @param callable $callback A callback function.
+     * @return string The content (potentially) modified by the callback.
+     */
+    public function walk($callback);
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
+ * Class PLL_Content_Walker_Blocks
+ *
+ * @since 3.3
+ *
+ * Walk a block composed content to apply a translation callback on every translatable parts.
+ */
+class PLL_Translation_Walker_Blocks implements \PLL_Translation_Walker_Interface
+{
+    /**
+     * Placeholder for inner blocks, used in exported contents.
+     *
+     * @var string
+     */
+    const BLOCK_PLACEHOLDER = '<pre>Polylang placeholder do not modify</pre>';
+    /**
+     * Holds the blocks parsed by the WP_Block_Parser.
+     *
+     * @var array[]
+     */
+    private $blocks;
+    /**
+     * A reference to the block parsing rules.
+     *
+     * @var PLL_Translation_Block_Parsing_Rules
+     */
+    private $parsing_rules;
+    /**
+     * Holds the callback to be applied on each block, including the nested blocks.
+     *
+     * @var callable
+     */
+    private $callback;
+    /**
+     * HTML delimiter used in {@see PLL_Translation_Walker_Blocks::parse_as_html()}.
+     *
+     * @var string
+     * @phpstan-var non-empty-string
+     */
+    private $placeholder_delimiter;
+    /**
+     * PLL_Content_Walker_Blocks constructor.
+     *
+     * @since 3.3
+     *
+     * @param string $content An original (post?) content.
+     */
+    public function __construct($content)
+    {
+    }
+    /**
+     * Walks through the blocks and nested blocks to apply a callback on every one of them.
+     *
+     * @since 3.3
+     *
+     * @param callable $callback A callable to be applied on each block.
+     * @return string The walked content, eventually transformed by the callback.
+     */
+    public function walk($callback)
+    {
+    }
+    /**
+     * Recursively applies the callback provided to the {@see PLL_Translation_Walker_Blocks::walk()} method on a block.
+     * Searches for translatable strings matching rules defined by {@see PLL_Translation_Rules_Block} and passes those to the callback function.
+     * Delegates to {@see PLL_Translation_Walker_Classic} when no parsing rules match the current block being parsed.
+     *
+     * @since 3.3
+     *
+     * @param array $block An associative array mimicking a WP_Block_Parser_Block object.
+     * @return array An array mimicking a WP_Block_Parser_Block object.
+     */
+    private function apply($block)
+    {
+    }
+    /**
+     * Recursively applies the callback provided to the {@see PLL_Translation_Walker_Blocks::walk()} method on a block.
+     * Searches for translatable strings matching rules defined by {@see PLL_Translation_Rules_Block} and passes those to the callback function.
+     *
+     * @since 3.3
+     *
+     * @param array $block An associative array mimicking a WP_Block_Parser_Block object.
+     * @return array An array mimicking a WP_Block_Parser_Block object.
+     */
+    private function parse_with_rules($block)
+    {
+    }
+    /**
+     * Parses a block's contents as HTML and applies the callback provided to the
+     * {@see PLL_Translation_Walker_Blocks::walk()} method on these contents. Uses {@see PLL_Translation_Walker_Classic}.
+     *
+     * @since 3.3
+     *
+     * @param array $block An associative array mimicking a WP_Block_Parser_Block object.
+     * @return array An array mimicking a WP_Block_Parser_Block object.
+     */
+    private function parse_as_html($block)
+    {
+    }
+    /**
+     * Returns a block's content as a string and with placeholders in place of sub-blocks, ready to be parsed.
+     *
+     * @since 3.3
+     *
+     * @param array $block An associative array mimicking a WP_Block_Parser_Block object.
+     * @return string The block's content as a string and with placeholders in place of sub-blocks.
+     */
+    private function get_block_content_to_parse(array $block)
+    {
+    }
+    /**
+     * Puts a translated content back into a block.
+     *
+     * @since 3.3
+     *
+     * @param array  $block   An associative array mimicking a WP_Block_Parser_Block object.
+     * @param string $content The content to put back into the block.
+     * @return array An array mimicking a WP_Block_Parser_Block object.
+     */
+    private function update_block_with_content(array $block, $content)
+    {
+    }
+    /**
+     * Returns the translatable block attributes and passes them to the callback function.
+     *
+     * @since 3.3
+     *
+     * @param array    $block                   An associative array mimicking a WP_Block_Parser_Block object.
+     * @param string[] $attributes_to_translate An array of attributes to translate.
+     * @return array An array mimicking a WP_Block_Parser_Block object.
+     *
+     * @phpstan-param array<string,string> $attributes_to_translate
+     */
+    private function parse_attributes($block, $attributes_to_translate)
+    {
+    }
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
+ * Class PLL_Translation_Walker_Classic
+ *
+ * @since 3.3
+ *
+ * Applies a callback over an HTML formatted string.
+ */
+class PLL_Translation_Walker_Classic implements \PLL_Translation_Walker_Interface
+{
+    /**
+     * Original content.
+     *
+     * @var string
+     */
+    private $content;
+    /**
+     * Callback to execute on translatable content.
+     *
+     * @var callable
+     */
+    private $callback;
+    /**
+     * List of contents that are not translatable, like placeholders.
+     *
+     * @var string[]
+     */
+    private $non_translatable_contents;
+    /**
+     * PLL_Content_Walker_Classic constructor.
+     *
+     * @since 3.3
+     *
+     * @param string   $content                   Classic editor HTML content.
+     * @param string[] $non_translatable_contents List of contents that are not translatable, like placeholders.
+     */
+    public function __construct($content, array $non_translatable_contents = array())
+    {
+    }
+    /**
+     * Applies the defined callback on the content, and then returns a transformed content.
+     *
+     * @since 3.3
+     *
+     * @param callable $callback A transformation to apply to the content, whether it is for export or import.
+     * @return string
+     */
+    public function walk($callback)
+    {
+    }
+    /**
+     * Applies a callback on a given post content, whether it is to add a translation entry or translate it.
+     *
+     * @since 3.3
+     *
+     * @param string $content A post content to apply a callback onto.
+     * @return string The processed content.
+     */
+    private function apply($content)
+    {
+    }
+    /**
+     * Checks if the translation entry exists and return it, otherwise return the source text.
+     *
+     * @since 3.3
+     *
+     * @param PLL_Translation_Entry_Identified $entry A translation entry parsed from a translation document.
+     * @return string The translated string.
+     */
+    private function maybe_translate_entry($entry)
+    {
+    }
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
+ * Class PLL_Translation_Walker_Factory
+ *
+ * A factory to create a translation walker with a given content.
+ *
+ * @since 3.3
+ */
+class PLL_Translation_Walker_Factory
+{
+    /**
+     * Generates the correct walker class for the content to be walked.
+     *
+     * @since 3.3
+     *
+     * @param string $content A content to iterate over.
+     * @return PLL_Translation_Walker_Interface
+     */
+    public static function create_from($content)
+    {
+    }
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
+ * Class PLL_Translations_Identified
+ *
+ * Extends a Translations object, and allows to add entries with the PLL_Translation_Entry_Identified class.
+ *
+ * @since 3.3
+ */
+class PLL_Translations_Identified extends \Translations
+{
+    /**
+     * Clone the parent method and use PLL_Translation_Entry_Identified instead of Translation_Entry.
+     *
+     * @see https://github.com/WordPress/WordPress/blob/6.0/wp-includes/pomo/translations.php#L24
+     *
+     * @since 3.3
+     *
+     * @param array|PLL_Translation_Entry_Identified $entry An entry (or an array with entry's data)
+     *                                                      to add to the set of translations entries.
+     * @return bool true on success, false if the entry doesn't have a key
+     */
+    public function add_entry($entry)
+    {
+    }
+    /**
+     * Clone the parent method and use PLL_Translation_Entry_Identified instead of Translation_Entry.
+     *
+     * @see https://github.com/WordPress/WordPress/blob/6.0/wp-includes/pomo/translations.php#L40
+     *
+     * @since 3.3
+     *
+     * @param array|PLL_Translation_Entry_Identified $entry An entry (or an array with entry's data)
+     *                                                      to add to the set of translations entries.
+     * @return bool
+     */
+    public function add_entry_or_merge($entry)
     {
     }
 }
@@ -4983,6 +7242,7 @@ class PLL_Xliff_Export extends \PLL_Export_File
      * Set site reference to xliff.
      *
      * @since 3.1
+     * @since 3.3 Also adds a reference to the application that generated the export file (name + version).
      *
      * @param string $url Absolute URL of the current site exporting content.
      * @return void
@@ -5096,7 +7356,7 @@ class PLL_Xliff_Import implements \PLL_Import_File_Interface
     /**
      * An array of XLIFF iterators.
      *
-     * @var array<PLL_Import_Xliff_Iterator>
+     * @var PLL_Import_Xliff_Iterator[]
      */
     private $iterators = array();
     /**
@@ -5123,16 +7383,6 @@ class PLL_Xliff_Import implements \PLL_Import_File_Interface
     {
     }
     /**
-     * Get the language of the source
-     *
-     * @since 3.1
-     *
-     * @return string|false
-     */
-    public function get_source_language()
-    {
-    }
-    /**
      * Get target language
      *
      * @since 3.1
@@ -5150,6 +7400,27 @@ class PLL_Xliff_Import implements \PLL_Import_File_Interface
      * @return string|false
      */
     public function get_site_reference()
+    {
+    }
+    /**
+     * Returns the reference to the name of the application that generated the file.
+     *
+     * @since 3.3
+     *
+     * @return string The application name. An empty string if it couldn't be found.
+     */
+    public function get_generator_name()
+    {
+    }
+    /**
+     * Returns the reference to the version of the application that generated the file.
+     *
+     * @since 3.3
+     *
+     * @return string The application version. An empty string if it couldn't be found or the name of the application.
+     *                couldn't be found.
+     */
+    public function get_generator_version()
     {
     }
     /**
@@ -5181,6 +7452,18 @@ class PLL_Xliff_Import implements \PLL_Import_File_Interface
      * }
      */
     private function create_translation_entry($item, $type)
+    {
+    }
+    /**
+     * Returns the reference to the name of the application that generated the file (back
+     * compatibility).
+     * Before PLL Pro 3.3, the `original` attribute was storing "polylang|{site_url}".
+     *
+     * @since 3.3
+     *
+     * @return string 'Polylang' or an empty string.
+     */
+    private function get_compat_generator_name()
     {
     }
 }
@@ -5743,7 +8026,8 @@ class PLL_REST_API
      *
      * @since 3.2
      *
-     * @return array<PLL_Language> List of PLL_Language objects
+     * @return array[] List of PLL_Language objects
+     * @phpstan-return array<int, array<string, mixed>>
      */
     public function get_languages_list()
     {
@@ -5829,137 +8113,6 @@ class PLL_REST_Term extends \PLL_REST_Translated_Object
      * to allow it to share the same slugs as terms in other languages.
      *
      * @since 3.2
-     *
-     * @param string $slug     The inputed slug of the term being saved, may be empty.
-     * @param string $taxonomy The term taxonomy.
-     * @return string
-     */
-    public function pre_term_slug($slug, $taxonomy)
-    {
-    }
-}
-/**
- * @package Polylang-Pro
- */
-/**
- * Base class for managing shared slugs for taxonomy terms
- *
- * @since 1.9
- */
-class PLL_Share_Term_Slug
-{
-    /**
-     * Stores the plugin options.
-     *
-     * @var array
-     */
-    public $options;
-    /**
-     * @var PLL_Model
-     */
-    public $model;
-    /**
-     * Instance of a child class of PLL_Links_Model.
-     *
-     * @var PLL_Links_Model
-     */
-    public $links_model;
-    /**
-     * Constructor
-     *
-     * @since 1.9
-     *
-     * @param object $polylang Polylang object.
-     */
-    public function __construct(&$polylang)
-    {
-    }
-    /**
-     * Will make slug unique per language and taxonomy
-     * Mostly taken from wp_unique_term_slug
-     *
-     * @since 1.9
-     *
-     * @param string  $slug The string that will be tried for a unique slug.
-     * @param string  $lang Language slug.
-     * @param WP_Term $term The term object that the $slug will belong too.
-     * @return string Will return a true unique slug.
-     */
-    protected function unique_term_slug($slug, $lang, $term)
-    {
-    }
-    /**
-     * Ugly hack to enable the same slug in several languages
-     *
-     * @since 1.9
-     *
-     * @param int    $term_id  The term id of a saved term.
-     * @param int    $tt_id    The term taxononomy id.
-     * @param string $taxonomy The term taxonomy.
-     * @return void
-     */
-    public function save_term($term_id, $tt_id, $taxonomy)
-    {
-    }
-}
-/**
- * @package Polylang-Pro
- */
-/**
- * Manages shared slugs for taxonomy terms on admin side
- *
- * @since 1.9
- */
-class PLL_Admin_Share_Term_Slug extends \PLL_Share_Term_Slug
-{
-    /**
-     * Stores the name of a term being saved.
-     *
-     * @var string
-     */
-    protected $pre_term_name;
-    /**
-     * The id of the current post being updated.
-     *
-     * @var int
-     */
-    protected $post_id;
-    /**
-     * Constructor
-     *
-     * @since 1.9
-     *
-     * @param object $polylang Polylang object.
-     */
-    public function __construct(&$polylang)
-    {
-    }
-    /**
-     * Stores the name of a term being saved, for use in the filter pre_term_slug
-     *
-     * @since 1.9
-     *
-     * @param string $name The term name to store.
-     * @return string Unmodified term name.
-     */
-    public function pre_term_name($name)
-    {
-    }
-    /**
-     * Stores the current post_id when bulk editing posts for use in save_language and pre_term_slug
-     *
-     * @since 1.9
-     *
-     * @param int $post_id The id of the current post being updated.
-     * @return void
-     */
-    public function pre_post_update($post_id)
-    {
-    }
-    /**
-     * Creates the term slug in case the term already exists in another language
-     *
-     * @since 1.9
      *
      * @param string $slug     The inputed slug of the term being saved, may be empty.
      * @param string $taxonomy The term taxonomy.
@@ -6152,7 +8305,8 @@ class PLL_Share_Post_Slug
      * @param string          $lang      Language slug.
      * @param string          $output    Optional. Output type. Accepts OBJECT, ARRAY_N, or ARRAY_A. Default OBJECT.
      * @param string|string[] $post_type Optional. Post type or array of post types. Default 'page'.
-     * @return WP_Post|null WP_Post on success or null on failure.
+     * @return WP_Post|mixed[]|null WP_Post on success or null on failure.
+     * @phpstan-return array<int|string, mixed>|WP_Post|null
      */
     protected function get_page_by_path($page_path, $lang, $output = \OBJECT, $post_type = 'page')
     {
@@ -6223,6 +8377,120 @@ class PLL_Share_Post_Slug
      * @return void
      */
     public function pll_translate_media($post_id, $tr_id)
+    {
+    }
+}
+/**
+ * @package Polylang-Pro
+ */
+/**
+ * Base class for managing shared slugs for taxonomy terms
+ *
+ * @since 1.9
+ */
+class PLL_Share_Term_Slug
+{
+    /**
+     * Stores the plugin options.
+     *
+     * @var array
+     */
+    public $options;
+    /**
+     * @var PLL_Model
+     */
+    public $model;
+    /**
+     * Instance of a child class of PLL_Links_Model.
+     *
+     * @var PLL_Links_Model
+     */
+    public $links_model;
+    /**
+     * Stores the term name before creating a slug if needed.
+     *
+     * @var string
+     */
+    private $pre_term_name = '';
+    /**
+     * Used to trick WordPress by setting
+     * a transitory unique term slug.
+     *
+     * @var string
+     */
+    const TERM_SLUG_SEPARATOR = '___';
+    /**
+     * Constructor
+     *
+     * @since 1.9
+     *
+     * @param PLL_Base $polylang Polylang object.
+     */
+    public function __construct(&$polylang)
+    {
+    }
+    /**
+     * Will make slug unique per language and taxonomy
+     * Mostly taken from wp_unique_term_slug
+     *
+     * @since 1.9
+     *
+     * @param string  $slug The string that will be tried for a unique slug.
+     * @param string  $lang Language slug.
+     * @param WP_Term $term The term object that the $slug will belong too.
+     * @return string Will return a true unique slug.
+     */
+    protected function unique_term_slug($slug, $lang, $term)
+    {
+    }
+    /**
+     * Ugly hack to enable the same slug in several languages
+     *
+     * @since 1.9
+     *
+     * @param int    $term_id  The term id of a saved term.
+     * @param int    $tt_id    The term taxononomy id.
+     * @param string $taxonomy The term taxonomy.
+     * @return void
+     */
+    public function save_term($term_id, $tt_id, $taxonomy)
+    {
+    }
+    /**
+     * Stores the term name to use in 'pre_term_slug'.
+     *
+     * @since 3.3
+     *
+     * @param string $name Term name.
+     * @return string      Unmodified term name.
+     */
+    public function set_pre_term_name($name)
+    {
+    }
+    /**
+     * Appends language slug to the term slug if needed.
+     *
+     * @since 3.3
+     *
+     * @param string $slug     Term slug.
+     * @param string $taxonomy Term taxonomy.
+     * @return string Slug with a language suffix if found.
+     */
+    public function set_pre_term_slug($slug, $taxonomy)
+    {
+    }
+    /**
+     * Returns the parent suffix for the slug only if parent slug is the same as the given one.
+     * Recursively appends the parents slugs like WordPress does.
+     *
+     * @since 3.3
+     *
+     * @param int    $parent   Parent term ID.
+     * @param string $taxonomy Parent taxonomy.
+     * @param string $slug     Child term slug.
+     * @return string Parents slugs if they are the same as the child slug, empty string otherwise.
+     */
+    private function maybe_get_parent_suffix($parent, $taxonomy, $slug)
     {
     }
 }
@@ -6624,15 +8892,15 @@ class PLL_Sync_Post
      *
      * @since 3.2
      *
-     * @param array<int|array<string>> $tr       {
+     * @param (int|string[])[] $tr       {
      *     List of translations with lang codes as array keys and IDs as array values.
      *     Also in this array:
      *
-     *     @type array<string> $sync List of synchronized translations with lang codes as array keys and array values.
+     *     @type string[] $sync List of synchronized translations with lang codes as array keys and array values.
      * }
-     * @param string                   $old_slug The old language slug.
-     * @param string                   $new_slug The new language slug.
-     * @return array<int|array<string>>
+     * @param string           $old_slug The old language slug.
+     * @param string           $new_slug The new language slug.
+     * @return (int|string[])[]
      */
     public function unsync_post($tr, $old_slug, $new_slug)
     {
@@ -6843,7 +9111,7 @@ class PLL_Sync_Content
      *
      * @since 2.5
      *
-     * @param array $blocks An array of blocks arrays
+     * @param array[] $blocks An array of blocks arrays
      * @return array
      */
     protected function translate_blocks($blocks)
@@ -6921,9 +9189,9 @@ class PLL_Sync_Navigation
      *
      * @since 3.2
      *
-     * @param array  $blocks        An array of blocks arrays
-     * @param string $language      Slug language of the target post.
-     * @param string $from_language Slug language of the source post.
+     * @param array[] $blocks        An array of blocks arrays
+     * @param string  $language      Slug language of the target post.
+     * @param string  $from_language Slug language of the source post.
      * @return array Array of translated blocks.
      */
     public function translate_blocks($blocks, $language, $from_language)
@@ -7962,6 +10230,7 @@ class PLL_Xdata_Subdomain extends \PLL_Xdata_Base
  *
  * @since 1.2
  */
+#[AllowDynamicProperties]
 abstract class PLL_Base
 {
     /**
@@ -8159,6 +10428,18 @@ abstract class PLL_Admin_Base extends \PLL_Base
     {
     }
     /**
+     * Tells whether or not the given screen is block editor kind.
+     * e.g. widget, site or post editor.
+     *
+     * @since 3.3
+     *
+     * @param WP_Screen $screen Screen object.
+     * @return bool True if the screen is a block editor, false otherwise.
+     */
+    protected function is_block_editor($screen)
+    {
+    }
+    /**
      * Enqueue scripts to the WP Customizer.
      *
      * @since 2.4.0
@@ -8169,13 +10450,14 @@ abstract class PLL_Admin_Base extends \PLL_Base
     {
     }
     /**
-     * Localize scripts.
+     * Adds inline scripts to set the default language in JS
+     * and localizes scripts.
      *
-     * @since 2.4.0
+     * @since 3.3
      *
      * @return void
      */
-    public function localize_scripts()
+    private function add_inline_scripts()
     {
     }
     /**
@@ -8971,12 +11253,6 @@ class PLL_Admin_Filters_Term
      */
     public $pref_lang;
     /**
-     * Stores the term name before creating a slug if needed.
-     *
-     * @var string|null
-     */
-    protected $pre_term_name;
-    /**
      * Stores the current post_id when bulk editing posts.
      *
      * @var int|null
@@ -9031,7 +11307,7 @@ class PLL_Admin_Filters_Term
     {
     }
     /**
-     * Stores the current post_id when bulk editing posts for use in save_language and pre_term_slug
+     * Stores the current post_id when bulk editing posts for use in save_language and get_inserted_term_language.
      *
      * @since 1.7
      *
@@ -9079,29 +11355,6 @@ class PLL_Admin_Filters_Term
     {
     }
     /**
-     * Stores the term name for use in pre_term_slug
-     *
-     * @since 0.9.5
-     *
-     * @param string $name term name
-     * @return string unmodified term name
-     */
-    public function pre_term_name($name)
-    {
-    }
-    /**
-     * Creates the term slug in case the term already exists in another language
-     *
-     * @since 0.9.5
-     *
-     * @param string $slug
-     * @param string $taxonomy
-     * @return string
-     */
-    public function pre_term_slug($slug, $taxonomy)
-    {
-    }
-    /**
      * Ajax response for edit term form
      *
      * @since 0.2
@@ -9134,6 +11387,29 @@ class PLL_Admin_Filters_Term
      * @return void
      */
     public function split_shared_term($term_id, $new_term_id, $term_taxonomy_id, $taxonomy)
+    {
+    }
+    /**
+     * Returns the language for subsequently inserted term in admin.
+     *
+     * @since 3.3
+     *
+     * @param PLL_Language|null $lang     Term language object if found, null otherwise.
+     * @return PLL_Language|null Language object, null if none found.
+     */
+    public function get_inserted_term_language($lang)
+    {
+    }
+    /**
+     * Filters the subsequently inserted term parent in admin.
+     *
+     * @since 3.3
+     *
+     * @param int    $parent   Parent term ID, 0 if none found.
+     * @param string $taxonomy Term taxonomy.
+     * @return int Parent term ID if found, 0 otherwise.
+     */
+    public function get_inserted_term_parent($parent, $taxonomy)
     {
     }
 }
@@ -9443,10 +11719,10 @@ class PLL_Filters
      *
      * @since 3.2
      *
-     * @param  array<mixed> $defaults An array of arguments passed to get_terms().
-     * @param  int|string   $term     The term to check. Accepts term ID, slug, or name.
-     * @param  string       $taxonomy The taxonomy name to use. An empty string indicates the search is against all taxonomies.
-     * @return array<mixed>
+     * @param  array      $defaults An array of arguments passed to get_terms().
+     * @param  int|string $term     The term to check. Accepts term ID, slug, or name.
+     * @param  string     $taxonomy The taxonomy name to use. An empty string indicates the search is against all taxonomies.
+     * @return array
      */
     public function term_exists_default_query_args($defaults, $term, $taxonomy)
     {
@@ -9555,6 +11831,12 @@ class PLL_Links
      * @var PLL_Links_Model
      */
     public $links_model;
+    /**
+     * Current language (used to filter the content).
+     *
+     * @var PLL_Language|null
+     */
+    public $curlang;
     /**
      * Constructor
      *
@@ -9714,6 +11996,14 @@ class PLL_Model
      */
     public $options;
     /**
+     * Translatable objects registry.
+     *
+     * @since 3.4
+     *
+     * @var PLL_Translatable_Objects_Registry
+     */
+    public $translatable_objects;
+    /**
      * Translated post model.
      *
      * @var PLL_Translated_Post
@@ -9749,8 +12039,8 @@ class PLL_Model
     }
     /**
      * Returns the list of available languages.
-     * - Stores the list in a db transient ( except flags ), unless PLL_CACHE_LANGUAGES is set to false.
-     * - Caches the list ( with flags ) in a PLL_Cache object.
+     * - Stores the list in a db transient (except flags), unless `PLL_CACHE_LANGUAGES` is set to false.
+     * - Caches the list (with flags) in a `PLL_Cache` object.
      *
      * @since 0.1
      *
@@ -9761,6 +12051,56 @@ class PLL_Model
      * @return array List of PLL_Language objects or PLL_Language object properties.
      */
     public function get_languages_list($args = array())
+    {
+    }
+    /**
+     * Prepares the data to be ready for `PLL_Language`'s constructor.
+     *
+     * @since 3.4
+     *
+     * @param WP_Term[] $terms List of language terms, with the type as array keys.
+     *                         `post` and `term` are mandatory keys.
+     * @return array {
+     *     @type array[]     $term_props An array of language term properties. Array keys are language taxonomy names
+     *                                   (`language` and `term_language` are mandatory), array values are arrays of
+     *                                   language term properties (`term_id`, `term_taxonomy_id`, and `count`).
+     *     @type string      $name       Language name. Ex: English.
+     *     @type string      $slug       Language code used in URL. Ex: en.
+     *     @type string      $locale     WordPress language locale. Ex: en_US.
+     *     @type string      $w3c        W3C locale.
+     *     @type string      $flag_code  Code of the flag.
+     *     @type int         $term_group Order of the language when displayed in a list of languages.
+     *     @type int         $is_rtl     `1` if the language is rtl, `0` otherwise.
+     *     @type int|null    $mo_id      Optional. ID of the post storing strings translations.
+     *     @type string|null $facebook   Optional. Facebook locale.
+     * }
+     *
+     * @phpstan-param array{post:WP_Term, term:WP_Term} $terms
+     * @phpstan-return array{
+     *     term_props: array{
+     *         language: array{
+     *             term_id: positive-int,
+     *             term_taxonomy_id: positive-int,
+     *             count: int<0, max>
+     *         },
+     *         term_language: array{
+     *             term_id: positive-int,
+     *             term_taxonomy_id: positive-int,
+     *             count: int<0, max>
+     *         }
+     *     },
+     *     name: non-empty-string,
+     *     slug: non-empty-string,
+     *     locale: non-empty-string,
+     *     w3c: non-empty-string,
+     *     flag_code: non-empty-string,
+     *     term_group: int,
+     *     is_rtl: int<0, 1>,
+     *     mo_id?: positive-int,
+     *     facebook?: non-empty-string
+     * }|null
+     */
+    public function prepare_data_for_language(array $terms)
     {
     }
     /**
@@ -9838,6 +12178,9 @@ class PLL_Model
     }
     /**
      * Returns taxonomies that need to be translated.
+     * The taxonomies list is cached for better better performance.
+     * The method waits for 'after_setup_theme' to apply the cache
+     * to allow themes adding the filter in functions.php.
      *
      * @since 1.2
      *
@@ -9859,7 +12202,7 @@ class PLL_Model
     {
     }
     /**
-     * Return staxonomies that need to be filtered ( post_format like ).
+     * Return taxonomies that need to be filtered (post_format like).
      *
      * @since 1.7
      *
@@ -9885,7 +12228,7 @@ class PLL_Model
      *
      * @since 1.7
      *
-     * @return array
+     * @return string[]
      */
     public function get_filtered_taxonomies_query_vars()
     {
@@ -9901,7 +12244,7 @@ class PLL_Model
      * @param string              $taxonomy  Taxonomy name.
      * @param int                 $parent    Parent term id.
      * @param string|PLL_Language $language  The language slug or object.
-     * @return null|int The term_id of the found term.
+     * @return int The `term_id` of the found term. 0 otherwise.
      */
     public function term_exists($term_name, $taxonomy, $parent, $language)
     {
@@ -9916,7 +12259,7 @@ class PLL_Model
      * @param string|PLL_Language $language The language slug or object.
      * @param string              $taxonomy Optional taxonomy name.
      * @param int                 $parent   Optional parent term id.
-     * @return null|int The term_id of the found term.
+     * @return int The `term_id` of the found term. 0 otherwise.
      */
     public function term_exists_by_slug($slug, $language, $taxonomy = '', $parent = 0)
     {
@@ -9968,6 +12311,8 @@ class PLL_Model
      *     @type int[] $posts Array of post ids.
      *     @type int[] $terms Array of term ids.
      * }
+     *
+     * @phpstan-param -1|int<1, max> $limit
      */
     public function get_objects_with_no_lang($limit = -1)
     {
@@ -10011,13 +12356,38 @@ class PLL_Model
     {
     }
     /**
+     * Returns the list of available languages, based on the language taxonomy terms.
+     * Stores the list in a db transient and in a `PLL_Cache` object.
+     *
+     * @since 3.4
+     *
+     * @return PLL_Language[] An array of `PLL_Language` objects, array keys are the type.
+     *
+     * @phpstan-return list<PLL_Language>
+     */
+    protected function get_languages_from_taxonomies()
+    {
+    }
+    /**
+     * Returns the list of all language terms, by type (post, term, etc).
+     *
+     * @since 3.4
+     *
+     * @return array[] An array (type as array keys) of arrays (term slug as array keys) of terms.
+     *
+     * @phpstan-return array<non-empty-string, non-empty-array<non-empty-string, WP_Term>>
+     */
+    protected function get_language_terms_by_type()
+    {
+    }
+    /**
      * Returns the list of existing language terms.
      * - Returns all terms, that are or not assigned to posts.
      * - Terms are ordered by `term_group` and `term_id` (see `PLL_Model->filter_language_terms_orderby()`).
      *
      * @since 3.2.3
      *
-     * @return array<WP_Term>
+     * @return WP_Term[]
      */
     protected function get_language_terms()
     {
@@ -10090,8 +12460,8 @@ class PLL_Admin_Model extends \PLL_Model
      *
      * @since 0.4
      *
-     * @param array        $args Parameters of {@see PLL_Admin_Model::add_language() or @see PLL_Admin_Model::update_language()}.
-     * @param PLL_Language $lang Optional the language currently updated, the language is created if not set.
+     * @param array             $args Parameters of {@see PLL_Admin_Model::add_language() or @see PLL_Admin_Model::update_language()}.
+     * @param PLL_Language|null $lang Optional the language currently updated, the language is created if not set.
      * @return WP_Error
      */
     protected function validate_lang($args, $lang = \null)
@@ -11109,6 +13479,101 @@ class PLL_Accept_Languages_Collection
  * @package Polylang
  */
 /**
+ * Manages canonical redirect on frontend.
+ *
+ * @since 3.3
+ */
+class PLL_Canonical
+{
+    /**
+     * Stores the plugin options.
+     *
+     * @var array
+     */
+    protected $options;
+    /**
+     * @var PLL_Model
+     */
+    protected $model;
+    /**
+     * Instance of a child class of PLL_Links_Model.
+     *
+     * @var PLL_Links_Model
+     */
+    protected $links_model;
+    /**
+     * Current language.
+     *
+     * @var PLL_Language
+     */
+    protected $curlang;
+    /**
+     * Constructor.
+     *
+     * @since 3.3
+     *
+     * @param object $polylang Main Polylang object.
+     */
+    public function __construct(&$polylang)
+    {
+    }
+    /**
+     * If the language code is not in agreement with the language of the content,
+     * redirects incoming links to the proper URL to avoid duplicate content.
+     *
+     * @since 0.9.6
+     *
+     * @global WP_Query $wp_query WordPress Query object.
+     * @global bool     $is_IIS
+     *
+     * @param string $requested_url Optional, defaults to requested url.
+     * @param bool   $do_redirect   Optional, whether to perform the redirect or not.
+     * @return string|void Returns if redirect is not performed.
+     */
+    public function check_canonical_url($requested_url = '', $do_redirect = \true)
+    {
+    }
+    /**
+     * Returns the term_id of the requested term.
+     *
+     * @since 2.9
+     *
+     * @param WP_Tax_Query $tax_query An instance of WP_Tax_Query.
+     * @return int
+     */
+    protected function get_queried_term_id($tax_query)
+    {
+    }
+    /**
+     * Find the taxonomy being queried.
+     *
+     * @since 2.9
+     *
+     * @param WP_Tax_Query $tax_query An instance of WP_Tax_Query.
+     * @return string A taxonomy slug
+     */
+    protected function get_queried_taxonomy($tax_query)
+    {
+    }
+    /**
+     * Evaluates the canonical redirect url through the deidcated WP function.
+     *
+     * @since 3.3
+     *
+     * @global WP_Query $wp_query WordPress Query object.
+     *
+     * @param string       $url      Requested url.
+     * @param PLL_Language $language Language of the queried object.
+     * @return string
+     */
+    protected function redirect_canonical($url, $language)
+    {
+    }
+}
+/**
+ * @package Polylang
+ */
+/**
  * Base class to choose the language
  *
  * @since 1.2
@@ -11248,6 +13713,16 @@ abstract class PLL_Choose_Lang
      * @return void
      */
     public function parse_main_query($query)
+    {
+    }
+    /**
+     * Filters the option show_on_front when the current front page displays posts.
+     *
+     * This is useful when a static front page is not translated in all languages.
+     *
+     * @return string
+     */
+    public function filter_option_show_on_front()
     {
     }
     /**
@@ -11470,6 +13945,8 @@ class PLL_Frontend_Auto_Translate
      *
      * @param int $post_id
      * @return int
+     *
+     * @phpstan-return int<0, max>
      */
     protected function get_post($post_id)
     {
@@ -11481,6 +13958,8 @@ class PLL_Frontend_Auto_Translate
      *
      * @param int $term_id
      * @return int
+     *
+     * @phpstan-return int<0, max>
      */
     protected function get_term($term_id)
     {
@@ -11531,6 +14010,19 @@ class PLL_Frontend_Auto_Translate
      * @return string|int Translated term slug, name, term_id or term_taxonomy_id
      */
     protected function get_translated_term_by($field, $term, $taxonomy)
+    {
+    }
+    /**
+     * Translates a list of term slugs provided either as an array or a string
+     * with slugs separated by a comma or a '+'.
+     *
+     * @since 3.2.8
+     *
+     * @param string|string[] $query_var The list of term slugs.
+     * @param string          $taxonomy  The taxonomy for terms.
+     * @return string|string[] The translated list.
+     */
+    protected function translate_terms_list($query_var, $taxonomy)
     {
     }
 }
@@ -11811,62 +14303,6 @@ class PLL_Frontend_Filters_Links extends \PLL_Filters_Links
     public function admin_url($url, $path)
     {
     }
-    /**
-     * If the language code is not in agreement with the language of the content,
-     * redirects incoming links to the proper URL to avoid duplicate content.
-     *
-     * @since 0.9.6
-     *
-     * @param string $requested_url Optional, defaults to requested url.
-     * @param bool   $do_redirect   Optional, whether to perform the redirect or not.
-     * @return string|void Returns if redirect is not performed.
-     */
-    public function check_canonical_url($requested_url = '', $do_redirect = \true)
-    {
-    }
-    /**
-     * Returns the link to the paged page if requested.
-     *
-     * @since 2.9
-     *
-     * @param string $redirect_url The url to redirect to.
-     * @return string
-     */
-    protected function maybe_add_page_to_redirect_url($redirect_url)
-    {
-    }
-    /**
-     * Returns the term_id of the requested term.
-     *
-     * @since 2.9
-     *
-     * @param WP_Tax_Query $tax_query An instance of WP_Tax_Query.
-     * @return int|false
-     */
-    protected function get_queried_term_id($tax_query)
-    {
-    }
-    /**
-     * Find the taxonomy being queried.
-     *
-     * @since 2.9
-     *
-     * @param WP_Tax_Query $tax_query An instance of WP_Tax_Query.
-     * @return string A taxonomy slug
-     */
-    protected function get_queried_taxonomy($tax_query)
-    {
-    }
-    /**
-     * Returns the Global WordPress WP_Query object.
-     *
-     * @since 3.0
-     *
-     * @return WP_Query
-     */
-    protected function wp_query()
-    {
-    }
 }
 /**
  * @package Polylang
@@ -12073,12 +14509,6 @@ class PLL_Frontend_Filters extends \PLL_Filters
 class PLL_Frontend_Links extends \PLL_Links
 {
     /**
-     * Current language.
-     *
-     * @var PLL_Language|null
-     */
-    public $curlang;
-    /**
      * Internal non persistent cache object.
      *
      * @var PLL_Cache
@@ -12142,7 +14572,7 @@ class PLL_Frontend_Nav_Menu extends \PLL_Nav_Menu
     /**
      * Current language.
      *
-     * @var PLL_Language|null
+     * @var PLL_Language|null|false
      */
     public $curlang;
     /**
@@ -12913,6 +15343,12 @@ class PLL_CRUD_Terms
      */
     private $tax_query_lang;
     /**
+     * Stores the term name before creating a slug if needed.
+     *
+     * @var string
+     */
+    private $pre_term_name = '';
+    /**
      * Constructor
      *
      * @since 2.4
@@ -13021,6 +15457,29 @@ class PLL_CRUD_Terms
     public function delete_term($term_id)
     {
     }
+    /**
+     * Stores the term name for use in pre_term_slug
+     *
+     * @since 0.9.5
+     *
+     * @param string $name term name
+     * @return string unmodified term name
+     */
+    public function set_pre_term_name($name)
+    {
+    }
+    /**
+     * Appends language slug to the term slug if needed.
+     *
+     * @since 3.3
+     *
+     * @param string $slug     Term slug.
+     * @param string $taxonomy Term taxonomy.
+     * @return string Slug with a language suffix if found.
+     */
+    public function set_pre_term_slug($slug, $taxonomy)
+    {
+    }
 }
 /**
  * Small set of tools to work with the database.
@@ -13035,8 +15494,8 @@ class PLL_Db_Tools
      *
      * @since 3.2
      *
-     * @param  array<int|string> $values An array of values.
-     * @return string                    A comma separated list of values.
+     * @param (int|string)[] $values An array of values.
+     * @return string A comma separated list of values.
      */
     public static function prepare_values_list($values)
     {
@@ -13045,10 +15504,11 @@ class PLL_Db_Tools
      * Wraps a value in escaped double quotes or casts as an integer.
      * Only string and integers and supported for now.
      *
-     * @since  3.2
+     * @since 3.2
+     *
      * @global wpdb $wpdb
      *
-     * @param  int|string $value A value.
+     * @param int|string $value A value.
      * @return int|string
      */
     public static function prepare_value($value)
@@ -13139,25 +15599,25 @@ class PLL_Filters_Sanitization
  * Manipulating only one object per language instead of two terms should make things easier.
  *
  * @since 1.2
+ * @immutable
  */
+#[AllowDynamicProperties]
 class PLL_Language
 {
-    /**
-     * Id of the term in 'language' taxonomy.
-     *
-     * @var int
-     */
-    public $term_id;
     /**
      * Language name. Ex: English.
      *
      * @var string
+     *
+     * @phpstan-var non-empty-string
      */
     public $name;
     /**
-     * Language code used in url. Ex: en.
+     * Language code used in URL. Ex: en.
      *
      * @var string
+     *
+     * @phpstan-var non-empty-string
      */
     public $slug;
     /**
@@ -13167,91 +15627,137 @@ class PLL_Language
      */
     public $term_group;
     /**
+     * ID of the term in 'language' taxonomy.
+     *
+     * @var int
+     * @since 3.4 Deprecated.
+     * @deprecated
+     *
+     * @phpstan-var int<0, max>
+     */
+    public $term_id;
+    /**
      * Term taxonomy id in 'language' taxonomy.
      *
      * @var int
+     * @since 3.4 Deprecated.
+     * @deprecated
+     *
+     * @phpstan-var int<0, max>
      */
     public $term_taxonomy_id;
     /**
      * Number of posts and pages in that language.
      *
      * @var int
+     * @since 3.4 Deprecated.
+     * @deprecated
+     *
+     * @phpstan-var int<0, max>
      */
     public $count;
     /**
-     * Id of the term in 'term_language' taxonomy.
+     * ID of the term in 'term_language' taxonomy.
      *
      * @var int
+     * @since 3.4 Deprecated.
+     * @deprecated
+     *
+     * @phpstan-var int<0, max>
      */
     public $tl_term_id;
     /**
-     * Term taxonomy id in 'term_language' taxonomy.
+     * Term taxonomy ID in 'term_language' taxonomy.
      *
      * @var int
+     * @since 3.4 Deprecated.
+     * @deprecated
+     *
+     * @phpstan-var int<0, max>
      */
     public $tl_term_taxonomy_id;
     /**
      * Number of terms in that language.
      *
      * @var int
+     * @since 3.4 Deprecated.
+     * @deprecated
+     *
+     * @phpstan-var int<0, max>
      */
     public $tl_count;
     /**
      * WordPress language locale. Ex: en_US.
      *
      * @var string
+     *
+     * @phpstan-var non-empty-string
      */
     public $locale;
     /**
      * 1 if the language is rtl, 0 otherwise.
      *
      * @var int
+     *
+     * @phpstan-var int<0, 1>
      */
     public $is_rtl;
     /**
      * W3C locale.
      *
      * @var string
+     *
+     * @phpstan-var non-empty-string
      */
     public $w3c;
     /**
      * Facebook locale.
      *
      * @var string|null
+     *
+     * @phpstan-var non-empty-string|null
      */
     public $facebook;
     /**
-     * Home url in this language.
+     * Home URL in this language.
      *
      * @var string|null
+     *
+     * @phpstan-var non-empty-string|null
      */
     public $home_url;
     /**
-     * Home url to use in search forms.
+     * Home URL to use in search forms.
      *
      * @var string|null
+     *
+     * @phpstan-var non-empty-string|null
      */
     public $search_url;
     /**
      * Host corresponding to this language.
      *
      * @var string|null
+     *
+     * @phpstan-var non-empty-string|null
      */
     public $host;
     /**
-     * Id of the post storing strings translations.
+     * ID of the post storing strings translations.
      *
-     * @var int
+     * @var int|null
+     *
+     * @phpstan-var positive-int|null
      */
     public $mo_id;
     /**
-     * Id of the page on front in this language ( set from pll_languages_list filter ).
+     * ID of the page on front in this language (set from pll_languages_list filter).
      *
      * @var int|null
      */
     public $page_on_front;
     /**
-     * Id of the page for posts in this language ( set from pll_languages_list filter ).
+     * ID of the page for posts in this language (set from pll_languages_list filter).
      *
      * @var int|null
      */
@@ -13260,41 +15766,206 @@ class PLL_Language
      * Code of the flag.
      *
      * @var string
+     *
+     * @phpstan-var non-empty-string
      */
     public $flag_code;
     /**
-     * Url of the flag.
+     * URL of the flag.
      *
      * @var string|null
+     *
+     * @phpstan-var non-empty-string|null
      */
     public $flag_url;
     /**
-     * Html markup of the flag.
+     * HTML markup of the flag.
      *
      * @var string|null
      */
     public $flag;
     /**
-     * Url of the custom flag if it exists.
+     * URL of the custom flag if it exists.
      *
      * @var string|null
+     *
+     * @phpstan-var non-empty-string|null
      */
     public $custom_flag_url;
     /**
-     * Html markup of the custom flag if it exists.
+     * HTML markup of the custom flag if it exists.
      *
      * @var string|null
      */
     public $custom_flag;
     /**
-     * Constructor: builds a language object given its two corresponding terms in 'language' and 'term_language' taxonomies.
+     * Stores language term properties (like term IDs and counts) for each language taxonomy (`language`,
+     * `term_language`, etc).
+     * This stores the values of the properties `$term_id` + `$term_taxonomy_id` + `$count` (`language`), `$tl_term_id`
+     * + `$tl_term_taxonomy_id` + `$tl_count` (`term_language`), and the `term_id` + `term_taxonomy_id` + `count` for
+     * other language taxonomies.
+     *
+     * @var array[] Array keys are language term names.
+     *
+     * @exemple array(
+     *     'language'       => array(
+     *         'term_id'          => 7,
+     *         'term_taxonomy_id' => 8,
+     *         'count'            => 11,
+     *     ),
+     *     'term_language' => array(
+     *         'term_id'          => 11,
+     *         'term_taxonomy_id' => 12,
+     *         'count'            => 6,
+     *     ),
+     *     'foo_language'  => array(
+     *         'term_id'          => 33,
+     *         'term_taxonomy_id' => 34,
+     *         'count'            => 0,
+     *     ),
+     * )
+     *
+     * @phpstan-var array<
+     *     non-empty-string,
+     *     array{
+     *         term_id: positive-int,
+     *         term_taxonomy_id: positive-int,
+     *         count: int<0, max>
+     *     }
+     * >
+     */
+    protected $term_props = array();
+    /**
+     * Constructor: builds a language object given the corresponding data.
      *
      * @since 1.2
+     * @since 3.4 Only accepts one argument.
      *
-     * @param WP_Term|array $language      Term in 'language' taxonomy or language object properties stored as an array.
-     * @param WP_Term       $term_language Corresponding 'term_language' term.
+     * @param array $language_data {
+     *     Language object properties stored as an array.
+     *
+     *     @type array[] $term_props      An array of language term properties. Array keys are language taxonomy names
+     *                                    (`language` and `term_language` are mandatory), array values are arrays of
+     *                                    language term properties (`term_id`, `term_taxonomy_id`, and `count`).
+     *     @type string  $name            Language name. Ex: English.
+     *     @type string  $slug            Language code used in URL. Ex: en.
+     *     @type string  $locale          WordPress language locale. Ex: en_US.
+     *     @type string  $w3c             W3C locale.
+     *     @type string  $flag_code       Code of the flag.
+     *     @type int     $term_group      Order of the language when displayed in a list of languages.
+     *     @type int     $is_rtl          `1` if the language is rtl, `0` otherwise.
+     *     @type int     $mo_id           Optional. ID of the post storing strings translations.
+     *     @type string  $facebook        Optional. Facebook locale.
+     *     @type string  $home_url        Optional. Home URL in this language.
+     *     @type string  $search_url      Optional. Home URL to use in search forms.
+     *     @type string  $host            Optional. Host corresponding to this language.
+     *     @type string  $flag_url        Optional. URL of the flag.
+     *     @type string  $flag            Optional. HTML markup of the flag.
+     *     @type string  $custom_flag_url Optional. URL of the custom flag if it exists.
+     *     @type string  $custom_flag     Optional. HTML markup of the custom flag if it exists.
+     *     @type int     $page_on_front   Optional. ID of the page on front in this language.
+     *     @type int     $page_for_posts  Optional. ID of the page for posts in this language.
+     * }
+     *
+     * @phpstan-param array{
+     *     term_id?: positive-int,
+     *     term_taxonomy_id?: positive-int,
+     *     count?: int<0, max>,
+     *     tl_term_id?: positive-int,
+     *     tl_term_taxonomy_id?: positive-int,
+     *     tl_count?: int<0, max>,
+     *     term_props: array{
+     *         language: array{
+     *             term_id: positive-int,
+     *             term_taxonomy_id: positive-int,
+     *             count: int<0, max>
+     *         },
+     *         term_language: array{
+     *             term_id: positive-int,
+     *             term_taxonomy_id: positive-int,
+     *             count: int<0, max>
+     *         }
+     *     },
+     *     name: non-empty-string,
+     *     slug: non-empty-string,
+     *     locale: non-empty-string,
+     *     w3c: non-empty-string,
+     *     flag_code: non-empty-string,
+     *     term_group: int,
+     *     is_rtl: int<0, 1>,
+     *     mo_id?: positive-int,
+     *     facebook?: non-empty-string,
+     *     home_url?: non-empty-string,
+     *     search_url?: non-empty-string,
+     *     host?: non-empty-string,
+     *     flag_url?: non-empty-string,
+     *     flag?: non-empty-string,
+     *     custom_flag_url?: non-empty-string,
+     *     custom_flag?: non-empty-string,
+     *     page_on_front?:positive-int,
+     *     page_for_posts?:positive-int
+     * } $language_data
      */
-    public function __construct($language, $term_language = \null)
+    public function __construct(array $language_data)
+    {
+    }
+    /**
+     * Returns a language term property value (term ID, term taxonomy ID, or count).
+     *
+     * @since 3.4
+     *
+     * @param string $taxonomy_name Name of the taxonomy.
+     * @param string $prop_name     Name of the property: 'term_taxonomy_id', 'term_id', 'count'.
+     * @return int
+     *
+     * @phpstan-param non-empty-string $taxonomy_name
+     * @phpstan-param 'term_taxonomy_id'|'term_id'|'count' $prop_name
+     * @phpstan-return int<0, max>
+     */
+    public function get_tax_prop($taxonomy_name, $prop_name)
+    {
+    }
+    /**
+     * Stores a language term property value (term ID, term taxonomy ID, or count).
+     *
+     * @since 3.4
+     *
+     * @param string $taxonomy_name Name of the taxonomy.
+     * @param string $prop_name     Name of the property: 'term_taxonomy_id', 'term_id', 'count'.
+     * @param int    $prop_value    Property value.
+     * @return int
+     *
+     * @phpstan-param non-empty-string $taxonomy_name
+     * @phpstan-param 'term_taxonomy_id'|'term_id'|'count' $prop_name
+     * @phpstan-return int<0, max>
+     */
+    public function set_tax_prop($taxonomy_name, $prop_name, $prop_value)
+    {
+    }
+    /**
+     * Returns the language term props for all content types.
+     *
+     * @since 3.4
+     *
+     * @param string|null $field Name of the field to return. `null` to return them all.
+     * @return (int[]|int)[] Array keys are taxonomy names, array values depend of `$field`.
+     *
+     * @phpstan-param 'term_taxonomy_id'|'term_id'|'count'|null $field
+     * @phpstan-return array<non-empty-string, (
+     *     $field is non-empty-string ?
+     *     (
+     *         $field is 'count' ?
+     *         int<0, max> :
+     *         positive-int
+     *     ) :
+     *     array{
+     *         term_id: positive-int,
+     *         term_taxonomy_id: positive-int,
+     *         count: int<0, max>
+     *     }
+     * )>
+     */
+    public function get_tax_props($field = \null)
     {
     }
     /**
@@ -13402,6 +16073,109 @@ class PLL_Language
      * @return string
      */
     public function get_locale($filter = 'raw')
+    {
+    }
+    /**
+     * Returns the values of this instance's properties.
+     *
+     * @since 3.4
+     *
+     * @return array
+     */
+    public function get_object_vars()
+    {
+    }
+    /**
+     * Validates and sanitizes data, to be ready to be used in the constructor.
+     * This doesn't verify that the language terms exist.
+     *
+     * @since 3.4
+     *
+     * @param array $data Data to process.
+     * @return array|null {
+     *     Data to process. Null if the data is invalid.
+     *
+     *     @type array[] $term_props      An array of language term properties. Array keys are language taxonomy names
+     *                                    (`language` and `term_language` are mandatory), array values are arrays of
+     *                                    language term properties (`term_id`, `term_taxonomy_id`, and `count`).
+     *     @type string  $name            Language name. Ex: English.
+     *     @type string  $slug            Language code used in URL. Ex: en.
+     *     @type string  $locale          WordPress language locale. Ex: en_US.
+     *     @type string  $w3c             W3C locale.
+     *     @type string  $flag_code       Code of the flag.
+     *     @type int     $term_group      Order of the language when displayed in a list of languages.
+     *     @type int     $is_rtl          `1` if the language is rtl, `0` otherwise.
+     *     @type int     $mo_id           Optional. ID of the post storing strings translations.
+     *     @type string  $facebook        Optional. Facebook locale.
+     *     @type string  $home_url        Optional. Home URL in this language.
+     *     @type string  $search_url      Optional. Home URL to use in search forms.
+     *     @type string  $host            Optional. Host corresponding to this language.
+     *     @type string  $flag_url        Optional. URL of the flag.
+     *     @type string  $flag            Optional. HTML markup of the flag.
+     *     @type string  $custom_flag_url Optional. URL of the custom flag if it exists.
+     *     @type string  $custom_flag     Optional. HTML markup of the custom flag if it exists.
+     *     @type int     $page_on_front   Optional. ID of the page on front in this language.
+     *     @type int     $page_for_posts  Optional. ID of the page for posts in this language.
+     * }
+     *
+     * @phpstan-return array{
+     *     term_id?: positive-int,
+     *     term_taxonomy_id?: positive-int,
+     *     count?: int<0, max>,
+     *     tl_term_id?: positive-int,
+     *     tl_term_taxonomy_id?: positive-int,
+     *     tl_count?: int<0, max>,
+     *     term_props: array{
+     *         language: array{
+     *             term_id: positive-int,
+     *             term_taxonomy_id: positive-int,
+     *             count: int<0, max>
+     *         },
+     *         term_language: array{
+     *             term_id: positive-int,
+     *             term_taxonomy_id: positive-int,
+     *             count: int<0, max>
+     *         }
+     *     },
+     *     name: non-empty-string,
+     *     slug: non-empty-string,
+     *     locale: non-empty-string,
+     *     w3c: non-empty-string,
+     *     flag_code: non-empty-string,
+     *     term_group: int,
+     *     is_rtl: int<0, 1>,
+     *     mo_id?: positive-int,
+     *     facebook?: non-empty-string,
+     *     home_url?: non-empty-string,
+     *     search_url?: non-empty-string,
+     *     host?: non-empty-string,
+     *     flag_url?: non-empty-string,
+     *     flag?: non-empty-string,
+     *     custom_flag_url?: non-empty-string,
+     *     custom_flag?: non-empty-string,
+     *     page_on_front?:positive-int,
+     *     page_for_posts?:positive-int
+     * }|null
+     */
+    public static function validate_data(array $data)
+    {
+    }
+    /**
+     * Validates and sanitizes a `term_prop` entry.
+     * This doesn't verify that the term exists.
+     *
+     * @since 3.4
+     *
+     * @param array $data Data to process.
+     * @return int[]|null
+     *
+     * @phpstan-return array{
+     *     term_id: positive-int,
+     *     term_taxonomy_id: positive-int,
+     *     count: int<0, max>
+     * }|null
+     */
+    private static function validate_term_prop_group(array $data)
     {
     }
 }
@@ -13524,7 +16298,7 @@ class PLL_License
      *
      * @since 1.9
      *
-     * @return PLL_License Updated PLL_License object.
+     * @return void
      */
     public function check_license()
     {
@@ -13601,7 +16375,7 @@ abstract class PLL_Links_Model
      *
      * @param string             $url  The url to modify.
      * @param PLL_Language|false $lang The language object.
-     * @return string                  Modified url.
+     * @return string The modified url.
      */
     public abstract function add_language_to_link($url, $lang);
     /**
@@ -13610,7 +16384,7 @@ abstract class PLL_Links_Model
      * @since 1.2
      *
      * @param string $url The url to modify.
-     * @return string Modified url.
+     * @return string The modified url.
      */
     public abstract function remove_language_from_link($url);
     /**
@@ -13619,7 +16393,7 @@ abstract class PLL_Links_Model
      * @since 1.2
      *
      * @param string $url The url to modify.
-     * @return string Modified url.
+     * @return string The modified url.
      */
     public abstract function remove_paged_from_link($url);
     /**
@@ -13629,21 +16403,21 @@ abstract class PLL_Links_Model
      *
      * @param string $url  The url to modify.
      * @param int    $page The page number.
-     * @return string Modified url.
+     * @return string The modified url.
      */
     public abstract function add_paged_to_link($url, $page);
     /**
-     * Returns the language based on language code in url.
+     * Returns the language based on the language code in the url.
      *
      * @since 1.2
-     * @since 2.0 add $url argument.
+     * @since 2.0 Add the $url argument.
      *
-     * @param string $url Optional, defaults to thej current url.
-     * @return string Language slug.
+     * @param string $url Optional, defaults to the current url.
+     * @return string The language slug.
      */
     public abstract function get_language_from_url($url = '');
     /**
-     * Returns the static front page url.
+     * Returns the static front page url in a given language.
      *
      * @since 1.8
      *
@@ -13658,13 +16432,13 @@ abstract class PLL_Links_Model
      *
      * @param string       $url  The url to modify.
      * @param PLL_Language $lang The language object.
-     * @return string Modified url.
+     * @return string The modified url.
      */
     public function switch_language_in_link($url, $lang)
     {
     }
     /**
-     * Get hosts managed on the website.
+     * Get the hosts managed on the website.
      *
      * @since 1.5
      *
@@ -13678,7 +16452,7 @@ abstract class PLL_Links_Model
      *
      * @since 1.3.1
      *
-     * @param PLL_Language $lang PLL_Language object.
+     * @param PLL_Language $lang The language object.
      * @return string
      */
     public function home_url($lang)
@@ -13689,7 +16463,7 @@ abstract class PLL_Links_Model
      *
      * @since 1.8
      *
-     * @param PLL_Language $language PLL_Language object.
+     * @param PLL_Language $language The language object.
      * @return void
      */
     protected function set_home_url($language)
@@ -13734,7 +16508,7 @@ abstract class PLL_Links_Model
  * @package Polylang
  */
 /**
- * Links model base class when using pretty permalinks
+ * Links model base class when using pretty permalinks.
  *
  * @since 1.6
  */
@@ -13783,34 +16557,34 @@ abstract class PLL_Links_Permalinks extends \PLL_Links_Model
     {
     }
     /**
-     * Returns the link to the first page when using pretty permalinks
+     * Returns the link to the first page when using pretty permalinks.
      *
      * @since 1.2
      *
-     * @param string $url url to modify
-     * @return string modified url
+     * @param string $url The url to modify.
+     * @return string The modified url.
      */
     public function remove_paged_from_link($url)
     {
     }
     /**
-     * Returns the link to the paged page when using pretty permalinks
+     * Returns the link to the paged page when using pretty permalinks.
      *
      * @since 1.5
      *
-     * @param string $url  url to modify
-     * @param int    $page
-     * @return string modified url
+     * @param string $url  The url to modify.
+     * @param int    $page The page number.
+     * @return string The modified url.
      */
     public function add_paged_to_link($url, $page)
     {
     }
     /**
-     * Returns the home url.
+     * Returns the home url in a given language.
      *
      * @since 1.3.1
      *
-     * @param PLL_Language $lang PLL_Language object.
+     * @param PLL_Language $lang A language object.
      * @return string
      */
     public function home_url($lang)
@@ -13828,7 +16602,7 @@ abstract class PLL_Links_Permalinks extends \PLL_Links_Model
     {
     }
     /**
-     * Prepares rewrite rules filters
+     * Prepares rewrite rules filters.
      *
      * @since 1.6
      *
@@ -13842,7 +16616,7 @@ abstract class PLL_Links_Permalinks extends \PLL_Links_Model
  * @package Polylang
  */
 /**
- * Links model for use when using one domain or subdomain per language
+ * Links model for use when using one domain or subdomain per language.
  *
  * @since 2.0
  */
@@ -13859,14 +16633,13 @@ abstract class PLL_Links_Abstract_Domain extends \PLL_Links_Permalinks
     {
     }
     /**
-     * Returns the language based on language code in url
-     * links_model interface
+     * Returns the language based on the language code in url.
      *
      * @since 1.2
-     * @since 2.0 add $url argument
+     * @since 2.0 Add the $url argument.
      *
-     * @param string $url optional, defaults to current url
-     * @return string language slug
+     * @param string $url Optional, defaults to the current url.
+     * @return string Language slug.
      */
     public function get_language_from_url($url = '')
     {
@@ -13882,22 +16655,22 @@ abstract class PLL_Links_Abstract_Domain extends \PLL_Links_Permalinks
     {
     }
     /**
-     * Returns the current site url
+     * Modifies an url to use the domain associated to the current language.
      *
      * @since 1.8
      *
-     * @param string $url
-     * @return string
+     * @param string $url The url to modify.
+     * @return string The modified url.
      */
     public function site_url($url)
     {
     }
     /**
-     * Fix the domain for upload directory
+     * Fixes the domain for the upload directory.
      *
      * @since 2.0.6
      *
-     * @param array $uploads
+     * @param array $uploads Array of information about the upload directory. @see wp_upload_dir().
      * @return array
      */
     public function upload_dir($uploads)
@@ -13908,9 +16681,8 @@ abstract class PLL_Links_Abstract_Domain extends \PLL_Links_Permalinks
  * @package Polylang
  */
 /**
- * Links model for default permalinks
- * for example mysite.com/?somevar=something&lang=en
- * implements the "links_model interface"
+ * Links model for the default permalinks
+ * for example mysite.com/?somevar=something&lang=en.
  *
  * @since 1.2
  */
@@ -13924,68 +16696,64 @@ class PLL_Links_Default extends \PLL_Links_Model
     public $using_permalinks = \false;
     /**
      * Adds the language code in a url.
-     * links_model interface.
      *
      * @since 1.2
      *
      * @param string             $url  The url to modify.
      * @param PLL_Language|false $lang The language object.
-     * @return string                  Modified url.
+     * @return string The modified url.
      */
     public function add_language_to_link($url, $lang)
     {
     }
     /**
-     * Removes the language information from an url
-     * links_model interface
+     * Removes the language information from an url.
      *
      * @since 1.2
      *
-     * @param string $url url to modify
-     * @return string modified url
+     * @param string $url The url to modify.
+     * @return string The modified url.
      */
     public function remove_language_from_link($url)
     {
     }
     /**
-     * Returns the link to the first page
-     * links_model interface
+     * Returns the link to the first page.
      *
      * @since 1.2
      *
-     * @param string $url url to modify
-     * @return string modified url
+     * @param string $url The url to modify.
+     * @return string The modified url.
      */
     public function remove_paged_from_link($url)
     {
     }
     /**
-     * Returns the link to the paged page when using pretty permalinks
+     * Returns the link to the paged page.
      *
      * @since 1.5
      *
-     * @param string $url  url to modify
-     * @param int    $page
-     * @return string modified url
+     * @param string $url  The url to modify.
+     * @param int    $page The page number.
+     * @return string The modified url.
      */
     public function add_paged_to_link($url, $page)
     {
     }
     /**
-     * Gets the language slug from the url if present
-     * links_model interface
+     * Gets the language slug from the url if present.
      *
      * @since 1.2
-     * @since 2.0 add $url argument
+     * @since 2.0 Add the $url argument.
      *
-     * @param string $url optional, defaults to current url
-     * @return string language slug
+     * @param string $url Optional, defaults to the current url.
+     * @return string Language slug.
      */
     public function get_language_from_url($url = '')
     {
     }
     /**
-     * Returns the static front page url.
+     * Returns the static front page url in the given language.
      *
      * @since 1.8
      *
@@ -14000,9 +16768,8 @@ class PLL_Links_Default extends \PLL_Links_Model
  * @package Polylang
  */
 /**
- * Links model for use when the language code is added in url as a directory
- * for example mysite.com/en/something
- * implements the "links_model interface"
+ * Links model for use when the language code is added in the url as a directory
+ * for example mysite.com/en/something.
  *
  * @since 1.2
  */
@@ -14025,7 +16792,7 @@ class PLL_Links_Directory extends \PLL_Links_Permalinks
     {
     }
     /**
-     * Called only at first object creation to avoid duplicating filters when switching blog
+     * Called only at first object creation to avoid duplicating filters when switching blog.
      *
      * @since 1.6
      *
@@ -14036,56 +16803,52 @@ class PLL_Links_Directory extends \PLL_Links_Permalinks
     }
     /**
      * Adds the language code in a url.
-     * links_model interface.
      *
      * @since 1.2
      *
      * @param string             $url  The url to modify.
      * @param PLL_Language|false $lang The language object.
-     * @return string                  Modified url.
+     * @return string The modified url.
      */
     public function add_language_to_link($url, $lang)
     {
     }
     /**
-     * Returns the url without language code
-     * links_model interface
+     * Returns the url without the language code.
      *
      * @since 1.2
      *
-     * @param string $url url to modify
-     * @return string modified url
+     * @param string $url The url to modify.
+     * @return string The modified url.
      */
     public function remove_language_from_link($url)
     {
     }
     /**
-     * Returns the language based on language code in url
-     * links_model interface
+     * Returns the language based on the language code in the url.
      *
      * @since 1.2
-     * @since 2.0 add $url argument
+     * @since 2.0 Add the $url argument.
      *
-     * @param string $url optional, defaults to current url
-     * @return string language slug
+     * @param string $url Optional, defaults to the current url.
+     * @return string The language slug.
      */
     public function get_language_from_url($url = '')
     {
     }
     /**
      * Returns the home url in a given language.
-     * links_model interface.
      *
      * @since 1.3.1
      *
-     * @param PLL_Language $lang PLL_Language object.
+     * @param PLL_Language $lang The language object.
      * @return string
      */
     public function home_url($lang)
     {
     }
     /**
-     * Optionally removes 'language' in permalinks so that we get http://www.myblog/en/ instead of http://www.myblog/language/en/
+     * Optionally removes 'language' in permalinks so that we get http://www.myblog/en/ instead of http://www.myblog/language/en/.
      *
      * @since 1.2
      *
@@ -14107,6 +16870,7 @@ class PLL_Links_Directory extends \PLL_Links_Permalinks
     }
     /**
      * The rewrite rules !
+     *
      * Always make sure that the default language is at the end in case the language information is hidden for default language.
      * Thanks to brbrbr http://wordpress.org/support/topic/plugin-polylang-rewrite-rules-not-correct.
      *
@@ -14124,8 +16888,7 @@ class PLL_Links_Directory extends \PLL_Links_Permalinks
  */
 /**
  * Links model for use when using one domain per language
- * for example mysite.com/sth and mysite.fr/qqch
- * implements the "links_model interface"
+ * for example mysite.com/something and mysite.fr/quelquechose.
  *
  * @since 1.2
  */
@@ -14138,54 +16901,51 @@ class PLL_Links_Domain extends \PLL_Links_Abstract_Domain
      */
     protected $hosts;
     /**
-     * Constructor
+     * Constructor.
      *
      * @since 1.8
      *
-     * @param object $model PLL_Model instance
+     * @param object $model PLL_Model instance.
      */
     public function __construct(&$model)
     {
     }
     /**
-     * Adds the language code in url
-     * links_model interface
+     * Switches the primary domain to a secondary domain in the url.
      *
      * @since 1.2
      *
      * @param string             $url  The url to modify.
      * @param PLL_Language|false $lang The language object.
-     * @return string                  Modified url.
+     * @return string The modified url.
      */
     public function add_language_to_link($url, $lang)
     {
     }
     /**
-     * Returns the url without language code
-     * links_model interface
+     * Returns the url with the primary domain.
      *
      * @since 1.2
      *
-     * @param string $url url to modify
-     * @return string modified url
+     * @param string $url The url to modify.
+     * @return string The modified url.
      */
     public function remove_language_from_link($url)
     {
     }
     /**
      * Returns the home url in a given language.
-     * links_model interface.
      *
      * @since 1.3.1
      *
-     * @param PLL_Language $lang PLL_Language object.
+     * @param PLL_Language $lang The language object.
      * @return string
      */
     public function home_url($lang)
     {
     }
     /**
-     * Get hosts managed on the website.
+     * Get the hosts managed on the website.
      *
      * @since 1.5
      *
@@ -14199,9 +16959,8 @@ class PLL_Links_Domain extends \PLL_Links_Abstract_Domain
  * @package Polylang
  */
 /**
- * Links model for use when the language code is added in url as a subdomain
- * for example en.mysite.com/something
- * implements the "links_model interface"
+ * Links model for use when the language code is added in the url as a subdomain
+ * for example en.mysite.com/something.
  *
  * @since 1.2
  */
@@ -14226,31 +16985,29 @@ class PLL_Links_Subdomain extends \PLL_Links_Abstract_Domain
     }
     /**
      * Adds the language code in a url.
-     * links_model interface.
      *
      * @since 1.2
      *
      * @param string             $url  The url to modify.
      * @param PLL_Language|false $lang The language object.
-     * @return string                  Modified url.
+     * @return string The modified url.
      */
     public function add_language_to_link($url, $lang)
     {
     }
     /**
-     * Returns the url without language code
-     * links_model interface
+     * Returns the url without the language code.
      *
      * @since 1.2
      *
-     * @param string $url url to modify
-     * @return string modified url
+     * @param string $url The url to modify.
+     * @return string The modified url.
      */
     public function remove_language_from_link($url)
     {
     }
     /**
-     * Get hosts managed on the website.
+     * Get the hosts managed on the website.
      *
      * @since 1.5
      *
@@ -14302,14 +17059,29 @@ class PLL_MO extends \MO
     {
     }
     /**
-     * Returns the post id of the post storing the strings translations.
+     * Returns the post ID of the post storing the strings translations.
      *
      * @since 1.4
      *
      * @param PLL_Language $lang The language object.
-     * @return int
+     * @return int|null
+     *
+     * @phpstan-return positive-int|null
      */
     public static function get_id($lang)
+    {
+    }
+    /**
+     * Returns the post ID of the post storing the strings translations.
+     *
+     * @since 3.4
+     *
+     * @param int $term_id The language term ID.
+     * @return int|null
+     *
+     * @phpstan-return positive-int|null
+     */
+    public static function get_id_from_term_id($term_id)
     {
     }
     /**
@@ -14331,6 +17103,259 @@ class PLL_MO extends \MO
      * @return void
      */
     public function delete_entry($string)
+    {
+    }
+}
+/**
+ * Abstract class to use for object types that support at least one language.
+ *
+ * @since 3.4
+ */
+abstract class PLL_Object_With_Language
+{
+    /**
+     * @var PLL_Model
+     */
+    public $model;
+    /**
+     * Taxonomy name for the languages.
+     *
+     * @var string
+     *
+     * @phpstan-var non-empty-string
+     */
+    protected $tax_language;
+    /**
+     * Object type used to set or retrieve properties from PLL_Language.
+     *
+     * @var string
+     *
+     * @phpstan-var non-empty-string
+     */
+    protected $type;
+    /**
+     * Object type to use when registering the taxonomy.
+     * Left empty for object types that are not a taxonomy.
+     *
+     * @var string|null
+     *
+     * @phpstan-var non-empty-string|null
+     */
+    protected $object_type = \null;
+    /**
+     * List of taxonomies to cache in get_object_term().
+     *
+     * @var string[]
+     * @see PLL_Object_With_Language::get_object_term()
+     */
+    protected $tax_to_cache = array();
+    /**
+     * Default alias corresponding to the object's DB table.
+     *
+     * @var string
+     * @see PLL_Object_With_Language::join_clause()
+     *
+     * @phpstan-var non-empty-string
+     */
+    protected $db_default_alias;
+    /**
+     * Name of the DB column containing the object's ID.
+     *
+     * @var string
+     * @see PLL_Object_With_Language::join_clause()
+     *
+     * @phpstan-var non-empty-string
+     */
+    protected $db_id_column;
+    /**
+     * Constructor.
+     *
+     * @since 3.4
+     *
+     * @param PLL_Model $model Instance of `PLL_Model`, passed by reference.
+     */
+    public function __construct(\PLL_Model &$model)
+    {
+    }
+    /**
+     * Returns the language taxonomy name.
+     *
+     * @since 3.4
+     *
+     * @return string
+     *
+     * @phpstan-return non-empty-string
+     */
+    public function get_tax_language()
+    {
+    }
+    /**
+     * Returns the type of object.
+     *
+     * @since 3.4
+     *
+     * @return string
+     *
+     * @phpstan-return non-empty-string
+     */
+    public function get_type()
+    {
+    }
+    /**
+     * Add hooks.
+     *
+     * @since 3.4
+     *
+     * @return static
+     */
+    public function init()
+    {
+    }
+    /**
+     * Returns the language of an object.
+     *
+     * @since 0.1
+     * @since 3.4 Renamed the parameter $post_id into $id.
+     *
+     * @param int $id Object ID.
+     * @return PLL_Language|false A `PLL_Language` object, `false` if no language is associated to that object.
+     */
+    public function get_language($id)
+    {
+    }
+    /**
+     * Stores the object's language in the database.
+     *
+     * @since 3.4
+     *
+     * @param int                     $id   Object ID.
+     * @param PLL_Language|string|int $lang Language (object, slug, or term ID).
+     * @return bool True when successfully assigned. False otherwise (or if the given language is already assigned to
+     *              the object).
+     */
+    public function set_language($id, $lang)
+    {
+    }
+    /**
+     * Assigns a new language to an object.
+     *
+     * @since 3.1
+     *
+     * @param int          $id   Object ID.
+     * @param PLL_Language $lang New language to assign to the object.
+     * @return bool True when successfully assigned. False otherwise (or if the given language is already assigned to
+     *              the object).
+     */
+    public function update_language($id, \PLL_Language $lang)
+    {
+    }
+    /**
+     * Removes the term language from the database.
+     *
+     * @since 3.4
+     *
+     * @param int $id Term ID.
+     * @return void
+     */
+    public function delete_language($id)
+    {
+    }
+    /**
+     * Wraps `wp_get_object_terms()` to cache it and return only one object.
+     * Inspired by the WordPress function `get_the_terms()`.
+     *
+     * @since 1.2
+     *
+     * @param int    $id       Object ID.
+     * @param string $taxonomy Polylang taxonomy depending if we are looking for a post (or term, or else) language.
+     * @return WP_Term|false The term associated to the object in the requested taxonomy if it exists, `false` otherwise.
+     */
+    public function get_object_term($id, $taxonomy)
+    {
+    }
+    /**
+     * A JOIN clause to add to sql queries when filtering by language is needed directly in query.
+     *
+     * @since 3.4
+     *
+     * @param string $alias Optional alias for object table.
+     * @return string The JOIN clause.
+     *
+     * @phpstan-return non-empty-string
+     */
+    public function join_clause($alias = '')
+    {
+    }
+    /**
+     * A WHERE clause to add to sql queries when filtering by language is needed directly in query.
+     *
+     * @since 1.2
+     *
+     * @param PLL_Language|PLL_Language[]|string|string[] $lang A `PLL_Language` object, or a comma separated list of language slugs, or an array of language slugs or objects.
+     * @return string The WHERE clause.
+     */
+    public function where_clause($lang)
+    {
+    }
+    /**
+     * Returns object types that need to be translated.
+     *
+     * @since 3.4
+     *
+     * @param bool $filter True if we should return only valid registered object types.
+     * @return string[] Object type names for which Polylang manages languages.
+     *
+     * @phpstan-return array<non-empty-string, non-empty-string>
+     */
+    public abstract function get_translated_object_types($filter = \true);
+    /**
+     * Returns true if Polylang manages languages for this object type.
+     *
+     * @since 3.4
+     *
+     * @param string|string[] $object_type Object type name or array of object type names.
+     * @return bool
+     */
+    public abstract function is_translated_object_type($object_type);
+    /**
+     * Returns the IDs of the objects without language.
+     *
+     * @since 3.4
+     *
+     * @param string[] $object_types An array of object types.
+     * @param int      $limit        Max number of objects to return. `-1` to return all of them.
+     * @return int[] Array of object IDs.
+     *
+     * @phpstan-param -1|positive-int $limit
+     * @phpstan-return list<positive-int>
+     */
+    public abstract function get_objects_with_no_lang(array $object_types, $limit);
+    /**
+     * Sanitizes an ID as positive integer.
+     * Kind of similar to `absint()`, but rejects negetive integers instead of making them positive.
+     *
+     * @since 3.2
+     *
+     * @param mixed $id A supposedly numeric ID.
+     * @return int A positive integer. `0` for non numeric values and negative integers.
+     *
+     * @phpstan-return int<0,max>
+     */
+    public function sanitize_int_id($id)
+    {
+    }
+    /**
+     * Sanitizes an array of IDs as positive integers.
+     * `0` values are removed.
+     *
+     * @since 3.2
+     *
+     * @param mixed $ids An array of numeric IDs.
+     * @return int[]
+     *
+     * @phpstan-return array<positive-int>
+     */
+    public function sanitize_int_ids_list($ids)
     {
     }
 }
@@ -14532,11 +17557,12 @@ class PLL_Query
      * Optimized for (and requires) WP 3.5+.
      *
      * @since 2.2
+     * @since 3.3 Accepts now an array of languages.
      *
-     * @param PLL_Language $lang Language object.
+     * @param PLL_Language|PLL_Language[] $languages Language object(s).
      * @return void
      */
-    public function set_language($lang)
+    public function set_language($languages)
     {
     }
     /**
@@ -14548,6 +17574,17 @@ class PLL_Query
      * @return void
      */
     public function filter_query($lang)
+    {
+    }
+    /**
+     * Sets the language correctly if the current query is a 'OR' relation,
+     * since WordPress merges the language with the other query vars when the relation is OR.
+     *
+     * @since 3.3
+     *
+     * @return void
+     */
+    protected function maybe_set_language_for_or_relation()
     {
     }
 }
@@ -14598,6 +17635,20 @@ class PLL_REST_Request extends \PLL_Base
      * @return void
      */
     public function init()
+    {
+    }
+    /**
+     * Sets the current language during a REST request if sent.
+     *
+     * @since 3.3
+     *
+     * @param mixed           $result  Response to replace the requested version with. Remains untouched.
+     * @param WP_REST_Server  $server  Server instance.
+     * @param WP_REST_Request $request Request used to generate the response.
+     *
+     * @return mixed Untouched $result.
+     */
+    public function set_language($result, $server, $request)
     {
     }
 }
@@ -14721,6 +17772,92 @@ class PLL_Switcher
      * @return string|array either the html markup of the switcher or the raw elements to build a custom language switcher
      */
     public function the_languages($links, $args = array())
+    {
+    }
+}
+/**
+ * @package Polylang
+ */
+/**
+ * Registry for all translatable objects.
+ *
+ * @since 3.4
+ */
+class PLL_Translatable_Objects_Registry
+{
+    /**
+     * List of registered objects.
+     *
+     * @var PLL_Object_With_Language[] Array keys are the type of translated content (post, term, etc).
+     *
+     * @phpstan-var array<non-empty-string, PLL_Object_With_Language>
+     */
+    private $objects = array();
+    /**
+     * Registers a translatable object.
+     *
+     * @since 3.4
+     *
+     * @param PLL_Object_With_Language $object The translatable object to register.
+     * @return PLL_Object_With_Language
+     */
+    public function register(\PLL_Object_With_Language $object)
+    {
+    }
+    /**
+     * Returns all registered translatable objects.
+     *
+     * @since 3.4
+     *
+     * @return PLL_Object_With_Language[] Array keys are the type of translated content (post, term, etc).
+     *
+     * @phpstan-return array<non-empty-string, PLL_Object_With_Language>
+     */
+    public function get_all()
+    {
+    }
+    /**
+     * Tells if a translatable object is registered, given an object type.
+     *
+     * @since 3.4
+     *
+     * @param string $object_type The object type.
+     * @return bool
+     */
+    public function has($object_type)
+    {
+    }
+    /**
+     * Returns a translatable object, given an object type.
+     *
+     * @since 3.4
+     *
+     * @param string $object_type The object type.
+     * @return PLL_Object_With_Language|null
+     */
+    public function get($object_type)
+    {
+    }
+    /**
+     * Tells if a translatable object is registered, given a language taxonomy name.
+     *
+     * @since 3.4
+     *
+     * @param string $tax_name The language taxonomy name.
+     * @return bool
+     */
+    public function has_from_tax($tax_name)
+    {
+    }
+    /**
+     * Returns a translatable object, given a language taxonomy name.
+     *
+     * @since 3.4
+     *
+     * @param string $tax_name The language taxonomy name.
+     * @return PLL_Object_With_Language|null
+     */
+    public function get_from_tax($tax_name)
     {
     }
 }
@@ -14876,204 +18013,141 @@ class PLL_Translate_Option
     }
 }
 /**
- * @package Polylang
- */
-/**
- * Setups the objects languages and translations model.
+ * Abstract class to use for object types that support translations.
  *
  * @since 1.8
  */
-abstract class PLL_Translated_Object
+abstract class PLL_Translated_Object extends \PLL_Object_With_Language
 {
-    /**
-     * @var PLL_Model
-     */
-    public $model;
-    /**
-     * Object type to use when registering the taxonomies.
-     * Left empty for posts.
-     *
-     * @var string|null
-     */
-    protected $object_type;
-    /**
-     * Object type to use when checking capabilities.
-     *
-     * @var string
-     */
-    protected $type;
-    /**
-     * Taxonomy name for the languages.
-     *
-     * @var string
-     */
-    protected $tax_language;
     /**
      * Taxonomy name for the translation groups.
      *
      * @var string
+     *
+     * @phpstan-var non-empty-string
      */
     protected $tax_translations;
     /**
-     * PLL_Language property name for the term_taxonomy id.
+     * Object type to use when checking capabilities.
      *
      * @var string
+     *
+     * @phpstan-var non-empty-string
      */
-    protected $tax_tt;
+    protected $cap_type;
     /**
      * Constructor.
      *
      * @since 1.8
      *
-     * @param PLL_Model $model Instance of PLL_Model.
+     * @param PLL_Model $model Instance of `PLL_Model`.
      */
-    public function __construct(&$model)
+    public function __construct(\PLL_Model &$model)
     {
     }
     /**
-     * Stores the language in the database.
+     * Returns the translations group taxonomy name.
      *
-     * @since 0.6
+     * @since 3.4
      *
-     * @param int                     $id   Object id.
-     * @param int|string|PLL_Language $lang Language (term_id or slug or object).
-     * @return void
+     * @return string
+     *
+     * @phpstan-return non-empty-string
      */
-    public abstract function set_language($id, $lang);
-    /**
-     * Returns the language of an object.
-     *
-     * @since 0.1
-     *
-     * @param int $id Object id.
-     * @return PLL_Language|false PLL_Language object, false if no language is associated to that object.
-     */
-    public abstract function get_language($id);
+    public function get_tax_translations()
+    {
+    }
     /**
      * Assigns a new language to an object, taking care of the translations group.
      *
      * @since 3.1
      *
-     * @param int          $id   Object id.
+     * @param int          $id   Object ID.
      * @param PLL_Language $lang New language to assign to the object.
-     * @return void
+     * @return bool True when successfully assigned. False otherwise (or if the given language is already assigned to
+     *              the object).
      */
-    public function update_language($id, $lang)
+    public function update_language($id, \PLL_Language $lang)
     {
     }
     /**
-     * Wraps wp_get_object_terms() to cache it and return only one object.
-     * Inspired by the WordPress function get_the_terms().
-     *
-     * @since 1.2
-     *
-     * @param int    $object_id Object id ( typically a post_id or term_id ).
-     * @param string $taxonomy  Polylang taxonomy depending if we are looking for a post ( or term ) language ( or translation ).
-     * @return WP_Term|false The term associated to the object in the requested taxonomy if it exists, false otherwise.
-     */
-    public function get_object_term($object_id, $taxonomy)
-    {
-    }
-    /**
-     * Returns a list of post translations, given a `tax_translations` term ID.
+     * Returns a list of object translations, given a `tax_translations` term ID.
      *
      * @since 3.2
      *
-     * @param  int $term_id Term ID.
-     * @return array<int>   An associative array of translations with language code as key and translation id as value.
+     * @param int $term_id A `tax_translations` term ID.
+     * @return int[] An associative array of translations with language code as key and translation ID as value.
+     *
+     * @phpstan-return array<non-empty-string, positive-int>
      */
     public function get_translations_from_term_id($term_id)
     {
     }
     /**
-     * Tells whether a translation term must be updated.
-     *
-     * @since 2.3
-     *
-     * @param int   $id           Object id ( typically a post_id or term_id ).
-     * @param int[] $translations An associative array of translations with language code as key and translation id as
-     *                            value. Make sure to sanitize this.
-     * @return bool
-     */
-    protected function should_update_translation_group($id, $translations)
-    {
-    }
-    /**
-     * Saves translations for posts or terms.
+     * Saves the object's translations.
      *
      * @since 0.5
      *
-     * @param int   $id           Object id ( typically a post_id or term_id ).
-     * @param int[] $translations An associative array of translations with language code as key and translation id as value.
-     * @return int[]              An associative array with language codes as key and post ids as values.
+     * @param int   $id           Object ID.
+     * @param int[] $translations An associative array of translations with language code as key and translation ID as value.
+     * @return int[] An associative array with language codes as key and object IDs as values.
+     *
+     * @phpstan-return array<non-empty-string, positive-int>
      */
-    public function save_translations($id, $translations)
+    public function save_translations($id, array $translations = array())
     {
     }
     /**
-     * Deletes a translation of a post or term.
+     * Deletes a translation of an object.
      *
      * @since 0.5
      *
-     * @param int $id Object id ( typically a post_id or term_id ).
+     * @param int $id Object ID.
      * @return void
      */
     public function delete_translation($id)
     {
     }
     /**
-     * Returns an array of translations of a post or term.
+     * Returns an array of translations of an object.
      *
      * @since 0.5
      *
-     * @param int $id Object id ( typically a post_id or term_id ).
-     * @return int[] An associative array of translations with language code as key and translation id as value.
+     * @param int $id Object ID.
+     * @return int[] An associative array of translations with language code as key and translation ID as value.
+     *
+     * @phpstan-return array<non-empty-string, positive-int>
      */
     public function get_translations($id)
     {
     }
     /**
-     * Returns the id of the translation of a post or term.
+     * Returns the ID of the translation of an object.
      *
      * @since 0.5
      *
-     * @param int                 $id   Object id ( typically a post_id or term_id ).
-     * @param PLL_Language|string $lang Language ( slug or object ).
-     * @return int|false Object id of the translation, false if there is none.
+     * @param int                 $id   Object ID.
+     * @param PLL_Language|string $lang Language (slug or object).
+     * @return int|false Object ID of the translation, false if there is none.
+     *
+     * @phpstan-return positive-int|false
      */
     public function get_translation($id, $lang)
     {
     }
     /**
-     * Among the object and its translations, returns the id of the object which is in $lang
+     * Among the object and its translations, returns the ID of the object which is in `$lang`.
      *
      * @since 0.1
+     * @since 3.4 Returns 0 instead of false.
      *
-     * @param int                     $id   Object id ( typically a post_id or term_id ).
-     * @param int|string|PLL_Language $lang Language ( term_id or slug or object ).
-     * @return int|false The translation object id if exists, otherwise the passed id, false if the passed object has no language.
+     * @param int                     $id   Object ID.
+     * @param PLL_Language|string|int $lang Language (object, slug, or term ID).
+     * @return int The translation object ID if exists, otherwise the passed ID. `0` if the passed object has no language.
+     *
+     * @phpstan-return int<0, max>
      */
     public function get($id, $lang)
-    {
-    }
-    /**
-     * A join clause to add to sql queries when filtering by language is needed directly in query.
-     *
-     * @since 1.2
-     *
-     * @param string $alias Optional alias for object table.
-     * @return string Join clause.
-     */
-    public abstract function join_clause($alias = '');
-    /**
-     * A where clause to add to sql queries when filtering by language is needed directly in query.
-     *
-     * @since 1.2
-     *
-     * @param PLL_Language|string|string[] $lang PLL_Language object or a comma separated list of language slug or an array of language slugs.
-     * @return string Where clause.
-     */
-    public function where_clause($lang)
     {
     }
     /**
@@ -15081,34 +18155,25 @@ abstract class PLL_Translated_Object
      *
      * @since 2.6
      *
-     * @param int $id Object id.
+     * @param int $id Object ID.
      * @return bool
      */
     public function current_user_can_synchronize($id)
     {
     }
     /**
-     * Sanitizes an ID as positive integer.
-     * Kind of similar to `absint()`, but rejects negetive integers instead of making them positive.
+     * Tells whether a translation term must be updated.
      *
-     * @since 3.2
+     * @since 2.3
      *
-     * @param  mixed $id A supposedly numeric ID.
-     * @return int       A positive integer. `0` for non numeric values and negative integers.
+     * @param int   $id           Object ID.
+     * @param int[] $translations An associative array of translations with language code as key and translation ID as
+     *                            value. Make sure to sanitize this.
+     * @return bool
+     *
+     * @phpstan-param array<non-empty-string, positive-int> $translations
      */
-    public function sanitize_int_id($id)
-    {
-    }
-    /**
-     * Sanitizes an array of IDs as positive integers.
-     * `0` values are removed.
-     *
-     * @since 3.2
-     *
-     * @param  mixed $ids An associative array of translations with language code as key and translation ID as value.
-     * @return array<int> An associative array of translations with language code as key and translation ID as value.
-     */
-    public function sanitize_int_ids_list($ids)
+    protected function should_update_translation_group($id, $translations)
     {
     }
     /**
@@ -15123,82 +18188,139 @@ abstract class PLL_Translated_Object
      * @since 3.2 Doesn't return `0` ID values.
      * @since 3.2 Added parameters `$id` and `$context`.
      *
-     * @param  int[]  $translations An associative array of translations with language code as key and translation ID as
-     *                              value.
-     * @param  int    $id           Optional. The object ID for which the translations are validated. When provided, the
-     *                              process makes sure it is added to the list. Default 0.
-     * @param  string $context      Optional. The operation for which the translations are validated. When set to
-     *                              'save', a check is done to verify that the IDs and langs correspond.
-     *                              'display' should be used otherwise. Default 'save'.
+     * @param int[]  $translations An associative array of translations with language code as key and translation ID as
+     *                             value.
+     * @param int    $id           Optional. The object ID for which the translations are validated. When provided, the
+     *                             process makes sure it is added to the list. Default 0.
+     * @param string $context      Optional. The operation for which the translations are validated. When set to
+     *                             'save', a check is done to verify that the IDs and langs correspond.
+     *                             'display' should be used otherwise. Default 'save'.
      * @return int[]
+     *
+     * @phpstan-return array<non-empty-string, positive-int>
      */
     protected function validate_translations($translations, $id = 0, $context = 'save')
     {
     }
 }
 /**
- * @package Polylang
- */
-/**
- * Setups the posts languages and translations model
+ * Sets the posts languages and translations model up.
  *
  * @since 1.8
  */
 class PLL_Translated_Post extends \PLL_Translated_Object
 {
     /**
+     * Taxonomy name for the languages.
+     *
+     * @var string
+     *
+     * @phpstan-var non-empty-string
+     */
+    protected $tax_language = 'language';
+    /**
+     * Object type used to set or retrieve properties from PLL_Language.
+     *
+     * @var string
+     *
+     * @phpstan-var non-empty-string
+     */
+    protected $type = 'post';
+    /**
+     * Taxonomy name for the translation groups.
+     *
+     * @var string
+     *
+     * @phpstan-var non-empty-string
+     */
+    protected $tax_translations = 'post_translations';
+    /**
+     * Object type to use when checking capabilities.
+     *
+     * @var string
+     *
+     * @phpstan-var non-empty-string
+     */
+    protected $cap_type = 'post';
+    /**
+     * Name of the DB column containing the post's ID.
+     *
+     * @var string
+     * @see PLL_Object_With_Language::join_clause()
+     *
+     * @phpstan-var non-empty-string
+     */
+    protected $db_id_column = 'ID';
+    /**
      * Constructor.
      *
      * @since 1.8
      *
-     * @param PLL_Model $model PLL_Model instance.
+     * @param PLL_Model $model Instance of `PLL_Model`.
      */
-    public function __construct(&$model)
+    public function __construct(\PLL_Model &$model)
     {
     }
     /**
-     * Store the post language in the database.
+     * Adds hooks.
      *
-     * @since 0.6
+     * @since 3.4
      *
-     * @param int                     $post_id Post id.
-     * @param int|string|PLL_Language $lang    Language (term_id or slug or object).
-     * @return void
+     * @return static
      */
-    public function set_language($post_id, $lang)
+    public function init()
     {
     }
     /**
-     * Returns the language of a post
-     *
-     * @since 0.1
-     *
-     * @param int $post_id post id
-     * @return PLL_Language|false PLL_Language object, false if no language is associated to that post
-     */
-    public function get_language($post_id)
-    {
-    }
-    /**
-     * Deletes a translation.
+     * Deletes a translation of a post.
      *
      * @since 0.5
      *
-     * @param int $id Post id.
+     * @param int $id Post ID.
      * @return void
      */
     public function delete_translation($id)
     {
     }
     /**
-     * A join clause to add to sql queries when filtering by language is needed directly in query
+     * Returns object types (post types) that need to be translated.
+     * The post types list is cached for better better performance.
+     * The method waits for 'after_setup_theme' to apply the cache to allow themes adding the filter in functions.php.
      *
-     * @since 1.2
+     * @since 3.4
      *
-     * @param string $alias Alias for $wpdb->posts table
-     * @return string join clause
+     * @param bool $filter True if we should return only valid registered object types.
+     * @return string[] Object type names for which Polylang manages languages.
+     *
+     * @phpstan-return array<non-empty-string, non-empty-string>
      */
-    public function join_clause($alias = '')
+    public function get_translated_object_types($filter = \true)
+    {
+    }
+    /**
+     * Returns true if Polylang manages languages for this object type.
+     *
+     * @since 3.4
+     *
+     * @param string|string[] $object_type Object type (post type) name or array of object type names.
+     * @return bool
+     */
+    public function is_translated_object_type($object_type)
+    {
+    }
+    /**
+     * Returns the IDs of the objects without language.
+     *
+     * @since 3.4
+     *
+     * @param string[] $object_types An array of object types (post types).
+     * @param int      $limit        Max number of objects to return. `-1` to return all of them.
+     * @return int[] Array of object IDs.
+     *
+     * @phpstan-param -1|positive-int $limit
+     * @phpstan-return list<positive-int>
+     */
+    public function get_objects_with_no_lang(array $object_types, $limit)
     {
     }
     /**
@@ -15239,12 +18361,13 @@ class PLL_Translated_Post extends \PLL_Translated_Object
      * Checks if the current user can read the post
      *
      * @since 1.5
+     * @since 3.4 Renamed the parameter $post_id into $id.
      *
-     * @param int    $post_id Post ID
+     * @param int    $id Post ID
      * @param string $context Optional, 'edit' or 'view', defaults to 'view'.
      * @return bool
      */
-    public function current_user_can_read($post_id, $context = 'view')
+    public function current_user_can_read($id, $context = 'view')
     {
     }
     /**
@@ -15264,94 +18387,179 @@ class PLL_Translated_Post extends \PLL_Translated_Object
     }
 }
 /**
- * @package Polylang
- */
-/**
- * Setups the taxonomies languages and translations model
+ * Sets the taxonomies languages and translations model up.
  *
  * @since 1.8
  */
 class PLL_Translated_Term extends \PLL_Translated_Object
 {
     /**
-     * Constructor
+     * Taxonomy name for the languages.
+     *
+     * @var string
+     *
+     * @phpstan-var non-empty-string
+     */
+    protected $tax_language = 'term_language';
+    /**
+     * Object type to use when registering the taxonomy.
+     *
+     * @var string
+     *
+     * @phpstan-var non-empty-string
+     */
+    protected $object_type = 'term';
+    /**
+     * Object type used to set or retrieve properties from PLL_Language.
+     *
+     * @var string
+     *
+     * @phpstan-var non-empty-string
+     */
+    protected $type = 'term';
+    /**
+     * Taxonomy name for the translation groups.
+     *
+     * @var string
+     *
+     * @phpstan-var non-empty-string
+     */
+    protected $tax_translations = 'term_translations';
+    /**
+     * Object type to use when checking capabilities.
+     *
+     * @var string
+     *
+     * @phpstan-var non-empty-string
+     */
+    protected $cap_type = 'term';
+    /**
+     * Default alias corresponding to the term's DB table.
+     *
+     * @var string
+     * @see PLL_Object_With_Language::join_clause()
+     *
+     * @phpstan-var non-empty-string
+     */
+    protected $db_default_alias = 't';
+    /**
+     * Name of the DB column containing the term's ID.
+     *
+     * @var string
+     * @see PLL_Object_With_Language::join_clause()
+     *
+     * @phpstan-var non-empty-string
+     */
+    protected $db_id_column = 'term_id';
+    /**
+     * Constructor.
      *
      * @since 1.8
      *
-     * @param object $model
+     * @param PLL_Model $model Instance of `PLL_Model`.
      */
-    public function __construct(&$model)
+    public function __construct(\PLL_Model &$model)
     {
     }
     /**
-     * Stores the term language in the database.
+     * Adds hooks.
+     *
+     * @since 3.4
+     *
+     * @return static
+     */
+    public function init()
+    {
+    }
+    /**
+     * Stores the term's language in the database.
      *
      * @since 0.6
+     * @since 3.4 Renamed the parameter $term_id into $id.
      *
-     * @param int                     $term_id Term id.
-     * @param int|string|PLL_Language $lang    Language (term_id or slug or object).
-     * @return void
+     * @param int                     $id   Term ID.
+     * @param PLL_Language|string|int $lang Language (object, slug, or term ID).
+     * @return bool True when successfully assigned. False otherwise (or if the given language is already assigned to
+     *              the object).
      */
-    public function set_language($term_id, $lang)
+    public function set_language($id, $lang)
     {
     }
     /**
-     * Removes the term language in database
-     *
-     * @since 0.5
-     *
-     * @param int $term_id term id
-     * @return void
-     */
-    public function delete_language($term_id)
-    {
-    }
-    /**
-     * Returns the language of a term
+     * Returns the language of a term.
      *
      * @since 0.1
+     * @since 3.4 Renamed the parameter $value into $id.
+     * @since 3.4 Deprecated to retrieve the language by term slug + taxonomy anymore.
      *
-     * @param int|string $value    term id or term slug
-     * @param string     $taxonomy optional taxonomy needed when the term slug is passed as first parameter
-     * @return PLL_Language|false PLL_Language object, false if no language is associated to that term
+     * @param int $id Term ID.
+     * @return PLL_Language|false A `PLL_Language` object, `false` if no language is associated to that object.
      */
-    public function get_language($value, $taxonomy = '')
+    public function get_language($id)
     {
     }
     /**
-     * Tells whether a translation term must updated.
+     * Returns the language of a term by slug and taxonomy.
      *
-     * @since 2.3
+     * @since 3.4
      *
-     * @param int   $id           Post id or term id.
-     * @param int[] $translations An associative array of translations with language code as key and translation id as
-     *                            value. Make sure to sanitize this.
-     * @return bool
+     * @param string $slug     Term slug.
+     * @param string $taxonomy Taxonomy.
+     * @return PLL_Language|false A `PLL_Language` object. `false` if no language is associated to that term.
      */
-    protected function should_update_translation_group($id, $translations)
+    public function get_language_by_term_slug($slug, $taxonomy)
     {
     }
     /**
-     * Deletes a translation
+     * Deletes a translation of a term.
      *
      * @since 0.5
      *
-     * @param int $id term id
+     * @param int $id Term ID.
      * @return void
      */
     public function delete_translation($id)
     {
     }
     /**
-     * A join clause to add to sql queries when filtering by language is needed directly in query
+     * Returns object types (taxonomy names) that need to be translated.
+     * The taxonomies list is cached for better better performance.
+     * The method waits for 'after_setup_theme' to apply the cache to allow themes adding the filter in functions.php.
      *
-     * @since 1.2
-     * @since 2.6 The `$alias` parameter was added.
+     * @since 3.4
      *
-     * @param string $alias Alias for $wpdb->terms table
-     * @return string join clause
+     * @param bool $filter True if we should return only valid registered object types.
+     * @return string[] Object type names for which Polylang manages languages.
+     *
+     * @phpstan-return array<non-empty-string, non-empty-string>
      */
-    public function join_clause($alias = 't')
+    public function get_translated_object_types($filter = \true)
+    {
+    }
+    /**
+     * Returns true if Polylang manages languages for this object type.
+     *
+     * @since 3.4
+     *
+     * @param string|string[] $object_type Object type (taxonomy name) name or array of object type names.
+     * @return bool
+     */
+    public function is_translated_object_type($object_type)
+    {
+    }
+    /**
+     * Returns the IDs of the objects without language.
+     *
+     * @since 3.4
+     *
+     * @param string[] $object_types An array of object types (toxonomies).
+     * @param int      $limit        Max number of objects to return. `-1` to return all of them.
+     * @return int[] Array of object IDs.
+     *
+     * @phpstan-param -1|positive-int $limit
+     * @phpstan-return list<positive-int>
+     */
+    public function get_objects_with_no_lang(array $object_types, $limit)
     {
     }
     /**
@@ -15367,19 +18575,6 @@ class PLL_Translated_Term extends \PLL_Translated_Object
     {
     }
     /**
-     * When terms are found for posts, add their language and translations to cache.
-     *
-     * @since 1.2
-     *
-     * @param WP_Term[] $terms      Array of terms for the given object or objects.
-     * @param int[]     $object_ids Array of object IDs for which terms were retrieved.
-     * @param string[]  $taxonomies Array of taxonomy names from which terms were retrieved.
-     * @return WP_Term[] Unmodified $terms.
-     */
-    public function wp_get_object_terms($terms, $object_ids, $taxonomies)
-    {
-    }
-    /**
      * When the term cache is cleaned, cleans the object term cache too.
      *
      * @since 2.0
@@ -15388,6 +18583,19 @@ class PLL_Translated_Term extends \PLL_Translated_Object
      * @return void
      */
     public function clean_term_cache($ids)
+    {
+    }
+    /**
+     * Tells whether a translation term must be updated.
+     *
+     * @since 2.3
+     *
+     * @param int   $id           Term ID.
+     * @param int[] $translations An associative array of translations with language code as key and translation ID as
+     *                            value. Make sure to sanitize this.
+     * @return bool
+     */
+    protected function should_update_translation_group($id, $translations)
     {
     }
 }
@@ -18268,15 +21476,23 @@ class PLL_WPML_Config
     /**
      * The content of all read xml files.
      *
-     * @var SimpleXMLElement[]|null
+     * @var SimpleXMLElement[]
      */
-    protected $xmls;
+    protected $xmls = array();
     /**
-     * The list of xml files.
+     * The list of xml file paths.
      *
      * @var string[]|null
+     *
+     * @phpstan-var array<string, string>|null
      */
     protected $files;
+    /**
+     * List of rules to extract strings to translate from blocks.
+     *
+     * @var string[][][]|null
+     */
+    protected $parsing_rules = \null;
     /**
      * Constructor
      *
@@ -18306,11 +21522,13 @@ class PLL_WPML_Config
     {
     }
     /**
-     * Get all wpml-config.xml files in plugins, theme, child theme and Polylang custom directory.
+     * Returns all wpml-config.xml files in MU plugins, plugins, theme, child theme, and Polylang custom directory.
      *
      * @since 3.1
      *
-     * @return array
+     * @return string[] A context identifier as array key, a file path as array value.
+     *
+     * @phpstan-return array<string, string>
      */
     public function get_files()
     {
@@ -18340,6 +21558,56 @@ class PLL_WPML_Config
     {
     }
     /**
+     * Adds post meta keys to export.
+     *
+     * @since 3.3
+     * @see   PLL_Export_Metas
+     *
+     * @param  array $keys {
+     *     A recursive array containing nested meta sub-keys to translate.
+     *     Ex: array(
+     *      'meta_to_translate_1' => 1,
+     *      'meta_to_translate_2' => 1,
+     *      'meta_to_translate_3' => array(
+     *        'sub_key_to_translate_1' => 1,
+     *        'sub_key_to_translate_2' => array(
+     *             'sub_sub_key_to_translate_1' => 1,
+     *         ),
+     *      ),
+     *    )
+     * }
+     * @return array
+     *
+     * @phpstan-param array<string, mixed> $keys
+     * @phpstan-return array<string, mixed>
+     */
+    public function post_metas_to_export($keys)
+    {
+    }
+    /**
+     * Adds term meta keys to export.
+     * Note: sub-key translations are not currently supported by WPML.
+     *
+     * @since 3.3
+     * @see   PLL_Export_Metas
+     *
+     * @param  array $keys {
+     *     An array containing meta keys to translate.
+     *     Ex: array(
+     *      'meta_to_translate_1' => 1,
+     *      'meta_to_translate_2' => 1,
+     *      'meta_to_translate_3' => 1,
+     *    )
+     * }
+     * @return array
+     *
+     * @phpstan-param array<string, mixed> $keys
+     * @phpstan-return array<string, mixed>
+     */
+    public function term_metas_to_export($keys)
+    {
+    }
+    /**
      * Language and translation management for custom post types.
      *
      * @since 1.0
@@ -18364,6 +21632,55 @@ class PLL_WPML_Config
     {
     }
     /**
+     * Translation management for strings in blocks content.
+     *
+     * @since 3.3
+     *
+     * @param string[][] $parsing_rules Rules as Xpath expressions to evaluate in the blocks content.
+     * @return string[][] Rules completed with ones from wpml-config file.
+     *
+     * @phpstan-param array<string,array<string>> $parsing_rules
+     * @phpstan-return array<string,array<string>>
+     */
+    public function translate_blocks($parsing_rules)
+    {
+    }
+    /**
+     * Translation management for blocks attributes.
+     *
+     * @since 3.3
+     *
+     * @param string[][] $parsing_rules Rules for blocks attributes to translate.
+     * @return string[][] Rules completed with ones from wpml-config file.
+     *
+     * @phpstan-param array<string,array<string>> $parsing_rules
+     * @phpstan-return array<string,array<string>>
+     */
+    public function translate_blocks_attributes($parsing_rules)
+    {
+    }
+    /**
+     * Returns rules to extract translatable strings from blocks.
+     *
+     * @since 3.3
+     *
+     * @param string $rule_tag Tag name to extract.
+     * @return string[][] The rules.
+     */
+    protected function get_blocks_parsing_rules($rule_tag)
+    {
+    }
+    /**
+     * Extract all rules from WPML config file to translate strings for blocks.
+     *
+     * @since 3.3
+     *
+     * @return string[][][] Rules completed with ones from wpml-config file.
+     */
+    protected function extract_blocks_parsing_rules()
+    {
+    }
+    /**
      * Registers or translates the strings for an option
      *
      * @since 2.8
@@ -18380,12 +21697,76 @@ class PLL_WPML_Config
      * Recursively transforms xml nodes to an array, ready for PLL_Translate_Option.
      *
      * @since 2.9
+     * @since 3.3 Type-hinted the parameters `$key` and `$arr`.
+     * @since 3.3 `$arr` is not passed by reference anymore.
+     * @since 3.3 Added the parameter `$fill_value`.
      *
-     * @param SimpleXMLElement $key XML node.
-     * @param array            $arr Array of option keys to translate.
+     * @param SimpleXMLElement $key        XML node.
+     * @param array            $arr        Array of option keys to translate.
+     * @param mixed            $fill_value Value to use when filling entries. Default is true.
      * @return array
      */
-    protected function xml_to_array($key, &$arr = array())
+    protected function xml_to_array(\SimpleXMLElement $key, array $arr = array(), $fill_value = \true)
+    {
+    }
+    /**
+     * Get the value of an attribute.
+     *
+     * @since 3.3
+     *
+     * @param  SimpleXMLElement $field          A XML node.
+     * @param  string           $attribute_name Node of the attribute.
+     * @return string
+     */
+    private function get_field_attribute(\SimpleXMLElement $field, $attribute_name)
+    {
+    }
+    /**
+     * Returns all wpml-config.xml files in MU plugins.
+     *
+     * @since 3.3
+     *
+     * @return string[] A context identifier as array key, a file path as array value.
+     *
+     * @phpstan-return array<string, string>
+     */
+    private function get_mu_plugin_files()
+    {
+    }
+    /**
+     * Returns all wpml-config.xml files in plugins.
+     *
+     * @since 3.3
+     *
+     * @return string[] A context identifier as array key, a file path as array value.
+     *
+     * @phpstan-return array<string, string>
+     */
+    private function get_plugin_files()
+    {
+    }
+    /**
+     * Returns all wpml-config.xml files in theme and child theme.
+     *
+     * @since 3.3
+     *
+     * @return string[] A context identifier as array key, a file path as array value.
+     *
+     * @phpstan-return array<string, string>
+     */
+    private function get_theme_files()
+    {
+    }
+    /**
+     * Returns the wpml-config.xml file in Polylang custom directory.
+     *
+     * @since 3.3
+     *
+     * @return string[] A context identifier as array key, a file path as array value.
+     *
+     * @phpstan-return array<string, string>
+     */
+    private function get_custom_files()
     {
     }
 }
@@ -19129,7 +22510,6 @@ class PLL_Table_Settings extends \WP_List_Table
     protected function display_tablenav($which)
     {
     }
-    // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 }
 /**
  * A class to create the strings translations table
@@ -19383,29 +22763,37 @@ function pll_default_language($field = 'slug')
 {
 }
 /**
- * Among the post and its translations, returns the id of the post which is in the language represented by $lang.
+ * Among the post and its translations, returns the ID of the post which is in the language represented by $lang.
  *
  * @api
  * @since 0.5
+ * @since 3.4 Returns 0 instead of false.
+ * @since 3.4 $lang accepts PLL_Language or string.
  *
- * @param int    $post_id Post id.
- * @param string $lang    Optional language code, defaults to the current language.
- * @return int|false|null Post id of the translation if it exists, false otherwise, null if the current language is not defined yet.
+ * @param int                      $post_id Post ID.
+ * @param PLL_Language|string|null $lang    Optional language (object or slug), defaults to the current language.
+ * @return int|null Post ID of the translation if it exists, `0` otherwise, `null` if the language is not defined yet.
+ *
+ * @phpstan-return int<0, max>|null
  */
-function pll_get_post($post_id, $lang = '')
+function pll_get_post($post_id, $lang = \null)
 {
 }
 /**
- * Among the term and its translations, returns the id of the term which is in the language represented by $lang.
+ * Among the term and its translations, returns the ID of the term which is in the language represented by $lang.
  *
  * @api
  * @since 0.5
+ * @since 3.4 Returns 0 instead of false.
+ * @since 3.4 $lang accepts PLL_Language or string.
  *
- * @param int    $term_id Term id.
- * @param string $lang    Optional language code, defaults to the current language.
- * @return int|false|null Term id of the translation if it exists, false otherwise, null if the current language is not defined yet.
+ * @param int                      $term_id Term ID.
+ * @param PLL_Language|string|null $lang    Optional language (object or slug), defaults to the current language.
+ * @return int|null Term ID of the translation if it exists, `0` otherwise, `null` if the language is not defined yet.
+ *
+ * @phpstan-return int<0, max>|null
  */
-function pll_get_term($term_id, $lang = '')
+function pll_get_term($term_id, $lang = \null)
 {
 }
 /**
@@ -19568,10 +22956,13 @@ function pll_languages_list($args = array())
  *
  * @api
  * @since 1.5
+ * @since 3.4 $lang accepts PLL_Language or string.
+ * @since 3.4 Returns a boolean.
  *
- * @param int    $id   Post id.
- * @param string $lang Language code.
- * @return void
+ * @param int                 $id   Post id.
+ * @param PLL_Language|string $lang Language (object or slug).
+ * @return bool True when successfully assigned. False otherwise (or if the given language is already assigned to
+ *              the object).
  */
 function pll_set_post_language($id, $lang)
 {
@@ -19581,10 +22972,13 @@ function pll_set_post_language($id, $lang)
  *
  * @api
  * @since 1.5
+ * @since 3.4 $lang accepts PLL_Language or string.
+ * @since 3.4 Returns a boolean.
  *
- * @param int    $id   Term id.
- * @param string $lang Language code.
- * @return void
+ * @param int                 $id   Term id.
+ * @param PLL_Language|string $lang Language (object or slug).
+ * @return bool True when successfully assigned. False otherwise (or if the given language is already assigned to
+ *              the object).
  */
 function pll_set_term_language($id, $lang)
 {

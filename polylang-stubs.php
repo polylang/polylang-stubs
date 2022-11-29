@@ -23041,6 +23041,8 @@ function pll_get_term_language($term_id, $field = 'slug')
  *
  * @param int $post_id Post id.
  * @return int[] An associative array of translations with language code as key and translation post id as value.
+ *
+ * @phpstan-return array<non-empty-string, positive-int>
  */
 function pll_get_post_translations($post_id)
 {
@@ -23053,6 +23055,8 @@ function pll_get_post_translations($post_id)
  *
  * @param int $term_id Term id.
  * @return int[] An associative array of translations with language code as key and translation term id as value.
+ *
+ * @phpstan-return array<non-empty-string, positive-int>
  */
 function pll_get_term_translations($term_id)
 {

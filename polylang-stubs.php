@@ -4543,17 +4543,23 @@ class PLL_Import_Uploader
 class PLL_PO_Export extends \PLL_Export_File
 {
     /**
-     * The registered target languages
+     * The registered target language.
      *
      * @var string
      */
-    protected $target_language;
+    protected $target_language = '';
     /**
-     * The registered source_language
+     * The registered source language.
      *
      * @var string
      */
-    protected $source_language;
+    protected $source_language = '';
+    /**
+     * The registered site reference.
+     *
+     * @var string
+     */
+    protected $site_reference = '';
     /**
      * PLL_Export_Interface constructor.
      * Creates a PO object.
@@ -4572,7 +4578,6 @@ class PLL_PO_Export extends \PLL_Export_File
     {
     }
     /**
-     *
      * Set a source language to the export
      *
      * @since 2.7
@@ -4606,7 +4611,6 @@ class PLL_PO_Export extends \PLL_Export_File
      * Set the site reference to the export.
      *
      * @since 2.7
-     * @since 3.3 Also adds a reference to the application that generated the export file (name + version).
      *
      * @param string $url Absolute url of the current site.
      * @return void
@@ -4632,6 +4636,7 @@ class PLL_PO_Export extends \PLL_Export_File
      * Assign a reference to the PO file.
      *
      * @since 2.7
+     * @since 3.3.1 Remove unused source reference header.
      *
      * @param string $type Type of data to be exported.
      * @param string $id   Optional, unique identifier to retrieve the data in the database.
@@ -4656,7 +4661,10 @@ class PLL_PO_Export extends \PLL_Export_File
      * @see https://www.gnu.org/software/trans-coord/manual/gnun/html_node/PO-Header.html
      *
      * @since 2.7
-     *
+     * @since 3.3   Add a reference to the application that generated the export file (name + version).
+     * @since 3.3.1 Replace non-official "Language-Target" header to the official Language.
+     *              Use the Poedit header "X-Source-Language" instead of non official "Language-source".
+     *              Replace non official 'Site-Reference" header by "X-Polylang-Site-Reference".
      * @return void
      */
     protected function set_file_headers()
@@ -4770,6 +4778,8 @@ class PLL_PO_Import implements \PLL_Import_File_Interface
      * Get the target language
      *
      * @since 2.7
+     * @since 3.3.1 Change the target language header label. We're now using the official "Language" header
+     *              and add a backward condition to accept the old header.
      *
      * @return string|false
      */
@@ -4780,6 +4790,7 @@ class PLL_PO_Import implements \PLL_Import_File_Interface
      * Get the site reference.
      *
      * @since 2.7
+     * @since 3.3.1 Change the site reference header label.
      *
      * @return string|false
      */

@@ -449,18 +449,6 @@ class PLL_Block_Editor_Plugin
     {
     }
     /**
-     * Add query parameters to the preload paths.
-     *
-     * @since 3.1
-     *
-     * @param (string|string[])[] $preload_paths Array of paths to preload.
-     * @param array               $args Optional args.
-     * @return (string|string[])[]
-     */
-    private function add_preload_paths_parameters($preload_paths, $args = array())
-    {
-    }
-    /**
      * Enqueue scripts for the block editor plugin.
      *
      * @since 2.6
@@ -468,83 +456,6 @@ class PLL_Block_Editor_Plugin
      * @return void
      */
     public function admin_enqueue_scripts()
-    {
-    }
-    /**
-     * Enqueue style for a specific screen.
-     *
-     * @since 3.1
-     *
-     * @param  WP_Screen $screen The current screen.
-     * @param  string    $suffix The file suffix.
-     * @return void
-     */
-    private function enqueue_style_for_specific_screen($screen, $suffix)
-    {
-    }
-    /**
-     * Checks if we're in the context of post or site editor screen.
-     *
-     * @since 3.1
-     *
-     * @param  WP_Screen $screen The current screen.
-     * @return bool              True if post screen, false otherwise.
-     */
-    private function is_translatable_post_screen($screen)
-    {
-    }
-    /**
-     * Check if we're in the context of a widget screen.
-     *
-     * @since 3.1
-     *
-     * @param  WP_Screen $screen The current screen.
-     * @return bool              True if widget screen, false otherwise.
-     */
-    private function is_widget_screen($screen)
-    {
-    }
-    /**
-     * Check if we're in the context of a block editor.
-     *
-     * @since 3.1
-     *
-     * @param  WP_Screen $screen The current screen.
-     * @return bool              True if block editor, false otherwise.
-     */
-    private function is_block_editor($screen)
-    {
-    }
-    /**
-     * Check if we're in the context of a Navigation Screen
-     *
-     * @since 3.1
-     *
-     * @param WP_Screen $screen The current screen.
-     * @return bool True if Navigation Screen, false otherwise.
-     */
-    private function is_navigation_screen($screen)
-    {
-    }
-    /**
-     * Check if we're in the context of a widget customizer screen.
-     *
-     * @since 3.2
-     *
-     * @param  WP_Screen $screen The current screen.
-     * @return bool              True if widget customizer screen, false otherwise.
-     */
-    private function is_widget_customizer_screen($screen)
-    {
-    }
-    /**
-     * Returns the language to use in the editor.
-     *
-     * @since 3.2
-     *
-     * @return PLL_Language|null
-     */
-    private function get_editor_language()
     {
     }
     /**
@@ -1732,17 +1643,6 @@ class PLL_FSE_Language extends \PLL_FSE_Abstract_Module implements \PLL_Module_I
     public function define_current_language_in_site_editor($curlang, $polylang)
     {
     }
-    /**
-     * Returns the language object to use in the site editor.
-     *
-     * @since 3.2
-     *
-     * @param  PLL_Model $model Instance of Polylang's model.
-     * @return PLL_Language|null
-     */
-    private function get_site_editor_language(\PLL_Model $model)
-    {
-    }
 }
 /**
  * A class that adds the template (part) post type to the list of translatable ones.
@@ -1833,44 +1733,6 @@ class PLL_FSE_Query_Filters extends \PLL_FSE_Abstract_Module implements \PLL_Mod
     public function translate_template_query(&$query)
     {
     }
-    /**
-     * Returns the language from the request.
-     *
-     * @since 3.2
-     *
-     * @param  WP_Query $query Reference to the `WP_Query` object.
-     * @return array {
-     *     An array containing the language object and its array index from the tax query.
-     *
-     *     @type PLL_Language|false $language Language object, false if no valid language has been found.
-     *     @type int|false          $index    Position where the language query can be found in the tax query.
-     *                                        False if no language query has been found.
-     *     @type string             $source   Location of the language:
-     *                                        - `tax_query` for `$query->tax_query->queries`.
-     *                                        - `query_vars` for `$query->query_vars['tax_query']`.
-     *                                        - An empty string if no valid language has been found.
-     * }
-     */
-    private function get_requested_language(\WP_Query &$query)
-    {
-    }
-    /**
-     * Returns the language from the given taxonomy query.
-     *
-     * @since 3.2
-     *
-     * @param array $tax_query An array of taxonomy queries.
-     * @return array {
-     *     An array containing the language object and its array index from the tax query.
-     *
-     *     @type PLL_Language|false $language Language object, false if no valid language has been found.
-     *     @type int|false          $index    Position where the language query can be found in the tax query.
-     *                                        False if no language query has been found.
-     * }
-     */
-    private function get_requested_language_in_tax_query(array $tax_query)
-    {
-    }
 }
 /**
  * A class that re-assigns to templates a language that has just been re-created.
@@ -1931,65 +1793,6 @@ class PLL_FSE_Recreate_Language extends \PLL_FSE_Abstract_Module implements \PLL
      * @phpstan-param array{name:string,slug:string,locale:string,rtl:int<0,1>,term_group:positive-int,no_default_cat?:string,flag?:string} $args
      */
     public function reassign_language($args)
-    {
-    }
-    /**
-     * Returns a list of templates that have a post_name suffixed with the given lang slug.
-     *
-     * @since 3.2
-     *
-     * @param PLL_Language $language A language object.
-     * @return string[][] A set of post IDs and post names, grouped by theme ID (term_taxonomy_id of the
-     *                    'wp_theme' taxonomy). Each result uses the post ID as array key and the post name
-     *                    (without lang suffix) as array value.
-     *                    Example of returned value:
-     *                    array(
-     *                        {theme_id} => array(
-     *                            {post_id} => '{post_name}',
-     *                            {post_id} => '{post_name}',
-     *                        ),
-     *                        {theme_id} => array(
-     *                            {post_id} => '{post_name}',
-     *                        ),
-     *                    )
-     */
-    private function get_posts_with_lang_suffix(\PLL_Language $language)
-    {
-    }
-    /**
-     * Returns a list of translation groups belonging to templates that use the given post_names within the given theme
-     * ID. This will also return posts that don't have a translation group.
-     *
-     * @since 3.2
-     *
-     * @param  string[] $post_names List of post names.
-     * @param  int      $theme_id   `term_taxonomy_id` of the 'wp_theme' taxonomy.
-     * @return array[]              {
-     *     Array of arrays containing the translation groups and their `term_taxonomy_id`.
-     *
-     *     @type int           $post_id      Post ID (post in default language).
-     *     @type string        $post_name    Post slug.
-     *     @type int           $tt_id        `term_taxonomy_id` of the 'post_translations' taxonomy.`0` means the term
-     *                                       doesn't exist.
-     *     @type string[]      $translations List of translations. IDs are not sanitized to keep it simple (the array
-     *                                       can contain other things).
-     * }
-     *
-     * @phpstan-return array<array{post_id:int<0,max>,post_name:string,tt_id:int<0,max>,translations:array<string>}>
-     */
-    private function get_translation_groups(array $post_names, $theme_id)
-    {
-    }
-    /**
-     * Formats a raw translation group from the database into an array.
-     *
-     * @since 3.2
-     *
-     * @param mixed $translations Raw translation group from the database.
-     * @return string[] Translation IDs are not sanitized to keep it simple
-     *                  (the array can contain other things).
-     */
-    private function format_translations($translations)
     {
     }
 }
@@ -2178,38 +1981,6 @@ class PLL_FSE_REST_Enforce_Default_Template extends \PLL_FSE_Abstract_Module imp
 class PLL_FSE_REST_Route
 {
     /**
-     * The route.
-     *
-     * @var string
-     */
-    private $route = '';
-    /**
-     * The route after regex matching.
-     *
-     * @var array {
-     *     @type int|null    $post_id   The post ID.
-     *     @type string|null $post_type The post type.
-     *     @type string|null $rest_base The REST base matching the supported template types.
-     * }
-     * @phpstan-var array{post_id:?int,post_type:?string,rest_base:?string}
-     */
-    private $route_arr = array('post_id' => \null, 'post_type' => \null, 'rest_base' => \null);
-    /**
-     * Used to store the state of `$this->match()`.
-     *
-     * @var bool True after `$this->match()` has been run.
-     */
-    private $match_done = \false;
-    /**
-     * List of REST bases for the template (part) post type(s)
-     * with post type as array key.
-     *
-     * @var string[]
-     *
-     * @phpstan-var array<string,string>
-     */
-    private $rest_bases = array();
-    /**
      * Constructor.
      *
      * @since 3.2
@@ -2268,30 +2039,6 @@ class PLL_FSE_REST_Route
      * @return string|null The REST base, null if the route doesn't match a template route.
      */
     public function get_rest_base()
-    {
-    }
-    /**
-     * Performs a regex match data in the route.
-     * This will fill in the property `$this->route_arr`.
-     *
-     * @since 3.2
-     *
-     * @return void
-     */
-    private function match()
-    {
-    }
-    /**
-     * Returns a list of REST "namespace + base" related to translated template types.
-     *
-     * @since 3.2
-     *
-     * @return string[] Post type as array key and REST "namespace + base" as array value,
-     *                  in the form of `/{namespace}/{base}`.
-     *
-     * @phpstan-return array<string,string>
-     */
-    private function get_template_rest_bases()
     {
     }
 }
@@ -2658,12 +2405,6 @@ class PLL_FSE_REST_Template extends \PLL_REST_Post
      */
     const CAN_DELETE_TEMPLATE = 'CAN_DELETE_TEMPLATE';
     /**
-     * The post type of the template.
-     *
-     * @var string
-     */
-    private $post_type = '';
-    /**
      * Constructor
      *
      * @since 3.2
@@ -2989,82 +2730,6 @@ class PLL_FSE_Template_Slug_Sync extends \PLL_FSE_Abstract_Module implements \PL
     public function sync_template_slugs_on_post_update($post_ID, $template_post)
     {
     }
-    /**
-     * Removes any language suffix from the given post name.
-     *
-     * @since 3.2
-     *
-     * @param string $post_name The post name.
-     * @return string
-     */
-    private function remove_language_from_post_name($post_name)
-    {
-    }
-    /**
-     * Adds a language suffix to the given post name.
-     *
-     * @since 3.2
-     *
-     * @param string $post_name The post name.
-     * @param string $lang_slug The lang code.
-     * @return string
-     */
-    private function add_language_to_post_name($post_name, $lang_slug)
-    {
-    }
-    /**
-     * Returns the slug of a translation.
-     *
-     * @since 3.2
-     *
-     * @param int    $template_id   A template's ID.
-     * @param string $lang_slug     A language slug.
-     * @param string $fallback_slug Fallback slug to return if no template slug is found for the given language.
-     * @return string
-     */
-    private function get_translation_slug($template_id, $lang_slug, $fallback_slug)
-    {
-    }
-    /**
-     * Update a template's slug in the database.
-     * Also clears the post's cache.
-     *
-     * @since 3.2
-     *
-     * @global wpdb $wpdb
-     *
-     * @param WP_Post $template_post A post ID.
-     * @param string  $slug        The new slug.
-     * @return void
-     */
-    private function update_template_slug(\WP_Post $template_post, $slug)
-    {
-    }
-    /**
-     * Synchronize translation slugs, given a base slug.
-     *
-     * @since 3.2
-     *
-     * @param int[] $translations An associative array of translations with language code as key
-     *                            and translation id as value.
-     * @return void
-     */
-    private function sync_translation_slugs(array $translations)
-    {
-    }
-    /**
-     * Returns translation posts.
-     *
-     * @since 3.2
-     *
-     * @param int[] $translations An associative array of translations with language code as key
-     *                            and translation id as value.
-     * @return WP_Post[] An associative array of translations with language code as key
-     *                   and WP_Post object as value.
-     */
-    private function get_translation_posts(array $translations)
-    {
-    }
 }
 /**
  * A class to work with template slugs (and their language suffix).
@@ -3079,27 +2744,6 @@ class PLL_FSE_Template_Slug
      * @var string
      */
     const SEPARATOR = '___';
-    /**
-     * Pattern that matches a language slug.
-     *
-     * @var string
-     */
-    private $lang_pattern = '[a-z_-]+';
-    /**
-     * The raw template slug.
-     *
-     * @var string
-     */
-    private $slug = '';
-    /**
-     * The template slug after regex matching.
-     *
-     * @var string[] {
-     *     @type string $slug The template slug without language suffix.
-     *     @type string $lang The language slug.
-     * }
-     */
-    private $slug_arr = array();
     /**
      * Constructor.
      *
@@ -3171,17 +2815,6 @@ class PLL_FSE_Template_Slug
      * @return string The template slug without the language suffix.
      */
     public function remove_language()
-    {
-    }
-    /**
-     * Performs a regex match to separate the template slug and the language suffix.
-     * This will fill in the property `$this->slug_arr`.
-     *
-     * @since 3.2
-     *
-     * @return void
-     */
-    private function match()
     {
     }
 }
@@ -3304,13 +2937,6 @@ class PLL_FSE_Tools
 class PLL_DOM_Document extends \DOMDocument
 {
     /**
-     * Store the errors that happenned during the loading process.
-     *
-     * @since 3.1
-     * @var array
-     */
-    private $errors = array();
-    /**
      * Creates a PLL_DOM_Document instance from a XML string.
      *
      * @since 3.1
@@ -3345,36 +2971,6 @@ class PLL_DOM_Document extends \DOMDocument
      * @return PLL_DOM_Document
      */
     public static function from_html($html, $version = '1.0', $encoding = 'UTF-8', $flags = 0)
-    {
-    }
-    /**
-     * Factory function to safely generate DOMDocument from strings.
-     *
-     * @since 3.1
-     *
-     * Entity loading is disabled to prevent External Entity Injections {@link https://phpsecurity.readthedocs.io/en/latest/Injection-Attacks.html#xml-external-entity-injection}.
-     *
-     * @param string           $string   A XML content to load.
-     * @param PLL_DOM_Document $document A document parameterized to load the content into.
-     * @param callable         $function Method name which will handle the loading.
-     * @param int              $flags    A series of libxml flags to parameterize the loading. {@link https://www.php.net/manual/en/libxml.constants.php}.
-     * @return PLL_DOM_Document
-     */
-    private static function from_string($string, $document, $function, $flags = 0)
-    {
-    }
-    /**
-     * Loads the string into the given document, returns the document if it's safe, or return an empty document with errors.
-     *
-     * @since 3.1
-     *
-     * @param string           $string   A string to be loaded and parsed as the document.
-     * @param PLL_DOM_Document $document A configured instance of PLL_DOM_Document to load the string into.
-     * @param callable         $function Name of the loading method to use.
-     * @param int              $flags    A series of libxml flags to parameterize the loading. {@link https://www.php.net/manual/en/libxml.constants.php}.
-     * @return PLL_DOM_Document
-     */
-    private static function safe_load_string($string, $document, $function, $flags = 0)
     {
     }
     /**
@@ -3603,24 +3199,6 @@ class PLL_Export_Bulk_Option extends \PLL_Bulk_Translate_Option
 class PLL_Export_Download_Zip
 {
     /**
-     * Name of the zipped file.
-     *
-     * @var string
-     */
-    private $zip_name;
-    /**
-     * Size of the zipped file.
-     *
-     * @var int
-     */
-    private $zip_size;
-    /**
-     * The file path.
-     *
-     * @var string
-     */
-    private $filepath;
-    /**
      * Creates a new zip containing several files
      *
      * @since 2.7
@@ -3642,26 +3220,6 @@ class PLL_Export_Download_Zip
      * @return void
      */
     public function send_response()
-    {
-    }
-    /**
-     * Set correct headers for downloading a file in the browser.
-     *
-     * @since 2.7
-     *
-     * @return void
-     */
-    private function send_headers()
-    {
-    }
-    /**
-     * Outputs in the buffer the zipped file and delete the local zip.
-     *
-     * @since 2.7
-     *
-     * @return void
-     */
-    private function download()
     {
     }
 }
@@ -3869,48 +3427,6 @@ abstract class PLL_Export_Metas
  */
 class PLL_Export_Multi_Files implements \Iterator
 {
-    /**
-     * Contains all the different files to export
-     *
-     * Each file is referenced with a key composed of its source and target languages
-     *
-     * @var array Associative array of PLL_Export_File_Interface
-     */
-    private $export_files = array();
-    /**
-     * Contains the names of the different files to export.
-     *
-     * FIXME: This only serves to know if a file for a certain source and target language pair exists. This could if we choose to name export files for any reason.
-     *
-     * @var string[]
-     */
-    private $export_filenames;
-    /**
-     * Index of the PLL_Export_File_Interface instance being currently processed. This instance is stored in {@see PLL_Export_Multi_Files::$export_files}.
-     *
-     * @var int
-     */
-    private $current_index;
-    /**
-     * The export file currently in use to add translations into.
-     *
-     * @var PLL_Export_File_Interface
-     */
-    private $current_file;
-    /**
-     * The selected language to be the source for the translation.
-     *
-     * @var string
-     */
-    private $source_language;
-    /**
-     * An instance of the class defining an individual export file.
-     *
-     * FIXME: At this point, only the class matters, as a new instance will be generated for each new target language, {@see PLL_Export_Multi_Files::set_target_language()}.
-     *
-     * @var PLL_Export_File_Interface
-     */
-    private $base_instance;
     /**
      * Constructor.
      *
@@ -4153,34 +3669,6 @@ class PLL_Export_Strings_Translations
      */
     const NONCE_NAME = '_pll_translate_nonce';
     /**
-     * A class to handle file download.
-     *
-     * @var PLL_Export_Download_Zip
-     */
-    private $downloader;
-    /**
-     * Represents an export file.
-     *
-     * @var PLL_Export_Multi_Files
-     */
-    private $export;
-    /**
-     * Used to query languages and translations.
-     *
-     * @var PLL_Model
-     */
-    private $model;
-    /**
-     * Stores the plugin options.
-     *
-     * @var array
-     */
-    private $options;
-    /**
-     * @var PLL_File_Format_Factory
-     */
-    private $file_format_factory;
-    /**
      * PLL_Export_Strings_Translation constructor.
      *
      * @param string    $file_extension The file's extension, {@see PLL_File_Format_Factory::from_extension()}.
@@ -4237,18 +3725,6 @@ class PLL_Export_Term_Metas extends \PLL_Export_Metas
  */
 class PLL_Export_Terms
 {
-    /**
-     * Used to query languages and translations.
-     *
-     * @var PLL_Model
-     */
-    private $model;
-    /**
-     * Term Metas
-     *
-     * @var PLL_Export_Term_Metas
-     */
-    private $term_metas;
     /**
      * Constructor.
      *
@@ -4416,32 +3892,6 @@ class PLL_Import_Export
      */
     const APP_NAME = 'Polylang';
     /**
-     * @since 2.7
-     *
-     * @var PLL_Model
-     */
-    private $model;
-    /**
-     * Reference to Polylang options array
-     *
-     * @since 2.7
-     *
-     * @var array
-     */
-    private $options;
-    /**
-     * Reference to the instance of PLL_Bulk_Translate
-     *
-     * @var PLL_Bulk_Translate
-     */
-    private $bulk_translate;
-    /**
-     * The class that handles user's import actions.
-     *
-     * @var PLL_Import_Action
-     */
-    private $import_action;
-    /**
      * Constructor
      * Registers the hooks
      *
@@ -4533,17 +3983,6 @@ class PLL_Import_Export
     public function admin_enqueue_style()
     {
     }
-    /**
-     * Sanitizes and validates the target languages.
-     *
-     * @since 3.3
-     *
-     * @param array $export_form An array of $_POST values, including the target languages slug.
-     * @return PLL_Language[]|false An array of PLL_Language, or false if there is no valid target languages.
-     */
-    private function get_sanitized_target_languages($export_form)
-    {
-    }
 }
 /**
  * @package Polylang-Pro
@@ -4569,22 +4008,6 @@ class PLL_Import_Action
      * @var string
      */
     const NONCE_NAME = '_pll_import_nonce';
-    /**
-     * Used to query languages and translations.
-     *
-     * @var PLL_Model
-     */
-    private $model;
-    /**
-     * @var PLL_Import_Uploader
-     */
-    private $import_factory;
-    /**
-     * The various import types.
-     *
-     * @var PLL_Import_Object_Interface[]
-     */
-    private $imports;
     /**
      * PLL_Import_Action constructor.
      *
@@ -4795,12 +4218,6 @@ class PLL_Import_Posts implements \PLL_Import_Object_Interface
      */
     protected $success;
     /**
-     * The posts status to import with.
-     *
-     * @var string
-     */
-    private $post_status;
-    /**
      * The non existing post ids for the warning.
      *
      * @var int[]
@@ -4936,18 +4353,6 @@ class PLL_Import_Strings implements \PLL_Import_Object_Interface
     {
     }
     /**
-     * Removes the context for the translation entries.
-     *
-     * @since 3.2
-     * @since 3.3 Moved from PLL_Import_Action to PLL_Import_Strings.
-     *
-     * @param  Translation_Entry[] $translations An array with all the entries.
-     * @return Translation_Entry[]               An array with the same entries with an empty context.
-     */
-    private function remove_context_from_translations($translations)
-    {
-    }
-    /**
      * Gets update notices to display.
      *
      * @since 3.3
@@ -4998,12 +4403,6 @@ class PLL_Import_Strings implements \PLL_Import_Object_Interface
  */
 class PLL_Import_Terms implements \PLL_Import_Object_Interface
 {
-    /**
-     * Handle translation of terms
-     *
-     * @var PLL_Translation_Term_Model
-     */
-    private $translation_term_model;
     /**
      * The success counter.
      *
@@ -5104,22 +4503,6 @@ class PLL_Import_Terms implements \PLL_Import_Object_Interface
 class PLL_Import_Uploader
 {
     /**
-     * Stores the properties of the uploaded file
-     *
-     * @since 2.7
-     *
-     * @var array {
-     *   string $file Path to the current location of the file.
-     *   string $type MIME type of the uploaded file.
-     *   string $error Message for errors having occurred during file upload.
-     * }
-     */
-    private $upload;
-    /**
-     * @var PLL_File_Format_Factory
-     */
-    private $file_format_factory;
-    /**
      * PLL_Import_Uploader constructor.
      */
     public function __construct()
@@ -5181,12 +4564,6 @@ class PLL_PO_Export extends \PLL_Export_File
      * @var string
      */
     protected $source_language;
-    /**
-     * Po object.
-     *
-     * @var PO
-     */
-    private $po;
     /**
      * PLL_Export_Interface constructor.
      * Creates a PO object.
@@ -5377,18 +4754,6 @@ class PLL_PO_Format extends \PLL_File_Format
 class PLL_PO_Import implements \PLL_Import_File_Interface
 {
     /**
-     * Po object.
-     *
-     * @var PO
-     */
-    private $po;
-    /**
-     * If we have already retrieved the entry or not.
-     *
-     * @var bool
-     */
-    private $once;
-    /**
      * Constructor.
      *
      * Creates a PO object from an imported file.
@@ -5460,23 +4825,6 @@ class PLL_PO_Import implements \PLL_Import_File_Interface
      * @return array
      */
     public function get_next_entry()
-    {
-    }
-    /**
-     * Returns the reference to the application that generated the file (name + version).
-     *
-     * @since 3.3
-     *
-     * @return array {
-     *     An array containing the application's name and version.
-     *
-     *     @type string $name    The application's name.
-     *     @type string $version The application's version.
-     * }
-     *
-     * @phpstan-return array{name:string,version:string}
-     */
-    private function get_generator()
     {
     }
 }
@@ -5794,25 +5142,6 @@ class PLL_Manage_User_Capabilities
 class PLL_DOM_Content
 {
     /**
-     * The content to work with.
-     *
-     * @var string
-     */
-    private $content;
-    /**
-     * The site's charset.
-     *
-     * @var string
-     */
-    private $charset;
-    /**
-     * Placeholder used in {@see PLL_DOM_Content::replace_content()}.
-     *
-     * @var string
-     * @phpstan-var non-empty-string
-     */
-    private $placeholder;
-    /**
      * Constructor.
      *
      * @since 3.3
@@ -5854,30 +5183,6 @@ class PLL_DOM_Content
     public function replace_content(array $new_strings)
     {
     }
-    /**
-     * Returns the first `DOMNode` element from a `DOMNodeList`.
-     *
-     * @since 3.3
-     *
-     * @param DOMNodeList $node_list A `DOMNodeList` element.
-     * @return DOMNode|null A `DOMNode` element, or null if no elements have been found.
-     */
-    private function get_first_dom_node(\DOMNodeList $node_list)
-    {
-    }
-    /**
-     * Returns a node's content.
-     * If the node is an attribute, the attribute's value is returned.
-     * If the node is a tag, the tag's HTML is returned.
-     *
-     * @since 3.3
-     *
-     * @param DOMNode $node A node.
-     * @return string
-     */
-    private function get_node_content(\DOMNode $node)
-    {
-    }
 }
 /**
  * @package Polylang-Pro
@@ -5890,43 +5195,6 @@ class PLL_DOM_Content
  */
 class PLL_Translation_Block_Parsing_Rules
 {
-    /**
-     * Caches values about parsable and non-parsable blocks.
-     *
-     * @var array
-     * @phpstan-var array<string,mixed>
-     */
-    private $cache = array();
-    /**
-     * Holds some rules for block attributes to translate.
-     * Keep this list alphabetically sorted when adding entries.
-     *
-     * @var string[][]
-     * @phpstan-var array<string,array<string>>
-     */
-    private $parsing_rules_attributes = array('core/more' => array('customText'), 'core/navigation-link' => array('description'), 'core/post-navigation-link' => array('label'), 'core/read-more' => array('content'), 'core/search' => array('label', 'placeholder', 'buttonText'));
-    /**
-     * Holds some rules as Xpath expressions to evaluate in the blocks content.
-     * Keep this list alphabetically sorted when adding entries.
-     *
-     * @var string[][]
-     * @phpstan-var array<string,array<string>>
-     */
-    private $parsing_rules = array('core/audio' => array('//figure/figcaption'), 'core/button' => array('//a', '//a/@href'), 'core/cover' => array('//div/p'), 'core/cover-image' => array('//div/p'), 'core/embed' => array('//figure/figcaption'), 'core/file' => array('//div/a'), 'core/gallery' => array('//figure/figcaption', '//figure/img/@alt'), 'core/heading' => array('//*[self::h1 or self::h2 or self::h3 or self::h4 or self::h5 or self::h6]'), 'core/image' => array('//figure/figcaption', '//figure/img/@alt|//figure/a/img/@alt', '//figure/img/@title|//figure/a/img/@title', '//figure/a/@href'), 'core/list' => array('//ul/li|//ol/li'), 'core/media-text' => array('//figure/img/@alt'), 'core/paragraph' => array('//p'), 'core/preformatted' => array('//pre'), 'core/pullquote' => array('//blockquote/p', '//blockquote/cite'), 'core/quote' => array('//blockquote/p', '//blockquote/cite'), 'core/subhead' => array('//p'), 'core/table' => array('//th', '//td', '//figure/figcaption'), 'core/text-columns' => array('//div[@class="wp-block-column"]'), 'core/verse' => array('//pre'), 'core/video' => array('//figure/figcaption'));
-    /**
-     * List of known blocks that don't need to be parsed, because they don't contain contents to be translated.
-     * Though, they may contain blocks that need to be parsed.
-     * Keep this list alphabetically sorted when adding entries.
-     *
-     * @var string[]
-     */
-    private $blocks_not_to_parse = array('core/buttons', 'core/code', 'core/column', 'core/columns', 'core/group', 'core/nextpage', 'core/separator', 'core/shortcode', 'core/spacer');
-    /**
-     * Holds the name of the block type being currently parsed.
-     *
-     * @var string $block_type Similar to {@see WP_Block_Parser_Block::$blockName}.
-     */
-    private $block_type;
     /**
      * Only keeps the rules matching a certain block type.
      *
@@ -5976,42 +5244,6 @@ class PLL_Translation_Block_Parsing_Rules
     {
     }
     /**
-     * Returns the rules as Xpath expressions to evaluate in the blocks content.
-     *
-     * @since 3.3
-     *
-     * @param string|null $block_name Optional. The block name we want to get the parsing rules for.
-     *                                Only necessary for back-compatibility with the old `core-embed/` blocks.
-     * @return string[][]
-     *
-     * @phpstan-return array<string,array<string>>
-     */
-    private function get_parsing_rules($block_name = \null)
-    {
-    }
-    /**
-     * Returns the rules for the attributes to translate.
-     *
-     * @since 3.3
-     *
-     * @return string[][]
-     *
-     * @phpstan-return array<string,array<string>>
-     */
-    private function get_parsing_rules_for_attributes()
-    {
-    }
-    /**
-     * Returns the list of blocks not to parse.
-     *
-     * @since 3.3
-     *
-     * @return string[]
-     */
-    private function get_blocks_not_to_parse()
-    {
-    }
-    /**
      * Checks if a block has translatable attributes (or not) and returns them.
      *
      * @since 3.3
@@ -6037,14 +5269,6 @@ class PLL_Translation_Block_Parsing_Rules
  */
 class PLL_Translation_Content
 {
-    /**
-     * The translations used to transform the content.
-     *
-     * @since 3.3
-     *
-     * @var Translations
-     */
-    private $translations;
     /**
      * Setter
      *
@@ -6224,78 +5448,6 @@ abstract class PLL_Translation_Metas
      * @return string[] Filtered array of meta to copy.
      */
     public function remove_metas_to_translate($meta_keys)
-    {
-    }
-    /**
-     * Translates metas values.
-     *
-     * @since 3.3
-     *
-     * @param int $src_object_id Source object id.
-     * @param int $tr_object_id  Translated object id.
-     * @return void
-     */
-    private function translate_metas_values($src_object_id, $tr_object_id)
-    {
-    }
-    /**
-     * Inserts the translated metas into the database and
-     * takes care to add multiples meta values if needed.
-     * Note that if a meta has several values that aren't scalar,
-     * they won't be inserted in the database to avoid to
-     * delete potential useful data.
-     *
-     * @since 3.3
-     *
-     * @param int   $tr_object_id Translated object id.
-     * @param array $tr_metas     Translated metas value(s).
-     * @return void
-     */
-    private function insert_translated_metas($tr_object_id, array $tr_metas)
-    {
-    }
-    /**
-     * Returns the metas to translate from the translations entries.
-     * Each meta translation entry is identified by a concatenation of
-     * meta key, sub fields and position (or index) of the meta.
-     * For instance: 'meta_key|with|sub|fields:2'.
-     *
-     * @since 3.3
-     *
-     * @return array[] {
-     *     A list of arrays described as follow:
-     *
-     *     @type string   $meta_key       The name of the meta.
-     *     @type string[] $meta_sub_keys  The meta sub-fields to translate.
-     *     @type int      $value_position The position of the value in case of multiple values.
-     * }
-     *
-     * @phpstan-return array<int, array{meta_key: string, meta_sub_keys: array<int, string>, value_position: int}>
-     */
-    private function get_metas_to_translate()
-    {
-    }
-    /**
-     * Translates meta sub fields recursively.
-     *
-     * @since 3.3
-     *
-     * @param mixed    $meta_value Meta value(s) to translate.
-     * @param string[] $sub_keys   Array of sub fields to translate, ordered by dimension.
-     * @return mixed Translated meta value(s).
-     */
-    private function maybe_translate_metas_sub_fields($meta_value, array $sub_keys)
-    {
-    }
-    /**
-     * Asserts an array contains only scalar values.
-     *
-     * @since 3.3
-     *
-     * @param array $array Array to check.
-     * @return bool True if the array contains only scalar values, false otherwise.
-     */
-    private function has_only_scalar_values(array $array)
     {
     }
 }
@@ -6528,42 +5680,6 @@ class PLL_Translation_Term_Metas extends \PLL_Translation_Metas
 class PLL_Translation_Term_Model
 {
     /**
-     * Translations set where to look for the post metas translations.
-     *
-     * @var Translations
-     */
-    private $translations;
-    /**
-     * Used to manage languages and translations.
-     *
-     * @var PLL_Model
-     */
-    private $model;
-    /**
-     * Used to translate term meta with a set an translation entries.
-     *
-     * @var PLL_Translation_Term_Metas
-     */
-    private $translation_term_metas;
-    /**
-     * Currently translated term language.
-     *
-     * @var PLL_Language|null
-     */
-    private $target_language;
-    /**
-     * Currently translated term taxonomy.
-     *
-     * @var string
-     */
-    private $taxonomy;
-    /**
-     * Used to set the term parent of an updated term.
-     *
-     * @var int
-     */
-    private $inserted_term_parent = 0;
-    /**
      * PLL_Translation_Term_Model constructor.
      *
      * @since 3.3
@@ -6594,39 +5710,6 @@ class PLL_Translation_Term_Model
      * @return int The translated term id, 0 on failure.
      */
     public function translate_term($entry, $language)
-    {
-    }
-    /**
-     * Returns the translated term name if exists, the source name otherwise.
-     *
-     * @since 3.3
-     *
-     * @param WP_Term $source_term The source term object.
-     * @return string The translated name.
-     */
-    private function get_translated_term_name($source_term)
-    {
-    }
-    /**
-     * Returns the translated term description if exists, the source description otherwise.
-     *
-     * @since 3.3
-     *
-     * @param WP_Term $source_term The source term object.
-     * @return string The translated description.
-     */
-    private function get_translated_term_description($source_term)
-    {
-    }
-    /**
-     * Translates a given entry, returns the source string if no translation found.
-     *
-     * @since 3.3
-     *
-     * @param PLL_Translation_Entry_Identified $entry The entry to translate.
-     * @return string The translated string from the entry.
-     */
-    private function maybe_translate_term_entry($entry)
     {
     }
     /**
@@ -6706,31 +5789,6 @@ class PLL_Translation_Walker_Blocks implements \PLL_Translation_Walker_Interface
      */
     const BLOCK_PLACEHOLDER = '<pre>Polylang placeholder do not modify</pre>';
     /**
-     * Holds the blocks parsed by the WP_Block_Parser.
-     *
-     * @var array[]
-     */
-    private $blocks;
-    /**
-     * A reference to the block parsing rules.
-     *
-     * @var PLL_Translation_Block_Parsing_Rules
-     */
-    private $parsing_rules;
-    /**
-     * Holds the callback to be applied on each block, including the nested blocks.
-     *
-     * @var callable
-     */
-    private $callback;
-    /**
-     * HTML delimiter used in {@see PLL_Translation_Walker_Blocks::parse_as_html()}.
-     *
-     * @var string
-     * @phpstan-var non-empty-string
-     */
-    private $placeholder_delimiter;
-    /**
      * PLL_Content_Walker_Blocks constructor.
      *
      * @since 3.3
@@ -6751,80 +5809,6 @@ class PLL_Translation_Walker_Blocks implements \PLL_Translation_Walker_Interface
     public function walk($callback)
     {
     }
-    /**
-     * Recursively applies the callback provided to the {@see PLL_Translation_Walker_Blocks::walk()} method on a block.
-     * Searches for translatable strings matching rules defined by {@see PLL_Translation_Rules_Block} and passes those to the callback function.
-     * Delegates to {@see PLL_Translation_Walker_Classic} when no parsing rules match the current block being parsed.
-     *
-     * @since 3.3
-     *
-     * @param array $block An associative array mimicking a WP_Block_Parser_Block object.
-     * @return array An array mimicking a WP_Block_Parser_Block object.
-     */
-    private function apply($block)
-    {
-    }
-    /**
-     * Recursively applies the callback provided to the {@see PLL_Translation_Walker_Blocks::walk()} method on a block.
-     * Searches for translatable strings matching rules defined by {@see PLL_Translation_Rules_Block} and passes those to the callback function.
-     *
-     * @since 3.3
-     *
-     * @param array $block An associative array mimicking a WP_Block_Parser_Block object.
-     * @return array An array mimicking a WP_Block_Parser_Block object.
-     */
-    private function parse_with_rules($block)
-    {
-    }
-    /**
-     * Parses a block's contents as HTML and applies the callback provided to the
-     * {@see PLL_Translation_Walker_Blocks::walk()} method on these contents. Uses {@see PLL_Translation_Walker_Classic}.
-     *
-     * @since 3.3
-     *
-     * @param array $block An associative array mimicking a WP_Block_Parser_Block object.
-     * @return array An array mimicking a WP_Block_Parser_Block object.
-     */
-    private function parse_as_html($block)
-    {
-    }
-    /**
-     * Returns a block's content as a string and with placeholders in place of sub-blocks, ready to be parsed.
-     *
-     * @since 3.3
-     *
-     * @param array $block An associative array mimicking a WP_Block_Parser_Block object.
-     * @return string The block's content as a string and with placeholders in place of sub-blocks.
-     */
-    private function get_block_content_to_parse(array $block)
-    {
-    }
-    /**
-     * Puts a translated content back into a block.
-     *
-     * @since 3.3
-     *
-     * @param array  $block   An associative array mimicking a WP_Block_Parser_Block object.
-     * @param string $content The content to put back into the block.
-     * @return array An array mimicking a WP_Block_Parser_Block object.
-     */
-    private function update_block_with_content(array $block, $content)
-    {
-    }
-    /**
-     * Returns the translatable block attributes and passes them to the callback function.
-     *
-     * @since 3.3
-     *
-     * @param array    $block                   An associative array mimicking a WP_Block_Parser_Block object.
-     * @param string[] $attributes_to_translate An array of attributes to translate.
-     * @return array An array mimicking a WP_Block_Parser_Block object.
-     *
-     * @phpstan-param array<string,string> $attributes_to_translate
-     */
-    private function parse_attributes($block, $attributes_to_translate)
-    {
-    }
 }
 /**
  * @package Polylang-Pro
@@ -6838,24 +5822,6 @@ class PLL_Translation_Walker_Blocks implements \PLL_Translation_Walker_Interface
  */
 class PLL_Translation_Walker_Classic implements \PLL_Translation_Walker_Interface
 {
-    /**
-     * Original content.
-     *
-     * @var string
-     */
-    private $content;
-    /**
-     * Callback to execute on translatable content.
-     *
-     * @var callable
-     */
-    private $callback;
-    /**
-     * List of contents that are not translatable, like placeholders.
-     *
-     * @var string[]
-     */
-    private $non_translatable_contents;
     /**
      * PLL_Content_Walker_Classic constructor.
      *
@@ -6876,28 +5842,6 @@ class PLL_Translation_Walker_Classic implements \PLL_Translation_Walker_Interfac
      * @return string
      */
     public function walk($callback)
-    {
-    }
-    /**
-     * Applies a callback on a given post content, whether it is to add a translation entry or translate it.
-     *
-     * @since 3.3
-     *
-     * @param string $content A post content to apply a callback onto.
-     * @return string The processed content.
-     */
-    private function apply($content)
-    {
-    }
-    /**
-     * Checks if the translation entry exists and return it, otherwise return the source text.
-     *
-     * @since 3.3
-     *
-     * @param PLL_Translation_Entry_Identified $entry A translation entry parsed from a translation document.
-     * @return string The translated string.
-     */
-    private function maybe_translate_entry($entry)
     {
     }
 }
@@ -6978,18 +5922,6 @@ class PLL_Translations_Identified extends \Translations
  */
 class PLL_Import_Xliff_Iterator implements \RecursiveIterator
 {
-    /**
-     * The node.
-     *
-     * @var DOMNodeList.
-     */
-    private $nodes;
-    /**
-     * The offset.
-     *
-     * @var int.
-     */
-    private $offset = 0;
     /**
      * PLL_Import_Xliff_Iterator constructor.
      *
@@ -7101,42 +6033,6 @@ class PLL_Xliff_Export extends \PLL_Export_File
      */
     protected $target_language;
     /**
-     * The root element of the XML tree.
-     *
-     * @var DOMDocument The root element of the XML tree
-     */
-    private $document;
-    /**
-     * The file element in the XML tree.
-     *
-     * @var DOMElement The <file> element in the XML tree
-     */
-    private $file;
-    /**
-     * The body element in the Xliff structure, this is where groups of translation are added
-     *
-     * @var DOMElement
-     */
-    private $body;
-    /**
-     * This represents the different sources that can be added into an export
-     *
-     * @var DOMElement[]
-     */
-    private $translation_groups = array();
-    /**
-     * Each group will reference a source
-     *
-     * @var DOMElement A group of translations pertaining to the same WP data object.
-     */
-    private $current_group;
-    /**
-     * Holds the reference towards each of the translations units, mainly for counting their number
-     *
-     * @var DOMElement[]
-     */
-    private $translation_units = array();
-    /**
      * Declares xml version
      *
      * @since 3.1
@@ -7146,26 +6042,6 @@ class PLL_Xliff_Export extends \PLL_Export_File
      * @return void
      */
     public function __construct()
-    {
-    }
-    /**
-     * Helper function to insert new elements in our DOMDocument
-     *
-     * @since 3.1
-     *
-     * @see https://www.php.net/manual/fr/domdocument.createcdatasection.php
-     *
-     * @param DOMNode $parent     Could be a DOMDocument or a DOMElement.
-     * @param string  $tag_name   Name of the attribute to set.
-     * @param array   $attributes Optional. {
-     *                              string $name The name of an attribute to set
-     *                              string $value The value to set the attribute to
-     *                            }
-     * @param string  $content    Optional. Could specify some text content to insert into the new node
-     *                            /!\ This works only for text content, CDATA section has to be created with DOMDocument::createCDATASection() and appended.
-     * @return DOMElement         The newly created DOMElement
-     */
-    private function add_child_element($parent, $tag_name, $attributes = array(), $content = '')
     {
     }
     /**
@@ -7350,29 +6226,11 @@ class PLL_Xliff_Format extends \PLL_File_Format
 class PLL_Xliff_Import implements \PLL_Import_File_Interface
 {
     /**
-     * The Xpath object.
-     *
-     * @var DOMXPath The Xpath object.
-     */
-    private $xpath;
-    /**
-     * The XML namespace.
-     *
-     * @var string Namespace of the XML file.
-     */
-    private $ns;
-    /**
      * The imported file name.
      *
      * @var string
      */
     protected $filename;
-    /**
-     * An array of XLIFF iterators.
-     *
-     * @var PLL_Import_Xliff_Iterator[]
-     */
-    private $iterators = array();
     /**
      * Imports translations from a file.
      *
@@ -7383,17 +6241,6 @@ class PLL_Xliff_Import implements \PLL_Import_File_Interface
      * @return WP_Error|true True if no problem occurs during file import.
      */
     public function import_from_file($filename)
-    {
-    }
-    /**
-     * Parses an XML response body.
-     *
-     * @since 3.1
-     *
-     * @param DOMDocument $document A HTML document parsed by PHP DOMDocument.
-     * @return bool True if no problem occurs during the parsing, false otherwise.
-     */
-    private function parse_xml($document)
     {
     }
     /**
@@ -7449,35 +6296,6 @@ class PLL_Xliff_Import implements \PLL_Import_File_Interface
      * }
      */
     public function get_next_entry()
-    {
-    }
-    /**
-     * Creates the translation entry object.
-     * And then returns it in an array with additional data.
-     *
-     * @since 3.3
-     *
-     * @param DOMNode $item The current element.
-     * @param string  $type The object type.
-     * @return array {
-     *     string       $type Either 'post', 'term' or 'string_translations'
-     *     int          $id   Id of the object in the database (if applicable)
-     *     Translations $data Objects holding all the retrieved Translations
-     * }
-     */
-    private function create_translation_entry($item, $type)
-    {
-    }
-    /**
-     * Returns the reference to the name of the application that generated the file (back
-     * compatibility).
-     * Before PLL Pro 3.3, the `original` attribute was storing "polylang|{site_url}".
-     *
-     * @since 3.3
-     *
-     * @return string 'Polylang' or an empty string.
-     */
-    private function get_compat_generator_name()
     {
     }
 }
@@ -7643,14 +6461,6 @@ class PLL_Admin_Advanced_Media
  */
 class PLL_Media_Bulk_Option extends \PLL_Bulk_Translate_Option
 {
-    /**
-     * The post CRUD to create translations.
-     *
-     * @since 2.7
-     *
-     * @var PLL_CRUD_Posts
-     */
-    private $posts;
     /**
      * PLL_Media_Bulk_Action constructor.
      *
@@ -8425,12 +7235,6 @@ class PLL_Share_Term_Slug
      */
     public $links_model;
     /**
-     * Stores the term name before creating a slug if needed.
-     *
-     * @var string
-     */
-    private $pre_term_name = '';
-    /**
      * Used to trick WordPress by setting
      * a transitory unique term slug.
      *
@@ -8497,20 +7301,6 @@ class PLL_Share_Term_Slug
     public function set_pre_term_slug($slug, $taxonomy)
     {
     }
-    /**
-     * Returns the parent suffix for the slug only if parent slug is the same as the given one.
-     * Recursively appends the parents slugs like WordPress does.
-     *
-     * @since 3.3
-     *
-     * @param int    $parent   Parent term ID.
-     * @param string $taxonomy Parent taxonomy.
-     * @param string $slug     Child term slug.
-     * @return string Parents slugs if they are the same as the child slug, empty string otherwise.
-     */
-    private function maybe_get_parent_suffix($parent, $taxonomy, $slug)
-    {
-    }
 }
 /**
  * @package Polylang-Pro
@@ -8522,22 +7312,6 @@ class PLL_Share_Term_Slug
  */
 class PLL_Sync_Post_Bulk_Option extends \PLL_Bulk_Translate_Option
 {
-    /**
-     * The object used to synchronize posts
-     *
-     * @since 2.7
-     *
-     * @var PLL_Sync_Post_Model
-     */
-    private $sync_model;
-    /**
-     * Whether the post should be synchronized or not.
-     *
-     * @since 2.7
-     *
-     * @var bool
-     */
-    private $do_synchronize;
     /**
      * Constructor.
      *
@@ -9847,12 +8621,6 @@ abstract class PLL_Xdata_Base
      */
     public $links_model;
     /**
-     * Session token.
-     *
-     * @var string
-     */
-    private $token;
-    /**
      * Constructor
      *
      * @since 2.0
@@ -10159,18 +8927,6 @@ class PLL_Xdata_Session_Manager
 class PLL_Xdata_Subdomain extends \PLL_Xdata_Base
 {
     /**
-     * Current language (defined by its slug).
-     *
-     * @var string
-     */
-    private $curlang;
-    /**
-     * The list of ajax endpoints for each subdomain.
-     *
-     * @var string[]
-     */
-    private $ajax_urls;
-    /**
      * Constructor
      *
      * @since 2.0
@@ -10248,7 +9004,7 @@ class PLL_Xdata_Subdomain extends \PLL_Xdata_Base
  *
  * @since 1.2
  */
-#[AllowDynamicProperties]
+#[\AllowDynamicProperties]
 abstract class PLL_Base
 {
     /**
@@ -10465,17 +9221,6 @@ abstract class PLL_Admin_Base extends \PLL_Base
      * @return void
      */
     public function customize_controls_enqueue_scripts()
-    {
-    }
-    /**
-     * Adds inline scripts to set the default language in JS
-     * and localizes scripts.
-     *
-     * @since 3.3
-     *
-     * @return void
-     */
-    private function add_inline_scripts()
     {
     }
     /**
@@ -10729,12 +9474,6 @@ class PLL_Admin_Default_Term
      * @var PLL_Language|null
      */
     protected $pref_lang;
-    /**
-     * Reference to Polylang options array
-     *
-     * @var array
-     */
-    protected $options;
     /**
      * Array of registered taxonomy names for which Polylang manages languages and translations.
      *
@@ -11245,12 +9984,6 @@ class PLL_Admin_Filters_Post extends \PLL_Admin_Filters_Post_Base
 class PLL_Admin_Filters_Term
 {
     /**
-     * Stores the plugin options.
-     *
-     * @var array
-     */
-    public $options;
-    /**
      * @var PLL_Model
      */
     public $model;
@@ -11273,9 +10006,9 @@ class PLL_Admin_Filters_Term
     /**
      * Stores the current post_id when bulk editing posts.
      *
-     * @var int|null
+     * @var int
      */
-    protected $post_id;
+    protected $post_id = 0;
     /**
      * A reference to the PLL_Admin_Default_Term instance.
      *
@@ -12034,12 +10767,6 @@ class PLL_Model
      */
     public $term;
     /**
-     * Flag set to true during the language objects creation.
-     *
-     * @var bool
-     */
-    private $is_creating_language_objects = \false;
-    /**
      * Constructor.
      * Setups translated objects sub models.
      * Setups filters and actions.
@@ -12069,12 +10796,33 @@ class PLL_Model
      * @since 0.1
      *
      * @param array $args {
-     *   @type bool  $hide_empty Hides languages with no posts if set to true ( defaults to false ).
-     *   @type string $fields    Returns only that field if set; {@see PLL_Language} for a list of fields.
+     *   @type bool   $hide_empty   Hides languages with no posts if set to `true` (defaults to `false`).
+     *   @type bool   $hide_default Hides default language from the list (default to `false`).
+     *   @type string $fields       Returns only that field if set; {@see PLL_Language} for a list of fields.
      * }
      * @return array List of PLL_Language objects or PLL_Language object properties.
      */
     public function get_languages_list($args = array())
+    {
+    }
+    /**
+     * Tells if {@see PLL_Model::get_languages_list()} can be used.
+     *
+     * @since 3.4
+     *
+     * @return bool
+     */
+    public function are_languages_ready()
+    {
+    }
+    /**
+     * Sets the internal property `$languages_ready` to `true`, telling that {@see PLL_Model::get_languages_list()} can be used.
+     *
+     * @since 3.4
+     *
+     * @return void
+     */
+    public function set_languages_ready()
     {
     }
     /**
@@ -12286,7 +11034,7 @@ class PLL_Model
      *     @type int[] $terms Array of term ids.
      * }
      *
-     * @phpstan-param -1|int<1, max> $limit
+     * @phpstan-param -1|positive-int $limit
      */
     public function get_objects_with_no_lang($limit = -1)
     {
@@ -12297,8 +11045,11 @@ class PLL_Model
      * @since 3.1
      *
      * @param string|string[] $post_types A translated post type or an array of translated post types.
-     * @param int             $limit      Max number of posts to return.
+     * @param int             $limit      Max number of objects to return. `-1` to return all of them.
      * @return int[]
+     *
+     * @phpstan-param -1|positive-int $limit
+     * @phpstan-return list<positive-int>
      */
     public function get_posts_with_no_lang($post_types, $limit)
     {
@@ -12309,8 +11060,11 @@ class PLL_Model
      * @since 3.1
      *
      * @param string|string[] $taxonomies A translated taxonomy or an array of taxonomies post types.
-     * @param int             $limit      Max number of terms to return.
+     * @param int             $limit      Max number of objects to return. `-1` to return all of them.
      * @return int[]
+     *
+     * @phpstan-param -1|positive-int $limit
+     * @phpstan-return list<positive-int>
      */
     public function get_terms_with_no_lang($taxonomies, $limit)
     {
@@ -12337,6 +11091,16 @@ class PLL_Model
      * @return void
      */
     public function add_missing_secondary_language_terms()
+    {
+    }
+    /**
+     * Returns the default language.
+     *
+     * @since 3.4
+     *
+     * @return PLL_Language|false Default language object, `false` if no language found.
+     */
+    public function get_default_language()
     {
     }
     /**
@@ -12749,12 +11513,6 @@ class PLL_Admin_Notices
      */
     protected $options;
     /**
-     * Stores custom notices.
-     *
-     * @var string[]
-     */
-    private static $notices = array();
-    /**
      * Constructor
      * Setup actions
      *
@@ -12851,32 +11609,12 @@ class PLL_Admin_Notices
     public function dismiss_button($name)
     {
     }
-    /**
-     * Displays a notice if WooCommerce is activated without Polylang for WooCommerce
-     *
-     * @since 2.3.9
-     *
-     * @return void
-     */
-    private function pllwc_notice()
-    {
-    }
-    /**
-     * Displays a notice asking for a review
-     *
-     * @since 2.3.9
-     *
-     * @return void
-     */
-    private function review_notice()
-    {
-    }
 }
 /**
  * @package Polylang
  */
 /**
- * Base class to manage the static front page and the page for posts
+ * Base class to manage the static front page and the page for posts.
  *
  * @since 1.8
  */
@@ -12885,21 +11623,15 @@ class PLL_Static_Pages
     /**
      * Id of the page on front.
      *
-     * @var int|null
+     * @var int
      */
-    public $page_on_front;
+    public $page_on_front = 0;
     /**
      * Id of the page for posts.
      *
-     * @var int|null
+     * @var int
      */
-    public $page_for_posts;
-    /**
-     * Stores the plugin options.
-     *
-     * @var array
-     */
-    protected $options;
+    public $page_for_posts = 0;
     /**
      * @var PLL_Model
      */
@@ -12911,7 +11643,7 @@ class PLL_Static_Pages
      */
     protected $curlang;
     /**
-     * Constructor: setups filters and actions
+     * Constructor: setups filters and actions.
      *
      * @since 1.8
      *
@@ -12921,13 +11653,47 @@ class PLL_Static_Pages
     {
     }
     /**
-     * Stores the page on front and page for posts ids
+     * Stores the page on front and page for posts ids.
      *
      * @since 1.8
      *
      * @return void
      */
     public function init()
+    {
+    }
+    /**
+     * Returns the ID of the static page translation.
+     *
+     * @since 3.4
+     *
+     * @param string $static_page Static page option name; `page_on_front` or `page_for_posts`.
+     * @param array  $language    Language data.
+     * @return int
+     */
+    protected function get_translation($static_page, $language)
+    {
+    }
+    /**
+     * Adds `page_on_front` and `page_for_posts` properties to language data before the object is created.
+     *
+     * @since 3.4
+     *
+     * @param array $additional_data Array of language additional data.
+     * @param array $language        Language data.
+     * @return array Language data with additional `page_on_front` and `page_for_posts` options added.
+     */
+    public function set_static_pages($additional_data, $language)
+    {
+    }
+    /**
+     * Cleans the language cache and resets the internal properties when options are updated.
+     *
+     * @since 3.4
+     *
+     * @return void
+     */
+    public function clean_cache()
     {
     }
     /**
@@ -12938,30 +11704,6 @@ class PLL_Static_Pages
      * @return void
      */
     public function pll_language_defined()
-    {
-    }
-    /**
-     * Modifies the page link in case the front page is not in the default language
-     *
-     * @since 0.7.2
-     *
-     * @param string $link link to the page
-     * @param int    $id   post id of the page
-     * @return string modified link
-     */
-    public function page_link($link, $id)
-    {
-    }
-    /**
-     * Adds page_on_front and page_for_posts properties to the language objects.
-     *
-     * @since 1.8
-     *
-     * @param PLL_Language[] $languages The list of languages.
-     * @param PLL_Model      $model     The instance of PLL_Model.
-     * @return PLL_Language[]
-     */
-    public static function pll_languages_list($languages, $model)
     {
     }
     /**
@@ -12988,8 +11730,20 @@ class PLL_Static_Pages
     {
     }
     /**
+     * Modifies the page link in case the front page is not in the default language.
+     *
+     * @since 0.7.2
+     *
+     * @param string $link The link to the page.
+     * @param int    $id   The post ID of the page.
+     * @return string Modified link.
+     */
+    public function page_link($link, $id)
+    {
+    }
+    /**
      * Fixes the oembed for the translated static front page
-     * when the language page is redirected to the front page
+     * when the language page is redirected to the front page.
      *
      * @since 2.6
      *
@@ -13287,10 +12041,6 @@ class PLL_Admin extends \PLL_Admin_Base
  */
 class PLL_Block_Editor_Filter_Preload_Paths
 {
-    /**
-     * @var callable
-     */
-    private $callback;
     /**
      * PLL_Block_Editor_Filter_Preload_Paths constructor.
      *
@@ -14155,18 +12905,6 @@ class PLL_Frontend_Filters_Links extends \PLL_Filters_Links
      */
     public $cache;
     /**
-     * Stores a list of files and functions that home_url() must not filter.
-     *
-     * @var array
-     */
-    private $black_list = array();
-    /**
-     * Stores a list of files and functions that home_url() must filter.
-     *
-     * @var array
-     */
-    private $white_list = array();
-    /**
      * Constructor
      * Adds filters once the language is defined
      * Low priority on links filters to come after any other modification
@@ -14709,6 +13447,12 @@ class PLL_Frontend_Static_Pages extends \PLL_Static_Pages
      */
     protected $links;
     /**
+     * Stores plugin's options.
+     *
+     * @var array
+     */
+    protected $options;
+    /**
      * Constructor: setups filters and actions
      *
      * @since 1.8
@@ -14754,9 +13498,9 @@ class PLL_Frontend_Static_Pages extends \PLL_Static_Pages
      *
      * @since 1.8
      *
-     * @param string       $url               Not used.
-     * @param PLL_Language $language          Language in which we want the translation.
-     * @param int          $queried_object_id Id of the queried object.
+     * @param string       $url               Empty string or the url of the translation of the current page.
+     * @param PLL_Language $language          Language of the translation.
+     * @param int          $queried_object_id Queried object ID.
      * @return string The translation url.
      */
     public function pll_pre_translation_url($url, $language, $queried_object_id)
@@ -15322,18 +14066,6 @@ class PLL_CRUD_Terms
      */
     public $pref_lang;
     /**
-     * Stores the 'lang' query var from WP_Query.
-     *
-     * @var string|null
-     */
-    private $tax_query_lang;
-    /**
-     * Stores the term name before creating a slug if needed.
-     *
-     * @var string
-     */
-    private $pre_term_name = '';
-    /**
      * Constructor
      *
      * @since 2.4
@@ -15580,6 +14312,153 @@ class PLL_Filters_Sanitization
  * @package Polylang
  */
 /**
+ * Holds everything related to deprecated properties of `PLL_Language`.
+ *
+ * @since 3.4
+ */
+abstract class PLL_Language_Deprecated
+{
+    /**
+     * List of deprecated term properties and related arguments to use with `get_tax_prop()`.
+     *
+     * @private
+     *
+     * @var string[][]
+     */
+    const DEPRECATED_TERM_PROPERTIES = array('term_taxonomy_id' => array('language', 'term_taxonomy_id'), 'count' => array('language', 'count'), 'tl_term_id' => array('term_language', 'term_id'), 'tl_term_taxonomy_id' => array('term_language', 'term_taxonomy_id'), 'tl_count' => array('term_language', 'count'));
+    /**
+     * List of deprecated URL properties and related getter to use.
+     *
+     * @private
+     *
+     * @var string[]
+     */
+    const DEPRECATED_URL_PROPERTIES = array('home_url' => 'get_home_url', 'search_url' => 'get_seach_url');
+    /**
+     * Returns a language term property value (term ID, term taxonomy ID, or count).
+     *
+     * @since 3.4
+     *
+     * @param string $taxonomy_name Name of the taxonomy.
+     * @param string $prop_name     Name of the property: 'term_taxonomy_id', 'term_id', 'count'.
+     * @return int
+     *
+     * @phpstan-param non-empty-string $taxonomy_name
+     * @phpstan-param 'term_taxonomy_id'|'term_id'|'count' $prop_name
+     * @phpstan-return int<0, max>
+     */
+    public abstract function get_tax_prop($taxonomy_name, $prop_name);
+    /**
+     * Returns language's home URL. Takes care to render it dynamically if no cache is allowed.
+     *
+     * @since 3.4
+     *
+     * @return string Language home URL.
+     *
+     * @phpstan-return non-empty-string
+     */
+    public abstract function get_home_url();
+    /**
+     * Returns language's search URL. Takes care to render it dynamically if no cache is allowed.
+     *
+     * @since 3.4
+     *
+     * @return string Language search URL.
+     *
+     * @phpstan-return non-empty-string
+     */
+    public abstract function get_search_url();
+    /**
+     * Throws a depreciation notice if someone tries to get one of the following properties:
+     * `term_taxonomy_id`, `count`, `tl_term_id`, `tl_term_taxonomy_id` or `tl_count`.
+     *
+     * Backward compatibility with Polylang < 3.4.
+     *
+     * @since 3.4
+     *
+     * @param string $property Property to get.
+     * @return mixed Required property value.
+     */
+    public function __get($property)
+    {
+    }
+    /**
+     * Checks for a deprecated property.
+     * Is triggered by calling `isset()` or `empty()` on inaccessible (protected or private) or non-existing properties.
+     *
+     * Backward compatibility with Polylang < 3.4.
+     *
+     * @since 3.4
+     *
+     * @param string $property A property name.
+     * @return bool
+     */
+    public function __isset($property)
+    {
+    }
+    /**
+     * Tells if the given term property is deprecated.
+     *
+     * @since 3.4
+     * @see PLL_Language::DEPRECATED_TERM_PROPERTIES for the list of deprecated properties.
+     *
+     * @param string $property A property name.
+     * @return bool
+     *
+     * @phpstan-assert-if-true key-of<PLL_Language::DEPRECATED_TERM_PROPERTIES> $property
+     */
+    protected function is_deprecated_term_property($property)
+    {
+    }
+    /**
+     * Returns a deprecated term property's value.
+     *
+     * @since 3.4
+     * @see PLL_Language::DEPRECATED_TERM_PROPERTIES for the list of deprecated properties.
+     *
+     * @param string $property A property name.
+     * @return int
+     *
+     * @phpstan-param key-of<PLL_Language::DEPRECATED_TERM_PROPERTIES> $property
+     * @phpstan-return int<0, max>
+     */
+    protected function get_deprecated_term_property($property)
+    {
+    }
+    /**
+     * Tells if the given URL property is deprecated.
+     *
+     * @since 3.4
+     * @see PLL_Language::DEPRECATED_URL_PROPERTIES for the list of deprecated properties.
+     *
+     * @param string $property A property name.
+     * @return bool
+     *
+     * @phpstan-assert-if-true key-of<PLL_Language::DEPRECATED_URL_PROPERTIES> $property
+     */
+    protected function is_deprecated_url_property($property)
+    {
+    }
+    /**
+     * Returns a deprecated URL property's value.
+     *
+     * @since 3.4
+     * @see PLL_Language::DEPRECATED_URL_PROPERTIES for the list of deprecated properties.
+     *
+     * @param string $property A property name.
+     * @return string
+     *
+     * @phpstan-param key-of<PLL_Language::DEPRECATED_URL_PROPERTIES> $property
+     * @phpstan-return non-empty-string
+     */
+    protected function get_deprecated_url_property($property)
+    {
+    }
+}
+/**
+ * @package Polylang
+ */
+/**
  * PLL_Language factory.
  *
  * @since 3.4
@@ -15589,13 +14468,16 @@ class PLL_Filters_Sanitization
 class PLL_Language_Factory
 {
     /**
-     * Predefined languages.
+     * Constructor.
      *
-     * @var array[]
+     * @since 3.4
      *
-     * @phpstan-var array<string, array<string, string>>
+     * @param array $options Array of Poylang's options passed by reference.
+     * @return void
      */
-    private static $languages;
+    public function __construct(&$options)
+    {
+    }
     /**
      * Returns a language object matching the given data, looking up in cached transient.
      *
@@ -15608,7 +14490,7 @@ class PLL_Language_Factory
      *
      * @phpstan-param LanguageData $language_data
      */
-    public static function get($language_data)
+    public function get($language_data)
     {
     }
     /**
@@ -15622,62 +14504,7 @@ class PLL_Language_Factory
      *
      * @phpstan-param array{language:WP_Term, term_language:WP_Term}&array<string, WP_Term> $terms
      */
-    public static function get_from_terms(array $terms)
-    {
-    }
-    /**
-     * Sanitizes data, to be ready to be used in the constructor.
-     * This doesn't verify that the language terms exist.
-     *
-     * @since 3.4
-     *
-     * @param array $data Data to process. See `PLL_Language::__construct()` for information on accepted data.
-     * @return array Sanitized Data.
-     *
-     * @phpstan-return LanguageData
-     */
-    private static function sanitize_data(array $data)
-    {
-    }
-    /**
-     * Returns predefined languages data.
-     *
-     * @since 3.4
-     *
-     * @return array[]
-     *
-     * @phpstan-return array<string, array<string, string>>
-     */
-    private static function get_languages()
-    {
-    }
-    /**
-     * Creates flag_url and flag language properties. Also takes care of custom flag.
-     *
-     * @since 1.2
-     * @since 3.4 Moved from `PLL_Language`to `PLL_Language_Factory` and renamed
-     *            in favor of `get_flag()` (formerly `set_flag()`).
-     *
-     * @param string $flag_code Flag code.
-     * @param string $name      Language name.
-     * @param string $slug      Language slug.
-     * @param string $locale    Language locale.
-     * @return array {
-     *     Array of the flag properties.
-     *     @type string  $flag_url        URL of the flag.
-     *     @type string  $flag            HTML markup of the flag.
-     *     @type string  $custom_flag_url Optional. URL of the custom flag if it exists.
-     *     @type string  $custom_flag     Optional. HTML markup of the custom flag if it exists.
-     * }
-     *
-     * @phpstan-return array{
-     *     flag_url: non-empty-string
-     *     flag: non-empty-string
-     *     custom_flag_url?: non-empty-string
-     *     custom_flag?: non-empty-string
-     * }
-     */
-    private static function get_flag($flag_code, $name, $slug, $locale)
+    public function get_from_terms(array $terms)
     {
     }
 }
@@ -15691,18 +14518,15 @@ class PLL_Language_Factory
  * @since 1.2
  * @immutable
  *
+ * @phpstan-type LanguagePropData array{
+ *     term_id: positive-int,
+ *     term_taxonomy_id: positive-int,
+ *     count: int<0, max>
+ * }
  * @phpstan-type LanguageData array{
  *     term_props: array{
- *         language: array{
- *             term_id: positive-int,
- *             term_taxonomy_id: positive-int,
- *             count: int<0, max>
- *         },
- *         term_language: array{
- *             term_id: positive-int,
- *             term_taxonomy_id: positive-int,
- *             count: int<0, max>
- *         }
+ *         language: LanguagePropData,
+ *         term_language: LanguagePropData
  *     },
  *     name: non-empty-string,
  *     slug: non-empty-string,
@@ -15711,7 +14535,6 @@ class PLL_Language_Factory
  *     flag_code: non-empty-string,
  *     term_group: int,
  *     is_rtl: int<0, 1>,
- *     mo_id: int,
  *     facebook?: string,
  *     home_url: non-empty-string,
  *     search_url: non-empty-string,
@@ -15720,13 +14543,14 @@ class PLL_Language_Factory
  *     flag: non-empty-string,
  *     custom_flag_url?: string,
  *     custom_flag?: string,
- *     page_on_front:positive-int,
- *     page_for_posts:positive-int,
+ *     page_on_front: int<0, max>,
+ *     page_for_posts: int<0, max>,
  *     active: bool,
- *     fallbacks?: array<non-empty-string>
+ *     fallbacks?: array<non-empty-string>,
+ *     is_default: bool
  * }
  */
-class PLL_Language
+class PLL_Language extends \PLL_Language_Deprecated
 {
     /**
      * Language name. Ex: English.
@@ -15791,22 +14615,6 @@ class PLL_Language
      */
     public $facebook = '';
     /**
-     * Home URL in this language.
-     *
-     * @var string
-     *
-     * @phpstan-var non-empty-string
-     */
-    private $home_url;
-    /**
-     * Home URL to use in search forms.
-     *
-     * @var string
-     *
-     * @phpstan-var non-empty-string
-     */
-    private $search_url;
-    /**
      * Host corresponding to this language.
      *
      * @var string
@@ -15815,23 +14623,21 @@ class PLL_Language
      */
     public $host;
     /**
-     * ID of the post storing strings translations.
+     * ID of the page on front in this language (set from pll_additional_language_data filter).
      *
      * @var int
+     *
+     * @phpstan-var int<0, max>
      */
-    public $mo_id;
+    public $page_on_front = 0;
     /**
-     * ID of the page on front in this language (set from pll_languages_list filter).
+     * ID of the page for posts in this language (set from pll_additional_language_data filter).
      *
      * @var int
-     */
-    public $page_on_front;
-    /**
-     * ID of the page for posts in this language (set from pll_languages_list filter).
      *
-     * @var int
+     * @phpstan-var int<0, max>
      */
-    public $page_for_posts;
+    public $page_for_posts = 0;
     /**
      * Code of the flag.
      *
@@ -15871,7 +14677,7 @@ class PLL_Language
     /**
      * Whether or not the language is active. Default `true`.
      *
-     * @var boolean
+     * @var bool
      */
     public $active = \true;
     /**
@@ -15879,9 +14685,15 @@ class PLL_Language
      *
      * @var string[]
      *
-     * @phpstan-var array<non-empty-string>
+     * @phpstan-var list<non-empty-string>
      */
     public $fallbacks = array();
+    /**
+     * Whether the language is the default one.
+     *
+     * @var bool
+     */
+    public $is_default;
     /**
      * Stores language term properties (like term IDs and counts) for each language taxonomy (`language`,
      * `term_language`, etc).
@@ -15909,16 +14721,13 @@ class PLL_Language
      *     ),
      * )
      *
-     * @phpstan-var array<
-     *     non-empty-string,
-     *     array{
-     *         term_id: positive-int,
-     *         term_taxonomy_id: positive-int,
-     *         count: int<0, max>
+     * @phpstan-var array{
+     *         language: LanguagePropData,
+     *         term_language: LanguagePropData
      *     }
-     * >
+     *     &array<non-empty-string, LanguagePropData>
      */
-    protected $term_props = array();
+    protected $term_props;
     /**
      * Constructor: builds a language object given the corresponding data.
      *
@@ -15938,7 +14747,6 @@ class PLL_Language
      *     @type string   $flag_code       Code of the flag.
      *     @type int      $term_group      Order of the language when displayed in a list of languages.
      *     @type int      $is_rtl          `1` if the language is rtl, `0` otherwise.
-     *     @type int      $mo_id           ID of the post storing strings translations.
      *     @type string   $facebook        Optional. Facebook locale.
      *     @type string   $home_url        Home URL in this language.
      *     @type string   $search_url      Home URL to use in search forms.
@@ -15947,55 +14755,16 @@ class PLL_Language
      *     @type string   $flag            HTML markup of the flag.
      *     @type string   $custom_flag_url Optional. URL of the custom flag if it exists.
      *     @type string   $custom_flag     Optional. HTML markup of the custom flag if it exists.
-     *     @type int      $page_on_front   ID of the page on front in this language.
-     *     @type int      $page_for_posts  ID of the page for posts in this language.
+     *     @type int      $page_on_front   Optional. ID of the page on front in this language.
+     *     @type int      $page_for_posts  Optional. ID of the page for posts in this language.
      *     @type bool     $active          Whether or not the language is active. Default `true`.
      *     @type string[] $fallbacks       List of WordPress language locales. Ex: array( 'en_GB' ).
+     *     @type bool     $is_default      Whether or not the language is the default one.
      * }
      *
      * @phpstan-param LanguageData $language_data
      */
     public function __construct(array $language_data)
-    {
-    }
-    /**
-     * Throws a depreciation notice if someone tries to get one of the following properties:
-     * `term_taxonomy_id`, `count`, `tl_term_id`, `tl_term_taxonomy_id` or `tl_count`.
-     *
-     * Backward compatibility with Polylang < 3.4.
-     *
-     * @since 3.4
-     *
-     * @param string $property Property to get.
-     * @return mixed Required property value.
-     */
-    public function __get($property)
-    {
-    }
-    /**
-     * Checks for a deprecated property.
-     * Is triggered by calling `isset()` or `empty()` on inaccessible (protected or private) or non-existing properties.
-     *
-     * Backward compatibility with Polylang < 3.4.
-     *
-     * @since 3.4
-     *
-     * @param string $property A property name.
-     * @return bool
-     */
-    public function __isset($property)
-    {
-    }
-    /**
-     * Triggers a deprecated an error for a deprecated property.
-     *
-     * @since 3.4
-     *
-     * @param string $property    Deprecated property name.
-     * @param string $replacement Method or property name to use instead.
-     * @return void
-     */
-    private function deprecated_property($property, $replacement)
     {
     }
     /**
@@ -16019,29 +14788,25 @@ class PLL_Language
      *
      * @since 3.4
      *
-     * @param string|null $field Name of the field to return. `null` to return them all.
-     * @return (int[]|int)[] Array keys are taxonomy names, array values depend of `$field`.
+     * @param string $property Name of the field to return. An empty string to return them all.
+     * @return (int[]|int)[] Array keys are taxonomy names, array values depend of `$property`.
      *
-     * @phpstan-param 'term_taxonomy_id'|'term_id'|'count'|null $field
+     * @phpstan-param 'term_taxonomy_id'|'term_id'|'count'|'' $property
      * @phpstan-return array<non-empty-string, (
-     *     $field is non-empty-string ?
+     *     $property is non-empty-string ?
      *     (
-     *         $field is 'count' ?
+     *         $property is 'count' ?
      *         int<0, max> :
      *         positive-int
      *     ) :
-     *     array{
-     *         term_id: positive-int,
-     *         term_taxonomy_id: positive-int,
-     *         count: int<0, max>
-     *     }
+     *     LanguagePropData
      * )>
      */
-    public function get_tax_props($field = '')
+    public function get_tax_props($property = '')
     {
     }
     /**
-     * Get the flag informations:
+     * Returns the flag informations.
      *
      * @since 2.6
      *
@@ -16054,12 +14819,19 @@ class PLL_Language
      *   @type int    $width  Optional, flag width in pixels.
      *   @type int    $height Optional, flag height in pixels.
      * }
+     *
+     * @phpstan-return array{
+     *     url: string,
+     *     src: string,
+     *     width?: positive-int,
+     *     height?: positive-int
+     * }
      */
     public static function get_flag_informations($code)
     {
     }
     /**
-     * Get HTML code for flag.
+     * Returns HTML code for flag.
      *
      * @since 2.7
      *
@@ -16067,6 +14839,12 @@ class PLL_Language
      * @param string $title Optional title attribute.
      * @param string $alt   Optional alt attribute.
      * @return string
+     *
+     * @phpstan-param array{
+     *     src: string,
+     *     width?: int|numeric-string,
+     *     height?: int|numeric-string
+     * } $flag
      */
     public static function get_flag_html($flag, $title = '', $alt = '')
     {
@@ -16121,13 +14899,24 @@ class PLL_Language
      *
      * @since 3.4
      *
-     * @param bool $raw Whether or not properties should be raw. Default to `false`.
+     * @param string $context Whether or not properties should be filtered. Accepts `db` or `display`.
+     *                        Default to `display` which filters some properties.
      *
      * @return array Array of language object properties.
      *
      * @phpstan-return LanguageData
      */
-    public function get_object_vars($raw = \false)
+    public function to_array($context = 'display')
+    {
+    }
+    /**
+     * Converts current `PLL_language` into a `stdClass` object. Mostly used to allow dynamic properties.
+     *
+     * @since 3.4
+     *
+     * @return stdClass Converted `PLL_Language` object.
+     */
+    public function to_std_class()
     {
     }
     /**
@@ -16165,6 +14954,24 @@ class PLL_Language
     public function get_search_url()
     {
     }
+    /**
+     * Returns the value of a language property.
+     * This is handy to get a property's value without worrying about triggering a deprecation warning or anything.
+     *
+     * @since 3.4
+     *
+     * @param string $property A property name. A composite value can be used for language term property values, in the
+     *                         form of `{language_taxonomy_name}:{property_name}` (see {@see PLL_Language::get_tax_prop()}
+     *                         for the possible values). Ex: `term_language:term_taxonomy_id`.
+     * @return string|int|bool|string[] The requested property for the language, `false` if the property doesn't exist.
+     *
+     * @phpstan-return (
+     *     $property is 'slug' ? non-empty-string : string|int|bool|list<non-empty-string>
+     * )
+     */
+    public function get_prop($property)
+    {
+    }
 }
 /**
  * @package Polylang
@@ -16200,30 +15007,6 @@ class PLL_License
      * @var stdClass|null
      */
     public $license_data;
-    /**
-     * Main plugin file.
-     *
-     * @var string
-     */
-    private $file;
-    /**
-     * Current plugin version.
-     *
-     * @var string
-     */
-    private $version;
-    /**
-     * Plugin author.
-     *
-     * @var string
-     */
-    private $author;
-    /**
-     * API url.
-     *
-     * @var string.
-     */
-    private $api_url = 'https://polylang.pro';
     /**
      * Constructor
      *
@@ -16288,18 +15071,6 @@ class PLL_License
      * @return void
      */
     public function check_license()
-    {
-    }
-    /**
-     * Sends an api request to check, activate or deactivate the license
-     * Updates the licenses option according to the status
-     *
-     * @since 1.9
-     *
-     * @param string $request check_license | activate_license | deactivate_license
-     * @return void
-     */
-    private function api_request($request)
     {
     }
     /**
@@ -16453,11 +15224,11 @@ abstract class PLL_Links_Model
      *
      * @since 3.4
      *
-     * @param array $default  Array of language default data values containing home and search URLs.
-     * @param array $language Language data.
-     * @return array Language data with URLs addeddefault.
+     * @param array $additional_data Array of language additional data.
+     * @param array $language        Language data.
+     * @return array Language data with home and search URLs added.
      */
-    public function set_language_home_urls($default, $language)
+    public function set_language_home_urls($additional_data, $language)
     {
     }
     /**
@@ -16992,19 +15763,12 @@ class PLL_Links_Subdomain extends \PLL_Links_Abstract_Domain
  *
  * @since 1.2
  * @since 2.1 Stores the strings in a post meta instead of post content to avoid unserialize issues (See #63)
+ * @since 3.4 Stores the strings into language taxonomy term meta instead of a post meta.
  */
 class PLL_MO extends \MO
 {
     /**
-     * Registers the polylang_mo custom post type, only at first object creation
-     *
-     * @since 1.2
-     */
-    public function __construct()
-    {
-    }
-    /**
-     * Writes a PLL_MO object into a custom post meta.
+     * Writes the strings into a term meta.
      *
      * @since 1.2
      *
@@ -17015,50 +15779,15 @@ class PLL_MO extends \MO
     {
     }
     /**
-     * Reads a PLL_MO object from a custom post meta.
+     * Reads a PLL_MO object from the term meta.
      *
      * @since 1.2
+     * @since 3.4 Reads a PLL_MO from the term meta.
      *
      * @param PLL_Language $lang The language in which we want to get strings.
      * @return void
      */
     public function import_from_db($lang)
-    {
-    }
-    /**
-     * Returns the post ID of the post storing the strings translations.
-     *
-     * @since 1.4
-     *
-     * @param PLL_Language $lang The language object.
-     * @return int|null
-     *
-     * @phpstan-return positive-int|null
-     */
-    public static function get_id($lang)
-    {
-    }
-    /**
-     * Returns the post ID of the post storing the strings translations.
-     *
-     * @since 3.4
-     *
-     * @param int $term_id The language term ID.
-     * @return int|null
-     *
-     * @phpstan-return positive-int|null
-     */
-    public static function get_id_from_term_id($term_id)
-    {
-    }
-    /**
-     * Invalidate the cache when adding a new language
-     *
-     * @since 2.0.5
-     *
-     * @return void
-     */
-    public function clean_cache()
     {
     }
     /**
@@ -17342,6 +16071,16 @@ class PLL_REST_Request extends \PLL_Base
      */
     public $filters_widgets_options;
     /**
+     * Constructor.
+     *
+     * @since 3.4
+     *
+     * @param PLL_Links_Model $links_model Reference to the links model.
+     */
+    public function __construct(&$links_model)
+    {
+    }
+    /**
      * Setup filters.
      *
      * @since 2.6
@@ -17610,6 +16349,14 @@ abstract class PLL_Translatable_Object
      */
     protected $type;
     /**
+     * Identifier for each type of content to used for cache type.
+     *
+     * @var string
+     *
+     * @phpstan-var non-empty-string
+     */
+    protected $cache_type;
+    /**
      * Object type to use when registering the taxonomy.
      * Left empty for posts.
      *
@@ -17773,6 +16520,19 @@ abstract class PLL_Translatable_Object
     {
     }
     /**
+     * Returns object IDs without language given a specific SQL query.
+     * Can be overriden by child classes in case queried object doesn't use
+     * `wp_cache_set_last_changed()` or another cache system.
+     *
+     * @since 3.4
+     *
+     * @param string $sql A prepared SQL query for object IDs with no language.
+     * @return string[] An array of numeric object IDs.
+     */
+    protected function query_objects_with_no_lang($sql)
+    {
+    }
+    /**
      * Sanitizes an ID as positive integer.
      * Kind of similar to `absint()`, but rejects negetive integers instead of making them positive.
      *
@@ -17840,23 +16600,11 @@ abstract class PLL_Translatable_Object
  * @since 3.4
  *
  * @phpstan-implements IteratorAggregate<non-empty-string, PLL_Translatable_Object>
+ * @phpstan-type TranslatedObjectWithTypes PLL_Translated_Object&PLL_Translatable_Object_With_Types_Interface
+ * @phpstan-type TranslatableObjectWithTypes PLL_Translatable_Object&PLL_Translatable_Object_With_Types_Interface
  */
 class PLL_Translatable_Objects implements \IteratorAggregate
 {
-    /**
-     * Type of the main translatable object.
-     *
-     * @var string
-     */
-    private $main_type = '';
-    /**
-     * List of registered objects.
-     *
-     * @var PLL_Translatable_Object[] Array keys are the type of translated content (post, term, etc).
-     *
-     * @phpstan-var array<non-empty-string, PLL_Translatable_Object>
-     */
-    private $objects = array();
     /**
      * Registers a translatable object.
      *
@@ -17877,6 +16625,7 @@ class PLL_Translatable_Objects implements \IteratorAggregate
      *
      * @phpstan-return ArrayIterator<string, PLL_Translatable_Object>
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
     }
@@ -17887,6 +16636,14 @@ class PLL_Translatable_Objects implements \IteratorAggregate
      *
      * @param string $object_type The object type.
      * @return PLL_Translatable_Object|null
+     *
+     * @phpstan-return (
+     *     $object_type is 'post' ? TranslatedObjectWithTypes : (
+     *         $object_type is 'term' ? TranslatedObjectWithTypes : (
+     *             TranslatedObjectWithTypes|TranslatableObjectWithTypes|PLL_Translated_Object|PLL_Translatable_Object|null
+     *         )
+     *     )
+     * )
      */
     public function get($object_type)
     {
@@ -17929,28 +16686,6 @@ class PLL_Translatable_Objects implements \IteratorAggregate
  */
 class PLL_Translate_Option
 {
-    /**
-     * Array of option keys to translate.
-     *
-     * @var array
-     */
-    private $keys;
-    /**
-     * Used to prevent filtering when retrieving the raw value of the option.
-     *
-     * @var bool
-     */
-    private static $raw = \false;
-    /**
-     * Array of updated strings.
-     *
-     * @var array
-     */
-    private $updated_strings = array();
-    /**
-     * @var PLL_MO[]
-     */
-    private $translations;
     /**
      * Constructor
      *
@@ -18182,7 +16917,7 @@ abstract class PLL_Translated_Object extends \PLL_Translatable_Object
     {
     }
     /**
-     * Returns an array of translations of an object.
+     * Returns an array of valid translations of an object.
      *
      * @since 0.5
      *
@@ -18192,6 +16927,20 @@ abstract class PLL_Translated_Object extends \PLL_Translatable_Object
      * @phpstan-return array<non-empty-string, positive-int>
      */
     public function get_translations($id)
+    {
+    }
+    /**
+     * Returns an unvalidated array of translations of an object.
+     * It is generally preferable to use `get_translations()`.
+     *
+     * @since 3.4
+     *
+     * @param int $id Object ID.
+     * @return int[] An associative array of translations with language code as key and translation ID as value.
+     *
+     * @phpstan-return array<non-empty-string, positive-int>
+     */
+    public function get_raw_translations($id)
     {
     }
     /**
@@ -18285,7 +17034,7 @@ abstract class PLL_Translated_Object extends \PLL_Translatable_Object
      * @param int[][] $translations Array of translations arrays.
      * @return void
      *
-     * @phpstan-param array<array<string,int>>
+     * @phpstan-param array<array<string,int>> $translations
      */
     public function set_translation_in_mass($translations)
     {
@@ -18316,6 +17065,14 @@ class PLL_Translated_Post extends \PLL_Translated_Object implements \PLL_Transla
      * @phpstan-var non-empty-string
      */
     protected $type = 'post';
+    /**
+     * Identifier for each type of content to used for cache type.
+     *
+     * @var string
+     *
+     * @phpstan-var non-empty-string
+     */
+    protected $cache_type = 'posts';
     /**
      * Taxonomy name for the translation groups.
      *
@@ -18483,6 +17240,14 @@ class PLL_Translated_Term extends \PLL_Translated_Object implements \PLL_Transla
      */
     protected $type = 'term';
     /**
+     * Identifier for each type of content to used for cache type.
+     *
+     * @var string
+     *
+     * @phpstan-var non-empty-string
+     */
+    protected $cache_type = 'terms';
+    /**
      * Taxonomy name for the translation groups.
      *
      * @var string
@@ -18626,11 +17391,14 @@ class PLL_Translated_Term extends \PLL_Translated_Object implements \PLL_Transla
  * @package Polylang
  */
 /**
- * Displays languages in a dropdown list
+ * A class for displaying various tree-like language structures.
  *
- * @since 1.2
+ * Extend the `PLL_Walker` class to use it, and implement some of the methods from `Walker`.
+ * See: {https://developer.wordpress.org/reference/classes/walker/#methods}.
+ *
+ * @since 3.4
  */
-class PLL_Walker_Dropdown extends \Walker
+class PLL_Walker extends \Walker
 {
     /**
      * Database fields to use.
@@ -18641,7 +17409,57 @@ class PLL_Walker_Dropdown extends \Walker
      */
     public $db_fields = array('parent' => 'parent', 'id' => 'id');
     /**
-     * Outputs one element
+     * Overrides Walker::display_element as it expects an object with a parent property.
+     *
+     * @since 1.2
+     * @since 3.4 Refactored and moved in `PLL_Walker`.
+     *
+     * @param PLL_Language|stdClass $element           Data object. `PLL_language` in our case.
+     * @param array                 $children_elements List of elements to continue traversing.
+     * @param int                   $max_depth         Max depth to traverse.
+     * @param int                   $depth             Depth of current element.
+     * @param array                 $args              An array of arguments.
+     * @param string                $output            Passed by reference. Used to append additional content.
+     * @return void
+     */
+    public function display_element($element, &$children_elements, $max_depth, $depth, $args, &$output)
+    {
+    }
+    /**
+     * Sets `PLL_Walker::walk()` arguments as it should
+     * and triggers an error in case of misuse of them.
+     *
+     * @since 3.4
+     *
+     * @param array|int $max_depth The maximum hierarchical depth. Passed by reference.
+     * @param array     $args      Additional arguments. Passed by reference.
+     * @return void
+     */
+    protected function maybe_fix_walk_args(&$max_depth, &$args)
+    {
+    }
+}
+/**
+ * @package Polylang
+ */
+/**
+ * Displays languages in a dropdown list
+ *
+ * @since 1.2
+ * @since 3.4 Extends `PLL_Walker` now.
+ */
+class PLL_Walker_Dropdown extends \PLL_Walker
+{
+    /**
+     * Database fields to use.
+     *
+     * @see https://developer.wordpress.org/reference/classes/walker/#properties Walker::$db_fields.
+     *
+     * @var string[]
+     */
+    public $db_fields = array('parent' => 'parent', 'id' => 'id');
+    /**
+     * Outputs one element.
      *
      * @since 1.2
      *
@@ -18653,22 +17471,6 @@ class PLL_Walker_Dropdown extends \Walker
      * @return void
      */
     public function start_el(&$output, $element, $depth = 0, $args = array(), $current_object_id = 0)
-    {
-    }
-    /**
-     * Overrides Walker::display_element as expects an object with a parent property
-     *
-     * @since 1.2
-     *
-     * @param stdClass $element           Data object.
-     * @param array    $children_elements List of elements to continue traversing.
-     * @param int      $max_depth         Max depth to traverse.
-     * @param int      $depth             Depth of current element.
-     * @param array    $args              An array of arguments.
-     * @param string   $output            Passed by reference. Used to append additional content.
-     * @return void
-     */
-    public function display_element($element, &$children_elements, $max_depth, $depth, $args, &$output)
     {
     }
     /**
@@ -18687,10 +17489,12 @@ class PLL_Walker_Dropdown extends \Walker
      * class    => the class attribute
      * disabled => disables the dropdown if set to 1
      *
-     * @param array $elements  An array of elements.
+     * @param array $elements  An array of `PLL_language` or `stdClass` elements.
      * @param int   $max_depth The maximum hierarchical depth.
      * @param mixed ...$args   Additional arguments.
      * @return string The hierarchical item output.
+     *
+     * @phpstan-param array<PLL_Language|stdClass> $elements
      */
     public function walk($elements, $max_depth, ...$args)
     {
@@ -18703,8 +17507,9 @@ class PLL_Walker_Dropdown extends \Walker
  * Displays a language list
  *
  * @since 1.2
+ * @since 3.4 Extends `PLL_Walker` now.
  */
-class PLL_Walker_List extends \Walker
+class PLL_Walker_List extends \PLL_Walker
 {
     /**
      * Database fields to use.
@@ -18727,22 +17532,6 @@ class PLL_Walker_List extends \Walker
      * @return void
      */
     public function start_el(&$output, $element, $depth = 0, $args = array(), $current_object_id = 0)
-    {
-    }
-    /**
-     * Overrides Walker::display_element as it expects an object with a parent property
-     *
-     * @since 1.2
-     *
-     * @param stdClass $element           Data object.
-     * @param array    $children_elements List of elements to continue traversing.
-     * @param int      $max_depth         Max depth to traverse.
-     * @param int      $depth             Depth of current element.
-     * @param array    $args              An array of arguments.
-     * @param string   $output            Passed by reference. Used to append additional content.
-     * @return void
-     */
-    public function display_element($element, &$children_elements, $max_depth, $depth, $args, &$output)
     {
     }
     /**
@@ -19036,15 +17825,6 @@ class PLL_Install extends \PLL_Install_Base
  */
 class PLL_Plugin_Updater
 {
-    private $api_url = '';
-    private $api_data = array();
-    private $plugin_file = '';
-    private $name = '';
-    private $slug = '';
-    private $version = '';
-    private $wp_override = \false;
-    private $beta = \false;
-    private $failed_request_cache_key;
     /**
      * Class constructor.
      *
@@ -19103,14 +17883,6 @@ class PLL_Plugin_Updater
     {
     }
     /**
-     * Gets the plugins active in a multisite network.
-     *
-     * @return array
-     */
-    private function get_active_plugins()
-    {
-    }
-    /**
      * Updates information on the "View version x.x details" page with custom data.
      *
      * @uses api_request()
@@ -19124,21 +17896,6 @@ class PLL_Plugin_Updater
     {
     }
     /**
-     * Convert some objects to arrays when injecting data into the update API
-     *
-     * Some data like sections, banners, and icons are expected to be an associative array, however due to the JSON
-     * decoding, they are objects. This method allows us to pass in the object and return an associative array.
-     *
-     * @since 3.6.5
-     *
-     * @param stdClass $data
-     *
-     * @return array
-     */
-    private function convert_object_to_array($data)
-    {
-    }
-    /**
      * Disable SSL verification in order to prevent download update failures
      *
      * @param array   $args
@@ -19149,55 +17906,9 @@ class PLL_Plugin_Updater
     {
     }
     /**
-     * Calls the API and, if successfull, returns the object delivered by the API.
-     *
-     * @uses get_bloginfo()
-     * @uses wp_remote_post()
-     * @uses is_wp_error()
-     *
-     * @param string  $_action The requested action.
-     * @param array   $_data   Parameters for the API action.
-     * @return false|object|void
-     */
-    private function api_request($_action, $_data)
-    {
-    }
-    /**
-     * Determines if a request has recently failed.
-     *
-     * @since 1.9.1
-     *
-     * @return bool
-     */
-    private function request_recently_failed()
-    {
-    }
-    /**
-     * Logs a failed HTTP request for this API URL.
-     * We set a timestamp for 1 hour from now. This prevents future API requests from being
-     * made to this domain for 1 hour. Once the timestamp is in the past, API requests
-     * will be allowed again. This way if the site is down for some reason we don't bombard
-     * it with failed API requests.
-     *
-     * @see EDD_SL_Plugin_Updater::request_recently_failed
-     *
-     * @since 1.9.1
-     */
-    private function log_failed_request()
-    {
-    }
-    /**
      * If available, show the changelog for sites in a multisite install.
      */
     public function show_changelog()
-    {
-    }
-    /**
-     * Gets the current version information from the remote site.
-     *
-     * @return array|false
-     */
-    private function get_version_from_remote()
     {
     }
     /**
@@ -19216,24 +17927,6 @@ class PLL_Plugin_Updater
      * @param string $cache_key
      */
     public function set_version_info_cache($value = '', $cache_key = '')
-    {
-    }
-    /**
-     * Returns if the SSL of the store should be verified.
-     *
-     * @since  1.6.13
-     * @return bool
-     */
-    private function verify_ssl()
-    {
-    }
-    /**
-     * Gets the unique key (option name) for a plugin.
-     *
-     * @since 1.9.0
-     * @return string
-     */
-    private function get_cache_key()
     {
     }
 }
@@ -19255,30 +17948,6 @@ class PLL_T15S
      * @var string
      */
     const TRANSIENT_KEY_PLUGIN = 't15s-registry-plugins';
-    /**
-     * Project directory slug
-     *
-     * @var string
-     */
-    private $slug = '';
-    /**
-     * Full GlotPress API URL for the project.
-     *
-     * @var string
-     */
-    private $api_url = '';
-    /**
-     * Installed translations.
-     *
-     * @var array|null
-     */
-    private static $installed_translations;
-    /**
-     * Available languages.
-     *
-     * @var array|null
-     */
-    private static $available_languages;
     /**
      * Adds a new project to load translations for.
      *
@@ -19334,42 +18003,6 @@ class PLL_T15S
      * @return void
      */
     public static function clean_translations_cache()
-    {
-    }
-    /**
-     * Gets the translations for a given project.
-     *
-     * @since 2.6
-     *
-     * @param string $slug Project directory slug.
-     * @param string $url  Full GlotPress API URL for the project.
-     * @return array Translation data.
-     */
-    private static function get_translations($slug, $url)
-    {
-    }
-    /**
-     * Returns installed translations.
-     *
-     * Used to cache the result of wp_get_installed_translations() as it is very expensive.
-     *
-     * @since 2.8
-     *
-     * @return array
-     */
-    private static function get_installed_translations()
-    {
-    }
-    /**
-     * Returns available languages.
-     *
-     * Used to cache the result of get_available_languages() as it is very expensive.
-     *
-     * @since 2.8
-     *
-     * @return array
-     */
-    private static function get_available_languages()
     {
     }
 }
@@ -19487,7 +18120,6 @@ class PLL_Upgrade
     }
     /**
      * Upgrades if the previous version is < 3.4.0.
-     *
      * Deletes language cache due to:
      * - 'redirect_lang' option removed for subdomains and multiple domains in 2.2,
      * - W3C and Facebook locales added to PLL_Language objects in 2.3,
@@ -19500,6 +18132,26 @@ class PLL_Upgrade
      * @return void
      */
     protected function upgrade_3_4()
+    {
+    }
+    /**
+     * Moves strings translations from post meta to term meta _pll_strings_translations.
+     *
+     * @since 3.4
+     *
+     * @return void
+     */
+    protected function migrate_strings_translations()
+    {
+    }
+    /**
+     * Migrate locale fallback to language term description.
+     *
+     * @since 3.4
+     *
+     * @return void
+     */
+    protected function migrate_locale_fallback_to_language_description()
     {
     }
 }
@@ -19654,8 +18306,10 @@ class PLL_Admin_Site_Health
      *
      * @since 3.1
      *
-     * @param int $limit Max number of posts to show per post type.
+     * @param int $limit Max number of posts to show per post type. `-1` to return all of them. Default is 5.
      * @return int[][] Array containing an array of post ids.
+     *
+     * @phpstan-param -1|positive-int $limit
      */
     public function get_post_ids_without_lang($limit = 5)
     {
@@ -19665,8 +18319,10 @@ class PLL_Admin_Site_Health
      *
      * @since 3.1
      *
-     * @param int $limit Max number of terms to show per post type.
+     * @param int $limit Max number of terms to show per post type. `-1` to return all of them. Default is 5.
      * @return int[][] Array containing an array of term ids.
+     *
+     * @phpstan-param -1|positive-int $limit
      */
     public function get_term_ids_without_lang($limit = 5)
     {
@@ -19752,14 +18408,6 @@ class PLL_Multilingual_Sitemaps_Provider extends \WP_Sitemaps_Provider
      * @var PLL_Model
      */
     protected $model;
-    /**
-     * Language used to filter queries for the sitemap index.
-     *
-     * @since 2.8
-     *
-     * @var string
-     */
-    private static $filter_lang = '';
     /**
      * Constructor.
      *
@@ -21142,12 +19790,6 @@ class PLL_Wizard
 class PLL_WPML_API
 {
     /**
-     * Stores the original language when the language is switched.
-     *
-     * @var PLL_Language|null
-     */
-    private static $original_language = \null;
-    /**
      * Constructor
      *
      * @since 2.0
@@ -21231,9 +19873,9 @@ class PLL_WPML_API
      *
      * @since 2.0
      *
-     * @param mixed $language_code
+     * @param mixed $language_code A 2-letter language code.
      * @param array $args          An array with two keys element_id => post_id or term_taxonomy_id, element_type => post type or taxonomy
-     * @return string
+     * @return string|null
      */
     public function wpml_element_language_code($language_code, $args)
     {
@@ -21654,66 +20296,6 @@ class PLL_WPML_Config
     protected function xml_to_array(\SimpleXMLElement $key, array $arr = array(), $fill_value = \true)
     {
     }
-    /**
-     * Get the value of an attribute.
-     *
-     * @since 3.3
-     *
-     * @param  SimpleXMLElement $field          A XML node.
-     * @param  string           $attribute_name Node of the attribute.
-     * @return string
-     */
-    private function get_field_attribute(\SimpleXMLElement $field, $attribute_name)
-    {
-    }
-    /**
-     * Returns all wpml-config.xml files in MU plugins.
-     *
-     * @since 3.3
-     *
-     * @return string[] A context identifier as array key, a file path as array value.
-     *
-     * @phpstan-return array<string, string>
-     */
-    private function get_mu_plugin_files()
-    {
-    }
-    /**
-     * Returns all wpml-config.xml files in plugins.
-     *
-     * @since 3.3
-     *
-     * @return string[] A context identifier as array key, a file path as array value.
-     *
-     * @phpstan-return array<string, string>
-     */
-    private function get_plugin_files()
-    {
-    }
-    /**
-     * Returns all wpml-config.xml files in theme and child theme.
-     *
-     * @since 3.3
-     *
-     * @return string[] A context identifier as array key, a file path as array value.
-     *
-     * @phpstan-return array<string, string>
-     */
-    private function get_theme_files()
-    {
-    }
-    /**
-     * Returns the wpml-config.xml file in Polylang custom directory.
-     *
-     * @since 3.3
-     *
-     * @return string[] A context identifier as array key, a file path as array value.
-     *
-     * @phpstan-return array<string, string>
-     */
-    private function get_custom_files()
-    {
-    }
 }
 /**
  * @package Polylang
@@ -21789,30 +20371,6 @@ class PLL_Settings_CPT extends \PLL_Settings_Module
      * @var int
      */
     public $priority = 40;
-    /**
-     * The list of post types to show in the form.
-     *
-     * @var string[]
-     */
-    private $post_types;
-    /**
-     * The list of post types to disable in the form.
-     *
-     * @var string[]
-     */
-    private $disabled_post_types;
-    /**
-     * The list of taxonomies to show in the form.
-     *
-     * @var string[]
-     */
-    private $taxonomies;
-    /**
-     * The list of taxonomies to disable in the form.
-     *
-     * @var string[]
-     */
-    private $disabled_taxonomies;
     /**
      * Constructor
      *
@@ -22455,6 +21013,7 @@ class PLL_Table_Settings extends \WP_List_Table
     protected function display_tablenav($which)
     {
     }
+    // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 }
 /**
  * A class to create the strings translations table
@@ -22686,13 +21245,23 @@ function pll_the_languages($args = array())
 }
 /**
  * Returns the current language on frontend.
- * Returns the language set in admin language filter on backend ( false if set to all languages ).
+ * Returns the language set in admin language filter on backend (false if set to all languages).
  *
  * @api
  * @since 0.8.1
+ * @since 3.4 Accepts composite values.
  *
- * @param string $field Optional, the language field to return ( @see PLL_Language ), defaults to 'slug'. Pass OBJECT constant to get the language object.
- * @return string|PLL_Language|false The requested field or object for the current language, false if field isn't set or if current language doesn't exist yet.
+ * @param string $field Optional, the language field to return (@see PLL_Language), defaults to `'slug'`.
+ *                      Pass `\OBJECT` constant to get the language object. A composite value can be used for language
+ *                      term property values, in the form of `{language_taxonomy_name}:{property_name}` (see
+ *                      {@see PLL_Language::get_tax_prop()} for the possible values). Ex: `term_language:term_taxonomy_id`.
+ * @return string|int|bool|string[]|PLL_Language The requested field or object for the current language, `false` if the field isn't set or if current language doesn't exist yet.
+ *
+ * @phpstan-return (
+ *     $field is \OBJECT ? PLL_Language : (
+ *         $field is 'slug' ? non-empty-string : string|int|bool|list<non-empty-string>
+ *     )
+ * )|false
  */
 function pll_current_language($field = 'slug')
 {
@@ -22702,9 +21271,19 @@ function pll_current_language($field = 'slug')
  *
  * @api
  * @since 1.0
+ * @since 3.4 Accepts composite values.
  *
- * @param string $field Optional, the language field to return ( @see PLL_Language ), defaults to 'slug'. Pass OBJECT constant to get the language object.
- * @return string|PLL_Language|false The requested field or object for the default language. False if none.
+ * @param string $field Optional, the language field to return (@see PLL_Language), defaults to `'slug'`.
+ *                      Pass `\OBJECT` constant to get the language object. A composite value can be used for language
+ *                      term property values, in the form of `{language_taxonomy_name}:{property_name}` (see
+ *                      {@see PLL_Language::get_tax_prop()} for the possible values). Ex: `term_language:term_taxonomy_id`.
+ * @return string|int|bool|string[]|PLL_Language The requested field or object for the default language, `false` if the field isn't set or if default language doesn't exist yet.
+ *
+ * @phpstan-return (
+ *     $field is \OBJECT ? PLL_Language : (
+ *         $field is 'slug' ? non-empty-string : string|int|bool|list<non-empty-string>
+ *     )
+ * )|false
  */
 function pll_default_language($field = 'slug')
 {
@@ -22965,10 +21544,20 @@ function pll_save_term_translations($arr)
  *
  * @api
  * @since 1.5.4
+ * @since 3.4 Accepts composite values for `$field`.
  *
  * @param int    $post_id Post ID.
- * @param string $field Optional, the language field to return ( @see PLL_Language ), defaults to 'slug'. Pass OBJECT constant to get the language object.
- * @return string|PLL_Language|false The requested field or object for the post language, false if no language is associated to that post.
+ * @param string $field Optional, the language field to return (@see PLL_Language), defaults to `'slug'`.
+ *                      Pass `\OBJECT` constant to get the language object. A composite value can be used for language
+ *                      term property values, in the form of `{language_taxonomy_name}:{property_name}` (see
+ *                      {@see PLL_Language::get_tax_prop()} for the possible values). Ex: `term_language:term_taxonomy_id`.
+ * @return string|int|bool|string[]|PLL_Language The requested field or object for the post language, `false` if no language is associated to that post.
+ *
+ * @phpstan-return (
+ *     $field is \OBJECT ? PLL_Language : (
+ *         $field is 'slug' ? non-empty-string : string|int|bool|list<non-empty-string>
+ *     )
+ * )|false
  */
 function pll_get_post_language($post_id, $field = 'slug')
 {
@@ -22978,10 +21567,20 @@ function pll_get_post_language($post_id, $field = 'slug')
  *
  * @api
  * @since 1.5.4
+ * @since 3.4 Accepts composite values for `$field`.
  *
  * @param int    $term_id Term ID.
- * @param string $field Optional, the language field to return ( @see PLL_Language ), defaults to 'slug'. Pass OBJECT constant to get the language object.
- * @return string|PLL_Language|false The requested field or object for the term language, false if no language is associated to that term.
+ * @param string $field Optional, the language field to return (@see PLL_Language), defaults to `'slug'`.
+ *                      Pass `\OBJECT` constant to get the language object. A composite value can be used for language
+ *                      term property values, in the form of `{language_taxonomy_name}:{property_name}` (see
+ *                      {@see PLL_Language::get_tax_prop()} for the possible values). Ex: `term_language:term_taxonomy_id`.
+ * @return string|int|bool|string[]|PLL_Language The requested field or object for the post language, `false` if no language is associated to that term.
+ *
+ * @phpstan-return (
+ *     $field is \OBJECT ? PLL_Language : (
+ *         $field is 'slug' ? non-empty-string : string|int|bool|list<non-empty-string>
+ *     )
+ * )|false
  */
 function pll_get_term_language($term_id, $field = 'slug')
 {

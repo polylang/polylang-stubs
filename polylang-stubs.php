@@ -1402,16 +1402,6 @@ abstract class PLL_FSE_Abstract_Module
     {
     }
     /**
-     * Returns the default language.
-     *
-     * @since 1.0
-     *
-     * @return PLL_Language|null
-     */
-    protected function get_default_language()
-    {
-    }
-    /**
      * Returns the list of the slugs of enabled languages.
      *
      * @since 1.0
@@ -1551,6 +1541,48 @@ class PLL_FSE_Default_Language_Change extends \PLL_FSE_Abstract_Bulk_Edit_Templa
      * @return void
      */
     public function change_template_slugs($new_def_lang_slug)
+    {
+    }
+}
+/**
+ * A class that filters blocks in a Site Editor context.
+ *
+ * @since 3.2.2
+ */
+class PLL_FSE_Filter_Block_Types extends \PLL_FSE_Abstract_Module implements \PLL_Module_Interface
+{
+    /**
+     * Returns the module's name.
+     *
+     * @since 3.2.2
+     *
+     * @return string
+     */
+    public static function get_name()
+    {
+    }
+    /**
+     * Sub-module init.
+     *
+     * @since 3.2.2
+     *
+     * @return self
+     */
+    public function init()
+    {
+    }
+    /**
+     * Filters out template part instances from block `core/template-part` variations.
+     * This avoids to display all translations of templates parts in the block selection list,
+     * otherwhise the confusing UI could allow a user to insert a template part in a wrong language.
+     *
+     * @since 3.2.2
+     *
+     * @param array $settings Array of determined settings for registering a block type.
+     * @param array $metadata Metadata provided for registering a block type..
+     * @return array Filtered array of settings with removed template part instances variations.
+     */
+    public function remove_template_part_instance_variations($settings, $metadata)
     {
     }
 }
@@ -2493,26 +2525,6 @@ class PLL_FSE_REST_Template extends \PLL_REST_Post
     {
     }
     /**
-     * Adds the templates without translation to the templates block list.
-     *
-     * @param string $current_lang The current language.
-     * @return void
-     */
-    public function load_untranslated_templates_in_current_language($current_lang)
-    {
-    }
-    /**
-     * Add untranslated templates in the current language to the REST result.
-     *
-     * @param array           $result  Response data to send to the client.
-     * @param WP_REST_Server  $server  Server instance.
-     * @param WP_REST_Request $request Request used to generate the response.
-     * @return array result array with added untranslated templates in the current language.
-     */
-    public function add_untranslated_templates_to_rest_result($result, $server, $request)
-    {
-    }
-    /**
      * Returns the current post type from the REST route
      *
      * @since 3.2
@@ -2523,6 +2535,20 @@ class PLL_FSE_REST_Template extends \PLL_REST_Post
      * @return mixed                   Unchanged value.
      */
     public function get_current_post_type_from_route($result, $request)
+    {
+    }
+    /**
+     * Filters template part list according to the REST request parameters.
+     * Filtering by language is already done on a `WP_Query` level, see {`self::parse_query()`}.
+     *
+     * @since 3.3.2
+     *
+     * @param WP_Block_Template[] $templates     Array of found block templates.
+     * @param array               $query         Arguments to retrieve templates.
+     * @param string              $template_type 'wp_template' or 'wp_template_part'.
+     * @return WP_Block_Template[] Array of filtered block templates.
+     */
+    public function filter_template_part_list($templates, $query, $template_type)
     {
     }
 }
@@ -3021,7 +3047,7 @@ class PLL_DOM_Document extends \DOMDocument
 /**
  * Export actions class file
  *
- * @package exportActions
+ * @package Polylang-Pro
  */
 /**
  * A class that handles export actions
@@ -3297,16 +3323,6 @@ interface PLL_Export_File_Interface
      */
     public function set_source_reference($type, $id = '');
     /**
-     * Adds a reference to the site from which the file has been exported.
-     *
-     * @since 2.7
-     * @since 3.3 Also adds a reference to the application that generated the export file (name + version).
-     *
-     * @param string $url Absolute URL of the current site exporting content.
-     * @return void
-     */
-    public function set_site_reference($url);
-    /**
      * Returns the content of the file
      *
      * @since 2.7
@@ -3554,18 +3570,6 @@ class PLL_Export_Multi_Files implements \Iterator
     public function rewind()
     {
     }
-    /**
-     * Adds a reference to the site from which the file has been exported.
-     *
-     * @since 2.7
-     * @since 3.3 Also adds a reference to the application that generated the export file (name + version).
-     *
-     * @param string $url Absolute URL of the current site exporting content.
-     * @return void
-     */
-    public function set_site_reference($url)
-    {
-    }
 }
 /**
  * @package Polylang-Pro
@@ -3673,13 +3677,12 @@ class PLL_Export_Strings_Translations
      *
      * @param string    $file_extension The file's extension, {@see PLL_File_Format_Factory::from_extension()}.
      * @param PLL_Model $model Polylang model.
-     * @param array     $polylang_options Polylang options.
      *
      * @return void
      * @since 2.7
      * @since 3.1 Add the $string parameter.
      */
-    public function __construct($file_extension, $model, $polylang_options)
+    public function __construct($file_extension, $model)
     {
     }
     /**
@@ -4553,17 +4556,23 @@ class PLL_Import_Uploader
 class PLL_PO_Export extends \PLL_Export_File
 {
     /**
-     * The registered target languages
+     * The registered target language.
      *
      * @var string
      */
-    protected $target_language;
+    protected $target_language = '';
     /**
-     * The registered source_language
+     * The registered source language.
      *
      * @var string
      */
-    protected $source_language;
+    protected $source_language = '';
+    /**
+     * The registered site reference.
+     *
+     * @var string
+     */
+    protected $site_reference = '';
     /**
      * PLL_Export_Interface constructor.
      * Creates a PO object.
@@ -4582,7 +4591,6 @@ class PLL_PO_Export extends \PLL_Export_File
     {
     }
     /**
-     *
      * Set a source language to the export
      *
      * @since 2.7
@@ -4613,18 +4621,6 @@ class PLL_PO_Export extends \PLL_Export_File
     {
     }
     /**
-     * Set the site reference to the export.
-     *
-     * @since 2.7
-     * @since 3.3 Also adds a reference to the application that generated the export file (name + version).
-     *
-     * @param string $url Absolute url of the current site.
-     * @return void
-     */
-    public function set_site_reference($url)
-    {
-    }
-    /**
      * Add a translation source and target to the current translation file
      *
      * @since 2.7
@@ -4642,6 +4638,7 @@ class PLL_PO_Export extends \PLL_Export_File
      * Assign a reference to the PO file.
      *
      * @since 2.7
+     * @since 3.3.1 Remove unused source reference header.
      *
      * @param string $type Type of data to be exported.
      * @param string $id   Optional, unique identifier to retrieve the data in the database.
@@ -4666,7 +4663,10 @@ class PLL_PO_Export extends \PLL_Export_File
      * @see https://www.gnu.org/software/trans-coord/manual/gnun/html_node/PO-Header.html
      *
      * @since 2.7
-     *
+     * @since 3.3   Add a reference to the application that generated the export file (name + version).
+     * @since 3.3.1 Replace non-official "Language-Target" header to the official Language.
+     *              Use the Poedit header "X-Source-Language" instead of non official "Language-source".
+     *              Replace non official 'Site-Reference" header by "X-Polylang-Site-Reference".
      * @return void
      */
     protected function set_file_headers()
@@ -4780,6 +4780,8 @@ class PLL_PO_Import implements \PLL_Import_File_Interface
      * Get the target language
      *
      * @since 2.7
+     * @since 3.3.1 Change the target language header label. We're now using the official "Language" header
+     *              and add a backward condition to accept the old header.
      *
      * @return string|false
      */
@@ -4790,6 +4792,7 @@ class PLL_PO_Import implements \PLL_Import_File_Interface
      * Get the site reference.
      *
      * @since 2.7
+     * @since 3.3.1 Change the site reference header label.
      *
      * @return string|false
      */
@@ -5260,7 +5263,7 @@ class PLL_Translation_Block_Parsing_Rules
 /**
  * Class PLL_Translation_Content
  *
- * @package polylang-pro
+ * @package Polylang-Pro
  */
 /**
  * Translates content.
@@ -5357,7 +5360,7 @@ class PLL_Translation_Entry_Identified extends \Translation_Entry
 /**
  * Class PLL_Translation_Metas
  *
- * @package polylang-pro
+ * @package Polylang-Pro
  */
 /**
  * Abstract class to manage the import of metas.
@@ -5452,7 +5455,7 @@ abstract class PLL_Translation_Metas
     }
 }
 /**
- * @package polylang-pro
+ * @package Polylang-Pro
  */
 /**
  * Class PLL_Translation_Post_Metas
@@ -5647,7 +5650,7 @@ class PLL_Translation_Post_Model
     }
 }
 /**
- * @package polylang-pro
+ * @package Polylang-Pro
  */
 /**
  * Class PLL_Translation_Term_Metas
@@ -5670,7 +5673,7 @@ class PLL_Translation_Term_Metas extends \PLL_Translation_Metas
     }
 }
 /**
- * @package polylang-pro
+ * @package Polylang-Pro
  */
 /**
  * Translate post taxonomies from a set of translation entries.
@@ -6129,18 +6132,6 @@ class PLL_Xliff_Export extends \PLL_Export_File
     {
     }
     /**
-     * Set site reference to xliff.
-     *
-     * @since 3.1
-     * @since 3.3 Also adds a reference to the application that generated the export file (name + version).
-     *
-     * @param string $url Absolute URL of the current site exporting content.
-     * @return void
-     */
-    public function set_site_reference($url)
-    {
-    }
-    /**
      * @since 3.1
      *
      * @return string
@@ -6300,7 +6291,7 @@ class PLL_Xliff_Import implements \PLL_Import_File_Interface
     }
 }
 /**
- * @package polylang-pro
+ * @package Polylang-Pro
  */
 /**
  * Allows to load a fallback translation file if a translation doesn't exist in the current locale.
@@ -10533,9 +10524,10 @@ class PLL_Admin_Filters extends \PLL_Filters
     {
     }
     /**
-     * Adds a text direction dependent class to the body
+     * Adds custom classes to the body
      *
-     * @since 2.2
+     * @since 2.2 Adds a text direction dependent class to the body.
+     * @since 3.4 Adds a language dependent class to the body.
      *
      * @param string $classes Space-separated list of CSS classes.
      * @return string
@@ -14333,7 +14325,7 @@ abstract class PLL_Language_Deprecated
      *
      * @var string[]
      */
-    const DEPRECATED_URL_PROPERTIES = array('home_url' => 'get_home_url', 'search_url' => 'get_seach_url');
+    const DEPRECATED_URL_PROPERTIES = array('home_url' => 'get_home_url', 'search_url' => 'get_search_url');
     /**
      * Returns a language term property value (term ID, term taxonomy ID, or count).
      *
@@ -21648,19 +21640,6 @@ function pll_count_posts($lang, $args = array())
  * @return PLL_Frontend|PLL_Admin|PLL_Settings|PLL_REST_Request
  */
 function PLL()
-{
-}
-/**
- * Retrieve a page given its title.
- *
- * @since 2.0
- *
- * @param string       $page_title Page title
- * @param string       $output     Optional. The required return type. One of OBJECT, ARRAY_A, or ARRAY_N. Default OBJECT
- * @param string|array $post_type  Optional. Post type or array of post types. Default 'page'.
- * @return WP_Post|array|null WP_Post (or array) on success, or null on failure.
- */
-function wpcom_vip_get_page_by_title($page_title, $output = \OBJECT, $post_type = 'page')
 {
 }
 /**

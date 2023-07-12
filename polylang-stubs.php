@@ -9095,6 +9095,18 @@ abstract class PLL_Base
     public function should_customize_menu_be_removed()
     {
     }
+    /**
+     * Tells whether or not Polylang or third party callbacks are hooked to `customize_register`.
+     *
+     * @since 3.4.3
+     *
+     * @global $wp_filter
+     *
+     * @return bool True if Polylang's callbacks are hooked, false otherwise.
+     */
+    protected function is_customize_register_hooked()
+    {
+    }
 }
 /**
  * @package Polylang
@@ -10330,6 +10342,18 @@ class PLL_Filters
      * @return WP_Post[] Modified list of pages.
      */
     public function get_pages($pages, $args)
+    {
+    }
+    /**
+     * Filters the WP_Query in get_pages() per language.
+     *
+     * @since 3.4.3
+     *
+     * @param array $query_args  Array of arguments passed to WP_Query.
+     * @param array $parsed_args Array of get_pages() arguments.
+     * @return array Array of arguments passed to WP_Query with the language.
+     */
+    public function get_pages_query_args($query_args, $parsed_args)
     {
     }
     /**
@@ -13438,23 +13462,13 @@ class PLL_Frontend_Static_Pages extends \PLL_Static_Pages
      */
     protected $options;
     /**
-     * Constructor: setups filters and actions
+     * Constructor: setups filters and actions.
      *
      * @since 1.8
      *
      * @param object $polylang
      */
     public function __construct(&$polylang)
-    {
-    }
-    /**
-     * Init the filters
-     *
-     * @since 1.8
-     *
-     * @return void
-     */
-    public function pll_language_defined()
     {
     }
     /**
@@ -13549,6 +13563,39 @@ class PLL_Frontend_Static_Pages extends \PLL_Static_Pages
      * @return int The page_id.
      */
     protected function get_page_id($query)
+    {
+    }
+    /**
+     * Adds support for the theme customizer.
+     *
+     * @since 3.4.2
+     *
+     * @return void
+     */
+    public function filter_customizer()
+    {
+    }
+    /**
+     * Translates the page ID when customized.
+     *
+     * @since 3.4.2
+     *
+     * @param int|false $pre A page ID if the setting is customized, false otherwise.
+     * @return int|false
+     */
+    public function customize_page($pre)
+    {
+    }
+    /**
+     * Fixes the translation URL if the option 'show_on_front' is customized.
+     *
+     * @since 3.4.2
+     *
+     * @param string       $url      An empty string or the URL of the translation of the current page.
+     * @param PLL_Language $language The language of the translation.
+     * @return string
+     */
+    public function customize_translation_url($url, $language)
     {
     }
 }
@@ -14472,7 +14519,7 @@ class PLL_Language_Factory
      * @param array $language_data Language object properties stored as an array. See `PLL_Language::__construct()`
      *                             for information on accepted properties.
      *
-     * @return PLL_Language|null A language object if given data pass sanitization, null otherwise.
+     * @return PLL_Language A language object if given data pass sanitization.
      *
      * @phpstan-param LanguageData $language_data
      */
@@ -14485,11 +14532,11 @@ class PLL_Language_Factory
      * @since 3.4
      *
      * @param WP_Term[] $terms List of language terms, with the language taxonomy names as array keys.
-     *                         `language` is a mandatory key, `term_language` should be too in a
-     *                         fully operational environment.
-     * @return PLL_Language
+     *                         `language` is a mandatory key for the object to be created,
+     *                         `term_language` should be too in a fully operational environment.
+     * @return PLL_Language|null Language object on success, `null` on failure.
      *
-     * @phpstan-param array{language:WP_Term}&array<string, WP_Term> $terms
+     * @phpstan-param array{language?:WP_Term}&array<string, WP_Term> $terms
      */
     public function get_from_terms(array $terms)
     {
@@ -14516,8 +14563,8 @@ class PLL_Language_Factory
  *     }&array<non-empty-string, LanguagePropData>,
  *     name: non-empty-string,
  *     slug: non-empty-string,
- *     locale: non-falsy-string,
- *     w3c: non-falsy-string,
+ *     locale: non-empty-string,
+ *     w3c: non-empty-string,
  *     flag_code: non-empty-string,
  *     term_group: int,
  *     is_rtl: int<0, 1>,
@@ -14575,7 +14622,7 @@ class PLL_Language extends \PLL_Language_Deprecated
      *
      * @var string
      *
-     * @phpstan-var non-falsy-string
+     * @phpstan-var non-empty-string
      */
     public $locale;
     /**
@@ -14591,7 +14638,7 @@ class PLL_Language extends \PLL_Language_Deprecated
      *
      * @var string
      *
-     * @phpstan-var non-falsy-string
+     * @phpstan-var non-empty-string
      */
     public $w3c;
     /**
@@ -14874,7 +14921,7 @@ class PLL_Language extends \PLL_Language_Deprecated
      * @return string
      *
      * @phpstan-param 'display'|'raw' $filter
-     * @phpstan-return non-falsy-string
+     * @phpstan-return non-empty-string
      */
     public function get_locale($filter = 'raw')
     {
@@ -16230,6 +16277,13 @@ class PLL_Switcher
  * Interface to use for objects that can have one or more types.
  *
  * @since 3.4
+ *
+ * @phpstan-type DBInfoWithType array{
+ *     table: non-empty-string,
+ *     id_column: non-empty-string,
+ *     type_column: non-empty-string,
+ *     default_alias: non-empty-string
+ * }
  */
 interface PLL_Translatable_Object_With_Types_Interface
 {
@@ -16261,20 +16315,6 @@ interface PLL_Translatable_Object_With_Types_Interface
  * This must be used with {@see PLL_Translatable_Object_With_Types_Interface}.
  *
  * @since 3.4
- *
- * @property string[] $db {
- *     @type string $table         Name of the table.
- *     @type string $id_column     Name of the column containing the object's ID.
- *     @type string $type_column   Name of the column containing the object's type.
- *     @type string $default_alias Default alias corresponding to the object's table.
- * }
- *
- * @phpstan-property array{
- *     table: non-empty-string,
- *     id_column: non-empty-string,
- *     type_column: non-empty-string,
- *     default_alias: non-empty-string
- * } $db
  */
 trait PLL_Translatable_Object_With_Types_Trait
 {
@@ -16313,6 +16353,12 @@ trait PLL_Translatable_Object_With_Types_Trait
  * Abstract class to use for object types that support at least one language.
  *
  * @since 3.4
+ *
+ * @phpstan-type DBInfo array{
+ *     table: non-empty-string,
+ *     id_column: non-empty-string,
+ *     default_alias: non-empty-string
+ * }
  */
 abstract class PLL_Translatable_Object
 {
@@ -16363,25 +16409,6 @@ abstract class PLL_Translatable_Object
      * @phpstan-var non-empty-string|null
      */
     protected $object_type = \null;
-    /**
-     * Contains database-related informations that can be used in some of this class methods.
-     * These are specific to the table containing the objects.
-     *
-     * @var string[] {
-     *     @type string $table         Name of the table.
-     *     @type string $id_column     Name of the column containing the object's ID.
-     *     @type string $default_alias Default alias corresponding to the object's table.
-     * }
-     * @see PLL_Translatable_Object::join_clause()
-     * @see PLL_Translatable_Object::get_objects_with_no_lang_sql()
-     *
-     * @phpstan-var array{
-     *     table: non-empty-string,
-     *     id_column: non-empty-string,
-     *     default_alias: non-empty-string
-     * }
-     */
-    protected $db;
     /**
      * Constructor.
      *
@@ -16588,6 +16615,23 @@ abstract class PLL_Translatable_Object
     public function set_language_in_mass($ids, $lang)
     {
     }
+    /**
+     * Returns database-related informations that can be used in some of this class methods.
+     * These are specific to the table containing the objects.
+     *
+     * @see PLL_Translatable_Object::join_clause()
+     * @see PLL_Translatable_Object::get_objects_with_no_lang_sql()
+     *
+     * @since 3.4.3
+     *
+     * @return string[] {
+     *     @type string $table         Name of the table.
+     *     @type string $id_column     Name of the column containing the object's ID.
+     *     @type string $default_alias Default alias corresponding to the object's table.
+     * }
+     * @phpstan-return DBInfo
+     */
+    protected abstract function get_db_infos();
 }
 /**
  * @package Polylang
@@ -17042,6 +17086,8 @@ abstract class PLL_Translated_Object extends \PLL_Translatable_Object
  * Sets the posts languages and translations model up.
  *
  * @since 1.8
+ *
+ * @phpstan-import-type DBInfoWithType from PLL_Translatable_Object_With_Types_Interface
  */
 class PLL_Translated_Post extends \PLL_Translated_Object implements \PLL_Translatable_Object_With_Types_Interface
 {
@@ -17203,11 +17249,33 @@ class PLL_Translated_Post extends \PLL_Translated_Object implements \PLL_Transla
     public function get_untranslated($type, \PLL_Language $untranslated_in, \PLL_Language $lang, $search = '')
     {
     }
+    /**
+     * Returns database-related informations that can be used in some of this class methods.
+     * These are specific to the table containing the objects.
+     *
+     * @see PLL_Translatable_Object::join_clause()
+     * @see PLL_Translatable_Object::get_objects_with_no_lang_sql()
+     *
+     * @since 3.4.3
+     *
+     * @return string[] {
+     *     @type string $table         Name of the table.
+     *     @type string $id_column     Name of the column containing the object's ID.
+     *     @type string $type_column   Name of the column containing the object's type.
+     *     @type string $default_alias Default alias corresponding to the object's table.
+     * }
+     * @phpstan-return DBInfoWithType
+     */
+    protected function get_db_infos()
+    {
+    }
 }
 /**
  * Sets the taxonomies languages and translations model up.
  *
  * @since 1.8
+ *
+ * @phpstan-import-type DBInfoWithType from PLL_Translatable_Object_With_Types_Interface
  */
 class PLL_Translated_Term extends \PLL_Translated_Object implements \PLL_Translatable_Object_With_Types_Interface
 {
@@ -17382,6 +17450,26 @@ class PLL_Translated_Term extends \PLL_Translated_Object implements \PLL_Transla
      * @return void
      */
     public function set_language_in_mass($ids, $lang)
+    {
+    }
+    /**
+     * Returns database-related informations that can be used in some of this class methods.
+     * These are specific to the table containing the objects.
+     *
+     * @see PLL_Translatable_Object::join_clause()
+     * @see PLL_Translatable_Object::get_objects_with_no_lang_sql()
+     *
+     * @since 3.4.3
+     *
+     * @return string[] {
+     *     @type string $table         Name of the table.
+     *     @type string $id_column     Name of the column containing the object's ID.
+     *     @type string $type_column   Name of the column containing the object's type.
+     *     @type string $default_alias Default alias corresponding to the object's table.
+     * }
+     * @phpstan-return DBInfoWithType
+     */
+    protected function get_db_infos()
     {
     }
 }

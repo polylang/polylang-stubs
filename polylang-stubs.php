@@ -21892,18 +21892,6 @@ namespace {
     {
     }
     /**
-     * Strips out all characters not allowed in a locale code.
-     * Backward compatibility with WP < 6.2.1.
-     *
-     * @since 3.5
-     *
-     * @param string $locale_name The locale name to be sanitized.
-     * @return string The sanitized value.
-     */
-    function sanitize_locale_name($locale_name)
-    {
-    }
-    /**
      * Determines whether we should load the cache compatibility
      *
      * @since 2.3.8

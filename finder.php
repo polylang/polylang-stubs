@@ -8,6 +8,7 @@ return \StubsGenerator\Finder::create()
 	->in(
 		[
 			'polylang-pro/modules',
+			'polylang-pro/services',
 			'polylang-pro/vendor/wpsyntex/polylang/admin',
 			'polylang-pro/vendor/wpsyntex/polylang/frontend',
 			'polylang-pro/vendor/wpsyntex/polylang/include',

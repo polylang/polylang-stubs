@@ -5,11 +5,11 @@ These stubs can help plugin and theme developers leverage static analysis tools 
 
 Stubs are generated directly from the source using [php-stubs/generator](https://github.com/php-stubs/generator).
 
-### Requirements
+## Requirements
 
 - PHP >=7.1
 
-### Installation
+## Installation
 
 Require this package as a development dependency with Composer.
 
@@ -17,7 +17,7 @@ Require this package as a development dependency with Composer.
 composer require --dev wpsyntex/polylang-stubs
 ```
 
-### Usage in PHPStan
+## Usage in PHPStan
 
 Include the stubs in the PHPStan configuration file.
 

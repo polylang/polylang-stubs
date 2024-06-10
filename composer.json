@@ -5,8 +5,8 @@
 	"homepage": "https://polylang.pro",
 	"type": "library",
 	"require-dev": {
-		"php": "~7.1",
-		"php-stubs/generator": "^0.8.1"
+		"php": ">=7.1",
+		"php-stubs/generator": "^0.8.4"
 	},
 	"suggest": {
 		"wpsyntex/polylang-phpstan": "Polylang extension for PHPStan"

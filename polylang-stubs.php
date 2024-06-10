@@ -712,8 +712,9 @@ namespace WP_Syntex\Polylang_Pro\Modules\Machine_Translation {
     {
         /**
          * Adds a source string to exported data and optionally a pre-existing translated one.
-         *
-         * @todo What should we do for encoding?
+         * New types or objects are prepended to data arrays, assuming they are linked to previously added ones.
+         * Once translated, this allows to import linked objects before the objects they are linked to.
+         * For example, a category is imported before the post it is linked to.
          *
          * @since 3.6
          *
@@ -3633,7 +3634,7 @@ namespace {
         {
         }
         /**
-         * Filters the query per language according to the 'lang' parameter.
+         * Filters the query per language according to the 'lang' parameter from the REST request.
          *
          * @since 2.6.9
          *
@@ -3644,12 +3645,13 @@ namespace {
         {
         }
         /**
-         * Whether or not the given query is filterable by language.
+         * Tells whether or not the given query is filterable by language.
          *
          * @since 3.2
          *
          * @param WP_Query $query The query to check.
-         * @return boolean
+         * @return bool True if filterable by language. False if the query is already filtered,
+         *                   no language has been passed in the request or the post type is not supported.
          */
         protected function can_filter_query($query)
         {
@@ -18038,16 +18040,6 @@ namespace {
         {
         }
         /**
-         * Optionally removes 'language' in permalinks so that we get http://www.myblog/en/ instead of http://www.myblog/language/en/.
-         *
-         * @since 1.2
-         *
-         * @return void
-         */
-        public function add_permastruct()
-        {
-        }
-        /**
          * Prepares the rewrite rules filters.
          *
          * @since 0.8.1
@@ -21517,7 +21509,7 @@ namespace {
          *
          * @return void
          */
-        protected function remove_all_meta_actions()
+        public function remove_all_meta_actions()
         {
         }
         /**
@@ -21537,7 +21529,7 @@ namespace {
          *
          * @return void
          */
-        protected function add_all_meta_actions()
+        public function add_all_meta_actions()
         {
         }
         /**

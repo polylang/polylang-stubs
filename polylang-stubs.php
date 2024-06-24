@@ -378,7 +378,7 @@ namespace WP_Syntex\Polylang\Options {
             // Synchronization.
             \WP_Syntex\Polylang\Options\Business\Sync::class,
             // Internal.
-            \WP_Syntex\Polylang\Options\Business\Language_Slug::class,
+            \WP_Syntex\Polylang\Options\Business\Default_Lang::class,
             \WP_Syntex\Polylang\Options\Business\Nav_Menus::class,
             \WP_Syntex\Polylang\Options\Business\Language_Taxonomies::class,
             // Read only.
@@ -15665,7 +15665,7 @@ namespace {
         {
         }
         /**
-         * Adds the language information in admin bar search form
+         * Adds the language information in the admin bar search form.
          *
          * @since 1.2
          *
@@ -16469,6 +16469,82 @@ namespace WP_Syntex\Polylang\Options\Business {
         {
         }
     }
+}
+namespace WP_Syntex\Polylang\Options\Primitive {
+    /**
+     * Class defining single string option.
+     *
+     * @since 3.7
+     */
+    abstract class Abstract_String extends \WP_Syntex\Polylang\Options\Abstract_Option
+    {
+        /**
+         * Returns the default value.
+         *
+         * @since 3.7
+         *
+         * @return string
+         */
+        protected function get_default()
+        {
+        }
+        /**
+         * Returns the JSON schema part specific to this option.
+         *
+         * @since 3.7
+         *
+         * @return array Partial schema.
+         *
+         * @phpstan-return array{type: 'string'}
+         */
+        protected function get_data_structure() : array
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang\Options\Business {
+    /**
+     * Class defining language slug string option.
+     *
+     * @since 3.7
+     */
+    class Default_Lang extends \WP_Syntex\Polylang\Options\Primitive\Abstract_String
+    {
+        /**
+         * Returns option key.
+         *
+         * @since 3.7
+         *
+         * @return string
+         *
+         * @phpstan-return 'default_lang'
+         */
+        public static function key() : string
+        {
+        }
+        /**
+         * Returns the JSON schema part specific to this option.
+         *
+         * @since 3.7
+         *
+         * @return array Partial schema.
+         *
+         * @phpstan-return array{type: 'string', pattern: '^[a-z_-]+$'}
+         */
+        protected function get_data_structure() : array
+        {
+        }
+        /**
+         * Returns the description used in the JSON schema.
+         *
+         * @since 3.7
+         *
+         * @return string
+         */
+        protected function get_description() : string
+        {
+        }
+    }
     /**
      * Class defining single associative array of domain as value and language slug as key option.
      * /!\ Sanitization depends on `force_lang`: this option must be set AFTER `force_lang`.
@@ -16690,82 +16766,6 @@ namespace WP_Syntex\Polylang\Options\Business {
          * @return bool|WP_Error The sanitized value. An instance of `WP_Error` in case of blocking error.
          */
         protected function sanitize($value, \WP_Syntex\Polylang\Options\Options $options)
-        {
-        }
-        /**
-         * Returns the description used in the JSON schema.
-         *
-         * @since 3.7
-         *
-         * @return string
-         */
-        protected function get_description() : string
-        {
-        }
-    }
-}
-namespace WP_Syntex\Polylang\Options\Primitive {
-    /**
-     * Class defining single string option.
-     *
-     * @since 3.7
-     */
-    abstract class Abstract_String extends \WP_Syntex\Polylang\Options\Abstract_Option
-    {
-        /**
-         * Returns the default value.
-         *
-         * @since 3.7
-         *
-         * @return string
-         */
-        protected function get_default()
-        {
-        }
-        /**
-         * Returns the JSON schema part specific to this option.
-         *
-         * @since 3.7
-         *
-         * @return array Partial schema.
-         *
-         * @phpstan-return array{type: 'string'}
-         */
-        protected function get_data_structure() : array
-        {
-        }
-    }
-}
-namespace WP_Syntex\Polylang\Options\Business {
-    /**
-     * Class defining language slug string option.
-     *
-     * @since 3.7
-     */
-    class Language_Slug extends \WP_Syntex\Polylang\Options\Primitive\Abstract_String
-    {
-        /**
-         * Returns option key.
-         *
-         * @since 3.7
-         *
-         * @return string
-         *
-         * @phpstan-return 'default_lang'
-         */
-        public static function key() : string
-        {
-        }
-        /**
-         * Returns the JSON schema part specific to this option.
-         *
-         * @since 3.7
-         *
-         * @return array Partial schema.
-         *
-         * @phpstan-return array{type: 'string', pattern: '^[a-z_-]+$'}
-         */
-        protected function get_data_structure() : array
         {
         }
         /**
@@ -20133,6 +20133,42 @@ namespace {
          * @return string|array either the html markup of the switcher or the raw elements to build a custom language switcher
          */
         public function the_languages($links, $args = array())
+        {
+        }
+    }
+    /**
+     * @package Polylang
+     */
+    /**
+     * Class for handling term slugs.
+     *
+     * @since 3.7
+     */
+    class PLL_Term_Slug
+    {
+        /**
+         * Constructor.
+         *
+         * @since 3.7
+         *
+         * @param PLL_Model $model    Instance of PLL_Model.
+         * @param string    $slug     The term slug.
+         * @param string    $taxonomy The term taxonomy.
+         * @param string    $name     The term name.
+         * @param int       $term_id  The term ID if exists, or 0 if there's no need to know that we are editing an existing term.
+         */
+        public function __construct(\PLL_Model $model, string $slug, string $taxonomy, string $name, int $term_id = 0)
+        {
+        }
+        /**
+         * Returns the term slug, suffixed or not.
+         *
+         * @since 3.7
+         *
+         * @param string $separator The separator for the slug suffix.
+         * @return string The suffixed slug, or not if the lang isn't defined.
+         */
+        public function get_suffixed_slug(string $separator) : string
         {
         }
     }
@@ -24046,14 +24082,14 @@ namespace {
         }
         /**
          * Unlike pll_register_string, icl_register_string stores the string in database
-         * so we need to do the same as some plugins or themes may expect this
-         * we use a serialized option to do this
+         * so we need to do the same as some plugins or themes may expect this.
+         * We use a serialized option to store these strings.
          *
          * @since 1.0.2
          *
-         * @param string $context The group in which the string is registered.
-         * @param string $name    A unique name for the string.
-         * @param string $string  The string to register.
+         * @param string|string[] $context The group in which the string is registered.
+         * @param string          $name    A unique name for the string.
+         * @param string          $string  The string to register.
          * @return void
          */
         public function register_string($context, $name, $string)

@@ -6,7 +6,7 @@
 	"type": "library",
 	"require-dev": {
 		"php": "^7.3 || ^8.0",
-		"php-stubs/generator": "^0.8.4"
+		"php-stubs/generator": "^0.8"
 	},
 	"suggest": {
 		"wpsyntex/polylang-phpstan": "Polylang extension for PHPStan"

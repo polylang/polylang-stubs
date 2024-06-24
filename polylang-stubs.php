@@ -1,48 +1,416 @@
 <?php
 
-namespace {
+namespace WP_Syntex\Polylang\Options {
     /**
-     * @package Polylang
-     */
-    /**
-     * A class to match values against a given format.
+     * Class defining a single option.
      *
-     * @since 3.6
+     * @since 3.7
+     *
+     * @phpstan-type SchemaType 'string'|'null'|'number'|'integer'|'boolean'|'array'|'object'
+     * @phpstan-type Schema array{
+     *     '$schema': non-falsy-string,
+     *     title: non-falsy-string,
+     *     type: SchemaType,
+     *     context: array<non-falsy-string>
+     * }
      */
-    class PLL_Format_Util
+    abstract class Abstract_Option
     {
         /**
-         * Filters the given list to return only the values whose the key or value matches the given format.
+         * Validation and sanitization errors.
          *
-         * @since 3.6
-         *
-         * @param array|Traversable $list   An list with keys or values to match against `$format`.
-         * @param string            $format A format, where `*` means "any characters" (`.*`), unless escaped.
-         * @param string            $mode   Optional. Tell if we should filter the keys or values from `$list`.
-         *                                  Possible values are `'use_keys'` and `'use_values'`. Default is `'use_keys'`.
-         * @return array
-         *
-         * @template TArrayValue
-         * @phpstan-param ($mode is 'use_keys' ? array<string, TArrayValue>|Traversable<string, TArrayValue> : array<string>|Traversable<string>) $list
-         * @phpstan-param 'use_keys'|'values' $mode
-         * @phpstan-return ($mode is 'use_keys' ? array<string, TArrayValue> : array<string>)
+         * @var WP_Error
          */
-        public function filter_list($list, string $format, string $mode = 'use_keys') : array
+        protected $errors;
+        /**
+         * Constructor.
+         *
+         * @since 3.7
+         *
+         * @param mixed $value Optional. Option value.
+         */
+        public function __construct($value = null)
         {
         }
         /**
-         * Tells if the given string matches the given format.
+         * Returns option key.
          *
-         * @since 3.6
+         * @since 3.7
          *
-         * @param string $key    A string to test.
-         * @param string $format A format, where `*` means "any characters" (`.*`), unless escaped.
+         * @return string
+         *
+         * @phpstan-return non-falsy-string
+         */
+        public static abstract function key() : string;
+        /**
+         * Sets option's value if valid, does nothing otherwise.
+         *
+         * @since 3.7
+         *
+         * @param mixed   $value   Value to set.
+         * @param Options $options All options.
+         * @return bool True if the value has been assigned. False in case of errors.
+         */
+        public function set($value, \WP_Syntex\Polylang\Options\Options $options) : bool
+        {
+        }
+        /**
+         * Returns option's value.
+         *
+         * @since 3.7
+         *
+         * @return mixed
+         */
+        public function &get()
+        {
+        }
+        /**
+         * Sets default option value.
+         *
+         * @since 3.7
+         *
+         * @return mixed The new value.
+         */
+        public function reset()
+        {
+        }
+        /**
+         * Returns JSON schema of the option.
+         *
+         * @since 3.7
+         *
+         * @return array The schema.
+         *
+         * @phpstan-return Schema
+         */
+        public function get_schema() : array
+        {
+        }
+        /**
+         * Returns non-blocking sanitization errors.
+         *
+         * @since 3.7
+         *
+         * @return WP_Error
+         */
+        public function get_errors() : \WP_Error
+        {
+        }
+        /**
+         * Prepares a value before validation.
+         *
+         * @since 3.7
+         *
+         * @param mixed $value Value to format.
+         * @return mixed
+         */
+        protected function prepare($value)
+        {
+        }
+        /**
+         * Sanitizes option's value, can be overridden for specific cases not handled by `rest_sanitize_value_from_schema()`.
+         * Can populate the `$errors` property with blocking and non-blocking errors: in case of non-blocking errors,
+         * the value is sanitized and can be stored.
+         *
+         * @since 3.7
+         *
+         * @param mixed   $value   Value to sanitize.
+         * @param Options $options All options.
+         * @return mixed The sanitized value. An instance of `WP_Error` in case of blocking error.
+         */
+        protected function sanitize($value, \WP_Syntex\Polylang\Options\Options $options)
+        {
+        }
+        /**
+         * Returns the default value.
+         *
+         * @since 3.7
+         *
+         * @return mixed
+         */
+        protected abstract function get_default();
+        /**
+         * Returns the JSON schema part specific to this option.
+         *
+         * @since 3.7
+         *
+         * @return array Partial schema.
+         *
+         * @phpstan-return array{type: SchemaType}
+         */
+        protected abstract function get_data_structure() : array;
+        /**
+         * Returns the description used in the JSON schema.
+         *
+         * @since 3.7
+         *
+         * @return string
+         */
+        protected abstract function get_description() : string;
+    }
+}
+namespace WP_Syntex\Polylang\Options\Primitive {
+    /**
+     * Class defining single boolean option.
+     * Note that for historic reason, boolean are stored as 0 or 1.
+     *
+     * @since 3.7
+     */
+    abstract class Abstract_Boolean extends \WP_Syntex\Polylang\Options\Abstract_Option
+    {
+        /**
+         * Returns the default value.
+         *
+         * @since 3.7
+         *
          * @return bool
          */
-        public function matches(string $key, string $format) : bool
+        protected function get_default()
+        {
+        }
+        /**
+         * Returns the JSON schema part specific to this option.
+         *
+         * @since 3.7
+         *
+         * @return array Partial schema.
+         *
+         * @phpstan-return array{type: 'boolean'}
+         */
+        protected function get_data_structure() : array
         {
         }
     }
+}
+namespace WP_Syntex\Polylang_Pro\Options\Business {
+    /**
+     * Class defining machine translation boolean option.
+     *
+     * @since 3.7
+     */
+    class Machine_Translation_Enabled extends \WP_Syntex\Polylang\Options\Primitive\Abstract_Boolean
+    {
+        /**
+         * Returns option key.
+         *
+         * @since 3.7
+         *
+         * @return string
+         *
+         * @phpstan-return 'machine_translation_enabled'
+         */
+        public static function key() : string
+        {
+        }
+        /**
+         * Returns the description used in the JSON schema.
+         *
+         * @since 3.7
+         *
+         * @return string
+         */
+        protected function get_description() : string
+        {
+        }
+    }
+    /**
+     * Class defining machine translation services array option.
+     *
+     * @since 3.7
+     */
+    class Machine_Translation_Services extends \WP_Syntex\Polylang\Options\Abstract_Option
+    {
+        /**
+         * Returns option key.
+         *
+         * @since 3.7
+         *
+         * @return string
+         *
+         * @phpstan-return 'machine_translation_services'
+         */
+        public static function key() : string
+        {
+        }
+        /**
+         * Returns the default value.
+         *
+         * @since 3.7
+         *
+         * @return array
+         */
+        protected function get_default()
+        {
+        }
+        /**
+         * Returns the JSON schema part specific to this option.
+         *
+         * @since 3.7
+         *
+         * @return array Partial schema.
+         *
+         * @phpstan-return array{
+         *     type: 'object',
+         *     properties: array{
+         *         deepl: array{
+         *             type: 'object',
+         *             required: true,
+         *             properties: array{
+         *                 api_key: array{
+         *                     type: 'string',
+         *                     required: true
+         *                 },
+         *                 formality: array{
+         *                     type: 'string',
+         *                     required: true,
+         *                     enum: list<'default'|'prefer_more'|'prefer_less'>
+         *                 }
+         *             },
+         *             additionalProperties: false
+         *         }
+         *     },
+         *     patternProperties: array{
+         *         '^\w+$': array{
+         *             type: 'object'
+         *         }
+         *     },
+         *     additionalProperties: false
+         * }
+         */
+        protected function get_data_structure() : array
+        {
+        }
+        /**
+         * Returns the description used in the JSON schema.
+         *
+         * @since 3.7
+         *
+         * @return string
+         */
+        protected function get_description() : string
+        {
+        }
+    }
+    /**
+     * Class defining media array option.
+     *
+     * @since 3.7
+     */
+    class Media extends \WP_Syntex\Polylang\Options\Abstract_Option
+    {
+        /**
+         * Returns option key.
+         *
+         * @since 3.7
+         *
+         * @return string
+         *
+         * @phpstan-return 'media'
+         */
+        public static function key() : string
+        {
+        }
+        /**
+         * Returns the default value.
+         *
+         * @since 3.7
+         *
+         * @return array
+         */
+        protected function get_default()
+        {
+        }
+        /**
+         * Returns the JSON schema part specific to this option.
+         *
+         * @since 3.7
+         *
+         * @return array Partial schema.
+         *
+         * @phpstan-return array{
+         *     type: 'object',
+         *     properties: array{
+         *         duplicate: array{
+         *             type: 'boolean',
+         *             required: true
+         *         }
+         *     },
+         *     additionalProperties: false
+         * }
+         */
+        protected function get_data_structure() : array
+        {
+        }
+        /**
+         * Returns the description used in the JSON schema.
+         *
+         * @since 3.7
+         *
+         * @return string
+         */
+        protected function get_description() : string
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang\Options {
+    /**
+     * Polylang's options registry.
+     *
+     * @since 3.7
+     */
+    class Registry
+    {
+        protected const OPTIONS = array(
+            // URL modifications.
+            \WP_Syntex\Polylang\Options\Business\Force_Lang::class,
+            \WP_Syntex\Polylang\Options\Business\Domains::class,
+            \WP_Syntex\Polylang\Options\Business\Hide_Default::class,
+            \WP_Syntex\Polylang\Options\Business\Rewrite::class,
+            \WP_Syntex\Polylang\Options\Business\Redirect_Lang::class,
+            // Detect browser language.
+            \WP_Syntex\Polylang\Options\Business\Browser::class,
+            // Media.
+            \WP_Syntex\Polylang\Options\Business\Media_Support::class,
+            // Custom post types and taxonomies.
+            \WP_Syntex\Polylang\Options\Business\Post_Types::class,
+            \WP_Syntex\Polylang\Options\Business\Taxonomies::class,
+            // Synchronization.
+            \WP_Syntex\Polylang\Options\Business\Sync::class,
+            // Internal.
+            \WP_Syntex\Polylang\Options\Business\Default_Lang::class,
+            \WP_Syntex\Polylang\Options\Business\Nav_Menus::class,
+            \WP_Syntex\Polylang\Options\Business\Language_Taxonomies::class,
+            // Read only.
+            \WP_Syntex\Polylang\Options\Business\First_Activation::class,
+            \WP_Syntex\Polylang\Options\Business\Previous_Version::class,
+            \WP_Syntex\Polylang\Options\Business\Version::class,
+        );
+        /**
+         * Registers Polylang's options.
+         *
+         * @since 3.7
+         *
+         * @param Options $options Instance of the options.
+         * @return void
+         */
+        public static function register(\WP_Syntex\Polylang\Options\Options $options) : void
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang_Pro\Options {
+    /**
+     * Polylang Pro's options registry.
+     *
+     * @since 3.7
+     */
+    class Registry extends \WP_Syntex\Polylang\Options\Registry
+    {
+        protected const OPTIONS = array(\WP_Syntex\Polylang_Pro\Options\Business\Media::class, \WP_Syntex\Polylang_Pro\Options\Business\Machine_Translation_Enabled::class, \WP_Syntex\Polylang_Pro\Options\Business\Machine_Translation_Services::class);
+    }
+}
+namespace {
     /**
      * @package Polylang-Pro
      */
@@ -182,7 +550,7 @@ namespace WP_Syntex\Polylang_Pro\Modules\Machine_Translation {
          * @param mixed  $value     The value to return.
          * @param int    $object_id ID of the object metadata is for.
          * @param string $meta_key  Metadata key.
-         * @return mixed False for the post duplication meta, the original value otherwize.
+         * @return mixed False for the post duplication meta, the original value otherwise.
          */
         public function disable_post_duplication($value, $object_id, $meta_key)
         {
@@ -969,14 +1337,14 @@ namespace {
         {
         }
         /**
-         * Allows child classes to validate their options before saving.
+         * Allows child classes to prepare the received data before saving.
          *
-         * @since 1.8
+         * @since 3.7
          *
-         * @param array $options Unsanitized options to save.
-         * @return array Options
+         * @param array $options Raw values to save.
+         * @return array
          */
-        protected function update($options)
+        protected function prepare_raw_data(array $options) : array
         {
         }
         /**
@@ -2099,7 +2467,7 @@ namespace {
          */
         const PLACEHOLDER = '%pll%';
         /**
-         * Adds the required hooks specific to the navigation langague switcher.
+         * Adds the required hooks specific to the navigation language switcher.
          *
          * @since 3.2
          *
@@ -2175,7 +2543,7 @@ namespace {
          * @param array    $block         The full block, including name and attributes.
          * @param WP_Block $instance      The block instance.
          *
-         * @return string A formated HTML string representing the core/navigation-link or core/navigation-submenu block.
+         * @return string A formatted HTML string representing the core/navigation-link or core/navigation-submenu block.
          */
         public function render_custom_attributes($block_content, $block, $instance)
         {
@@ -2723,7 +3091,7 @@ namespace {
          * @since 3.2
          *
          * @param PLL_Language $lang          The language to use to find the templates to suffix.
-         * @param string|null  $new_lang_slug Optionnal. The new lang slug to use. Default is `$lang`'s slug.
+         * @param string|null  $new_lang_slug Optional. The new lang slug to use. Default is `$lang`'s slug.
          * @return int Number of posts updated.
          */
         protected function update_language_suffix_in_post_names(\PLL_Language $lang, $new_lang_slug = \null)
@@ -2872,7 +3240,7 @@ namespace {
         /**
          * Filters out template part instances from block `core/template-part` variations.
          * This avoids to display all translations of templates parts in the block selection list,
-         * otherwhise the confusing UI could allow a user to insert a template part in a wrong language.
+         * otherwise the confusing UI could allow a user to insert a template part in a wrong language.
          *
          * @since 3.2.2
          * @since 3.6 Renamed from `remove_template_part_instance_variations()`.
@@ -2887,7 +3255,7 @@ namespace {
         /**
          * Filters out template part instances from block `core/template-part` variations.
          * This avoids to display all translations of templates parts in the block selection list,
-         * otherwhise the confusing UI could allow a user to insert a template part in a wrong language.
+         * otherwise the confusing UI could allow a user to insert a template part in a wrong language.
          *
          * @since 3.6
          *
@@ -2942,7 +3310,7 @@ namespace {
          *     @type string $no_default_cat Optional, if set, no default category has been created for this language.
          *     @type string $flag           Optional, country code, @see flags.php.
          * }
-         * @param PLL_Language $lang Previous value of the language beeing edited.
+         * @param PLL_Language $lang Previous value of the language being edited.
          * @return void
          */
         public function change_template_slugs($args, $lang)
@@ -3386,7 +3754,7 @@ namespace {
          *
          * @return string
          */
-        public function get()
+        public function get() : string
         {
         }
         /**
@@ -3404,9 +3772,9 @@ namespace {
          *
          * @since 3.2
          *
-         * @return int|null The template post ID, null if not found in the route.
+         * @return int The template post ID, `0` if not found in the route.
          */
-        public function get_post_id()
+        public function get_post_id() : int
         {
         }
         /**
@@ -3414,9 +3782,9 @@ namespace {
          *
          * @since 3.2
          *
-         * @return string|null The template post type, null if the route doesn't match a template route.
+         * @return string The template post type, empty if the route doesn't match a template route.
          */
-        public function get_post_type()
+        public function get_post_type() : string
         {
         }
         /**
@@ -3424,9 +3792,9 @@ namespace {
          *
          * @since 3.2
          *
-         * @return string|null The REST base, null if the route doesn't match a template route.
+         * @return string The REST base, empty if the route doesn't match a template route.
          */
-        public function get_rest_base()
+        public function get_rest_base() : string
         {
         }
     }
@@ -3740,7 +4108,7 @@ namespace {
          *
          * @since 3.2
          *
-         * @param int          $id       The id of the existing post to get datas for the translations table element.
+         * @param int          $id       The id of the existing post to get data for the translations table element.
          * @param int          $tr_id    The id of the translated post for the given language if exists.
          * @param PLL_Language $language The given language object.
          * @return array The translation data of the given language.
@@ -3838,7 +4206,7 @@ namespace {
          *
          * @since 3.2
          *
-         * @param int          $id       The id of the existing post to get datas for the translations table element.
+         * @param int          $id       The id of the existing post to get data for the translations table element.
          * @param int          $tr_id    The id of the translated post for the given language if exists.
          * @param PLL_Language $language The given language object.
          * @return array The translation data of the given language.
@@ -4186,7 +4554,7 @@ namespace {
          * @param string $post_type A post type name.
          * @return bool
          */
-        public static function is_template_post_type($post_type)
+        public static function is_template_post_type(string $post_type)
         {
         }
         /**
@@ -4314,7 +4682,7 @@ namespace {
         {
         }
         /**
-         * Defines wether the export Bulk Translate option is available given the admin panel and user logged.
+         * Defines whether the export Bulk Translate option is available given the admin panel and user logged.
          * Do not add the 'pll_export_post' bulk translate option if LIBXML extension is not loaded, no matter the screen.
          *
          * @since 3.3
@@ -4467,15 +4835,12 @@ namespace {
         }
         /**
          * Returns exported data.
-         * Backward compatibility with PHP < 7.2 where abstract parent method cannot be overloaded by an abstract child method.
          *
          * @since 3.6
          *
          * @return string
          */
-        public function get() : string
-        {
-        }
+        public abstract function get() : string;
         /**
          * Returns the current file extension.
          *
@@ -4622,12 +4987,12 @@ namespace {
         {
         }
         /**
-         * Gets the file format formated label to be displayed.
+         * Gets the file format formatted label to be displayed.
          *
          * @since 3.6
          *
          * @param string $label The file format label.
-         * @return string The label formated to be displayed.
+         * @return string The label formatted to be displayed.
          */
         public static function get_format_label($label)
         {
@@ -7004,7 +7369,7 @@ namespace {
          *
          * @since 3.2
          *
-         * @param string $slug     The inputed slug of the term being saved, may be empty.
+         * @param string $slug     The inputted slug of the term being saved, may be empty.
          * @param string $taxonomy The term taxonomy.
          * @return string
          */
@@ -7670,12 +8035,12 @@ namespace {
          *
          * @since 2.6
          *
-         * @param array        $datas    Translations table row datas.
+         * @param array        $data     Translations table row data.
          * @param int          $post_id  Post to synchronize.
          * @param PLL_Language $language Language to synchronize.
          * @return array
          */
-        public function translations_table($datas, $post_id, $language)
+        public function translations_table($data, $post_id, $language)
         {
         }
     }
@@ -7907,7 +8272,7 @@ namespace {
          *
          * @since 1.9
          *
-         * @param array  $attr    Shortcode attrbute.
+         * @param array  $attr    Shortcode attribute.
          * @param string $content Shortcode content.
          * @param string $tag     Shortcode tag (either 'caption' or 'wp-caption').
          * @return string Translated shortcode.
@@ -8178,7 +8543,7 @@ namespace {
          *
          * @since 1.9
          *
-         * @param string       $url      The archive url in which want to translat a slug.
+         * @param string       $url      The archive url in which we want to translate a slug.
          * @param PLL_Language $language The language.
          * @return string Modified url.
          */
@@ -8343,7 +8708,7 @@ namespace {
          */
         public $links_model;
         /**
-         * Stores the informations on translatable slugs.
+         * Stores the information on translatable slugs.
          *
          * @var array
          */
@@ -8408,7 +8773,7 @@ namespace {
         {
         }
         /**
-         * Returns informations on translatable slugs
+         * Returns information on translatable slugs
          * and stores them in a transient
          *
          * @since 1.9
@@ -8616,7 +8981,7 @@ namespace {
         {
         }
         /**
-         * Replace function to apply to process the home page transations creation.
+         * Replace function to apply to process the home page translations creation.
          *
          * @since 2.7
          *
@@ -8726,7 +9091,7 @@ namespace {
          * Stores data to transfer in a user session
          *
          * @param string $redirect Url to redirect to.
-         * @param bool   $nologin  True if we shoul not attempt to login.
+         * @param bool   $nologin  True if we should not attempt to login.
          * @return string Session key.
          */
         protected function create_data_session($redirect, $nologin)
@@ -9150,7 +9515,7 @@ namespace {
         {
         }
         /**
-         * Gets the post ids from a post, wether it's classic or block edited.
+         * Gets the post ids from a post, whether it's classic or block edited.
          *
          * @since 3.3
          *
@@ -10064,7 +10429,7 @@ namespace {
          *    )
          * @param string          $parent_key_string A string containing parent keys separated with pipes. Each pipe in key
          *                                           should be escaped to avoid conflicts.
-         * @param int             $index             Index of the current meta value. Usefull when a meta has several values.
+         * @param int             $index             Index of the current meta value. Useful when a meta has several values.
          * @param array|string    $source_metas      The source post metas.
          * @param array|string    $tr_metas          The translated post metas.
          * @param int             $object_id         ID of the object the meta belongs to.
@@ -11379,6 +11744,17 @@ namespace {
         {
         }
         /**
+         * Dummy method to display the 3 tabs pages: languages, strings translations, settings.
+         * Overwritten in `PLL_Settings`.
+         *
+         * @since 3.7
+         *
+         * @return void
+         */
+        public function languages_page()
+        {
+        }
+        /**
          * Setup js scripts & css styles ( only on the relevant pages )
          *
          * @since 0.6
@@ -12396,6 +12772,8 @@ namespace {
          * @param null      $return   Return null if new fields are added.
          * @param array     $instance An array of the widget's settings.
          * @return void
+         *
+         * @phpstan-param WP_Widget<array<string, mixed>> $widget
          */
         public function in_widget_form($widget, $return, $instance)
         {
@@ -12438,6 +12816,8 @@ namespace {
          * @param null      $return Not used.
          * @param array     $instance Widget settings.
          * @return void
+         *
+         * @phpstan-param WP_Widget<array<string, mixed>> $widget
          */
         public function in_widget_form($widget, $return, $instance)
         {
@@ -13367,7 +13747,7 @@ namespace {
          * @phpstan-param non-empty-string $name
          * @phpstan-param array<non-empty-string> $taxonomies
          */
-        protected function update_secondary_language_terms($slug, $name, \PLL_Language $language = \null, array $taxonomies = array())
+        protected function update_secondary_language_terms($slug, $name, ?\PLL_Language $language = \null, array $taxonomies = array())
         {
         }
         /**
@@ -14292,7 +14672,7 @@ namespace {
      */
     class PLL_Accept_Language
     {
-        const SUBTAG_PATTERNS = array('language' => '(\\b[a-z]{2,3}|[a-z]{4}|[a-z]{5-8}\\b)', 'language-extension' => '(?:-(\\b[a-z]{3}){1,3}\\b)?', 'script' => '(?:-(\\b[a-z]{4})\\b)?', 'region' => '(?:-(\\b[a-z]{2}|[0-9]{3})\\b)?', 'variant' => '(?:-(\\b[0-9][a-z]{1,3}|[a-z][a-z0-9]{4,7})\\b)?', 'extension' => '(?:-(\\b[a-wy-z]-[a-z0-9]{2,8})\\b)?', 'private-use' => '(?:-(\\bx-[a-z0-9]{1,8})\\b)?');
+        public const SUBTAG_PATTERNS = array('language' => '(\\b[a-z]{2,3}|[a-z]{4}|[a-z]{5-8}\\b)', 'language-extension' => '(?:-(\\b[a-z]{3}){1,3}\\b)?', 'script' => '(?:-(\\b[a-z]{4})\\b)?', 'region' => '(?:-(\\b[a-z]{2}|[0-9]{3})\\b)?', 'variant' => '(?:-(\\b[0-9][a-z]{1,3}|[a-z][a-z0-9]{4,7})\\b)?', 'extension' => '(?:-(\\b[a-wy-z]-[a-z0-9]{2,8})\\b)?', 'private-use' => '(?:-(\\bx-[a-z0-9]{1,8})\\b)?');
         /**
          * @var string[] {
          *  @type string $language           Usually 2 or three letters (ISO 639).
@@ -15285,7 +15665,7 @@ namespace {
         {
         }
         /**
-         * Adds the language information in admin bar search form
+         * Adds the language information in the admin bar search form.
          *
          * @since 1.2
          *
@@ -15857,6 +16237,10 @@ namespace {
          */
         public $filters_widgets;
         /**
+         * @var PLL_Canonical
+         */
+        public $canonical;
+        /**
          * Constructor.
          *
          * @since 1.2
@@ -15944,6 +16328,1073 @@ namespace {
         {
         }
     }
+}
+namespace WP_Syntex\Polylang\Options\Primitive {
+    /**
+     * Class defining single list option, default value type to mixed.
+     *
+     * @since 3.7
+     *
+     * @phpstan-import-type SchemaType from Abstract_Option
+     */
+    abstract class Abstract_List extends \WP_Syntex\Polylang\Options\Abstract_Option
+    {
+        /**
+         * Prepares a value before validation.
+         * Allows to receive a string-keyed array but returns an integer-keyed array.
+         *
+         * @since 3.7
+         *
+         * @param mixed $value Value to format.
+         * @return mixed
+         */
+        protected function prepare($value)
+        {
+        }
+        /**
+         * Returns the JSON schema value type for the list items.
+         * Possible values are `'string'`, `'null'`, `'number'` (float), `'integer'`, `'boolean'`,
+         * `'array'` (array with integer keys), and `'object'` (array with string keys).
+         *
+         * @since 3.7
+         * @see https://developer.wordpress.org/rest-api/extending-the-rest-api/schema/#primitive-types
+         *
+         * @return string
+         *
+         * @phpstan-return SchemaType
+         */
+        protected function get_type() : string
+        {
+        }
+        /**
+         * Returns the default value.
+         *
+         * @since 3.7
+         *
+         * @return array
+         */
+        protected function get_default()
+        {
+        }
+        /**
+         * Returns the JSON schema part specific to this option.
+         *
+         * @since 3.7
+         *
+         * @return array Partial schema.
+         *
+         * @phpstan-return array{type: 'array', items: array{type: SchemaType}}
+         */
+        protected function get_data_structure() : array
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang\Options\Business {
+    /**
+     * Class defining object types list option.
+     *
+     * @since 3.7
+     */
+    abstract class Abstract_Object_Types extends \WP_Syntex\Polylang\Options\Primitive\Abstract_List
+    {
+        /**
+         * Sanitizes option's value.
+         * Can return a `WP_Error` object in case of blocking sanitization error: the value must be rejected then.
+         *
+         * @since 3.7
+         *
+         * @param array   $value   Value to filter.
+         * @param Options $options All options.
+         * @return array|WP_Error The sanitized value. An instance of `WP_Error` in case of blocking error.
+         *
+         * @phpstan-return list<non-falsy-string>|WP_Error
+         */
+        protected function sanitize($value, \WP_Syntex\Polylang\Options\Options $options)
+        {
+        }
+        /**
+         * Returns non-core object types.
+         *
+         * @since 3.7
+         *
+         * @return string[] Object type names list.
+         *
+         * @phpstan-return array<non-falsy-string>
+         */
+        protected abstract function get_object_types() : array;
+    }
+    /**
+     * Class defining the "Detect browser language" boolean option.
+     * /!\ Sanitization depends on `force_lang`: this option must be set AFTER `force_lang`.
+     *
+     * @since 3.7
+     */
+    class Browser extends \WP_Syntex\Polylang\Options\Primitive\Abstract_Boolean
+    {
+        /**
+         * Returns option key.
+         *
+         * @since 3.7
+         *
+         * @return string
+         *
+         * @phpstan-return 'browser'
+         */
+        public static function key() : string
+        {
+        }
+        /**
+         * Sanitizes option's value.
+         * Can populate the `$errors` property with blocking and non-blocking errors: in case of non-blocking errors,
+         * the value is sanitized and can be stored.
+         *
+         * @since 3.7
+         *
+         * @param bool    $value   Value to sanitize.
+         * @param Options $options All options.
+         * @return bool|WP_Error The sanitized value. An instance of `WP_Error` in case of blocking error.
+         */
+        protected function sanitize($value, \WP_Syntex\Polylang\Options\Options $options)
+        {
+        }
+        /**
+         * Returns the description used in the JSON schema.
+         *
+         * @since 3.7
+         *
+         * @return string
+         */
+        protected function get_description() : string
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang\Options\Primitive {
+    /**
+     * Class defining single string option.
+     *
+     * @since 3.7
+     */
+    abstract class Abstract_String extends \WP_Syntex\Polylang\Options\Abstract_Option
+    {
+        /**
+         * Returns the default value.
+         *
+         * @since 3.7
+         *
+         * @return string
+         */
+        protected function get_default()
+        {
+        }
+        /**
+         * Returns the JSON schema part specific to this option.
+         *
+         * @since 3.7
+         *
+         * @return array Partial schema.
+         *
+         * @phpstan-return array{type: 'string'}
+         */
+        protected function get_data_structure() : array
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang\Options\Business {
+    /**
+     * Class defining language slug string option.
+     *
+     * @since 3.7
+     */
+    class Default_Lang extends \WP_Syntex\Polylang\Options\Primitive\Abstract_String
+    {
+        /**
+         * Returns option key.
+         *
+         * @since 3.7
+         *
+         * @return string
+         *
+         * @phpstan-return 'default_lang'
+         */
+        public static function key() : string
+        {
+        }
+        /**
+         * Returns the JSON schema part specific to this option.
+         *
+         * @since 3.7
+         *
+         * @return array Partial schema.
+         *
+         * @phpstan-return array{type: 'string', pattern: '^[a-z_-]+$'}
+         */
+        protected function get_data_structure() : array
+        {
+        }
+        /**
+         * Returns the description used in the JSON schema.
+         *
+         * @since 3.7
+         *
+         * @return string
+         */
+        protected function get_description() : string
+        {
+        }
+    }
+    /**
+     * Class defining single associative array of domain as value and language slug as key option.
+     * /!\ Sanitization depends on `force_lang`: this option must be set AFTER `force_lang`.
+     *
+     * @since 3.7
+     */
+    class Domains extends \WP_Syntex\Polylang\Options\Abstract_Option
+    {
+        /**
+         * Returns option key.
+         *
+         * @since 3.7
+         *
+         * @return string
+         *
+         * @phpstan-return 'domains'
+         */
+        public static function key() : string
+        {
+        }
+        /**
+         * Returns the default value.
+         *
+         * @since 3.7
+         *
+         * @return array
+         */
+        protected function get_default()
+        {
+        }
+        /**
+         * Returns the JSON schema part specific to this option.
+         *
+         * @since 3.7
+         *
+         * @return array Partial schema.
+         *
+         * @phpstan-return array{
+         *     type: 'object',
+         *     patternProperties: non-empty-array<non-empty-string, array{type: 'string', format: 'uri'}>,
+         *     additionalProperties: false
+         * }
+         */
+        protected function get_data_structure() : array
+        {
+        }
+        /**
+         * Sanitizes option's value.
+         * Can populate the `$errors` property with blocking and non-blocking errors: in case of non-blocking errors,
+         * the value is sanitized and can be stored.
+         *
+         * @since 3.7
+         *
+         * @param array   $value   Value to sanitize.
+         * @param Options $options All options.
+         * @return array|WP_Error The sanitized value. An instance of `WP_Error` in case of blocking error.
+         *
+         * @phpstan-return array<non-falsy-string, string>|WP_Error
+         */
+        protected function sanitize($value, \WP_Syntex\Polylang\Options\Options $options)
+        {
+        }
+        /**
+         * Returns the description used in the JSON schema.
+         *
+         * @since 3.7
+         *
+         * @return string
+         */
+        protected function get_description() : string
+        {
+        }
+    }
+    /**
+     * Class defining the first activation option.
+     *
+     * @since 3.7
+     */
+    class First_Activation extends \WP_Syntex\Polylang\Options\Abstract_Option
+    {
+        /**
+         * Returns option key.
+         *
+         * @since 3.7
+         *
+         * @return string
+         *
+         * @phpstan-return 'first_activation'
+         */
+        public static function key() : string
+        {
+        }
+        /**
+         * Returns the default value.
+         *
+         * @since 3.7
+         *
+         * @return int
+         *
+         * @phpstan-return int<0, max>
+         */
+        protected function get_default()
+        {
+        }
+        /**
+         * Returns the JSON schema part specific to this option.
+         *
+         * @since 3.7
+         *
+         * @return array Partial schema.
+         *
+         * @phpstan-return array{type: 'integer', minimum: 0, maximum: int<0, max>}
+         */
+        protected function get_data_structure() : array
+        {
+        }
+        /**
+         * Returns the description used in the JSON schema.
+         *
+         * @since 3.7
+         *
+         * @return string
+         */
+        protected function get_description() : string
+        {
+        }
+    }
+    /**
+     * Class defining the "Determine how the current language is defined" option.
+     *
+     * @since 3.7
+     */
+    class Force_Lang extends \WP_Syntex\Polylang\Options\Abstract_Option
+    {
+        /**
+         * Returns option key.
+         *
+         * @since 3.7
+         *
+         * @return string
+         *
+         * @phpstan-return 'force_lang'
+         */
+        public static function key() : string
+        {
+        }
+        /**
+         * Returns the default value.
+         *
+         * @since 3.7
+         *
+         * @return int
+         */
+        protected function get_default()
+        {
+        }
+        /**
+         * Returns the JSON schema part specific to this option.
+         *
+         * @since 3.7
+         *
+         * @return array Partial schema.
+         *
+         * @phpstan-return array{type: 'integer', enum: list<0|1|2|3>}
+         */
+        protected function get_data_structure() : array
+        {
+        }
+        /**
+         * Returns the description used in the JSON schema.
+         *
+         * @since 3.7
+         *
+         * @return string
+         */
+        protected function get_description() : string
+        {
+        }
+    }
+    /**
+     * Class defining the "Display/Hide URL language information for default language" boolean option.
+     * /!\ Sanitization depends on `force_lang`: this option must be set AFTER `force_lang`.
+     *
+     * @since 3.7
+     */
+    class Hide_Default extends \WP_Syntex\Polylang\Options\Primitive\Abstract_Boolean
+    {
+        /**
+         * Returns option key.
+         *
+         * @since 3.7
+         *
+         * @return string
+         *
+         * @phpstan-return 'hide_default'
+         */
+        public static function key() : string
+        {
+        }
+        /**
+         * Returns the default value.
+         *
+         * @since 3.7
+         *
+         * @return bool
+         */
+        protected function get_default()
+        {
+        }
+        /**
+         * Sanitizes option's value.
+         * Can populate the `$errors` property with blocking and non-blocking errors: in case of non-blocking errors,
+         * the value is sanitized and can be stored.
+         *
+         * @since 3.7
+         *
+         * @param bool    $value   Value to sanitize.
+         * @param Options $options All options.
+         * @return bool|WP_Error The sanitized value. An instance of `WP_Error` in case of blocking error.
+         */
+        protected function sanitize($value, \WP_Syntex\Polylang\Options\Options $options)
+        {
+        }
+        /**
+         * Returns the description used in the JSON schema.
+         *
+         * @since 3.7
+         *
+         * @return string
+         */
+        protected function get_description() : string
+        {
+        }
+    }
+    /**
+     * Class defining post types list option.
+     *
+     * @since 3.7
+     */
+    class Language_Taxonomies extends \WP_Syntex\Polylang\Options\Business\Abstract_Object_Types
+    {
+        /**
+         * Returns option key.
+         *
+         * @since 3.7
+         *
+         * @return string
+         *
+         * @phpstan-return 'language_taxonomies'
+         */
+        public static function key() : string
+        {
+        }
+        /**
+         * Returns language taxonomies, except the ones for posts and taxonomies.
+         *
+         * @since 3.7
+         *
+         * @return string[] Object type names list.
+         *
+         * @phpstan-return array<non-falsy-string>
+         */
+        protected function get_object_types() : array
+        {
+        }
+        /**
+         * Returns the description used in the JSON schema.
+         *
+         * @since 3.7
+         *
+         * @return string
+         */
+        protected function get_description() : string
+        {
+        }
+    }
+    /**
+     * Class defining the "Translate media" boolean option.
+     *
+     * @since 3.7
+     */
+    class Media_Support extends \WP_Syntex\Polylang\Options\Primitive\Abstract_Boolean
+    {
+        /**
+         * Returns option key.
+         *
+         * @since 3.7
+         *
+         * @return string
+         *
+         * @phpstan-return 'media_support'
+         */
+        public static function key() : string
+        {
+        }
+        /**
+         * Returns the description used in the JSON schema.
+         *
+         * @since 3.7
+         *
+         * @return string
+         */
+        protected function get_description() : string
+        {
+        }
+    }
+    /**
+     * Class defining navigation menus array option.
+     *
+     * @since 3.7
+     */
+    class Nav_Menus extends \WP_Syntex\Polylang\Options\Abstract_Option
+    {
+        /**
+         * Returns option key.
+         *
+         * @since 3.7
+         *
+         * @return string
+         *
+         * @phpstan-return 'nav_menus'
+         */
+        public static function key() : string
+        {
+        }
+        /**
+         * Returns the default value.
+         *
+         * @since 3.7
+         *
+         * @return array
+         */
+        protected function get_default()
+        {
+        }
+        /**
+         * Returns the JSON schema part specific to this option.
+         *
+         * @since 3.7
+         *
+         * @return array Partial schema.
+         *
+         * @phpstan-return array{
+         *     type: 'object',
+         *     patternProperties: array{
+         *         '^\w+$': array{
+         *             type: 'object',
+         *             context: list<'edit'>,
+         *             patternProperties: array{
+         *                 '^[a-z_-]+$': array{
+         *                     type: 'integer',
+         *                     minimum: 0
+         *                 }
+         *             },
+         *             additionalProperties: false
+         *         }
+         *     },
+         *     additionalProperties: false
+         * }
+         */
+        protected function get_data_structure() : array
+        {
+        }
+        /**
+         * Returns the description used in the JSON schema.
+         *
+         * @since 3.7
+         *
+         * @return string
+         */
+        protected function get_description() : string
+        {
+        }
+    }
+    /**
+     * Class defining post types list option.
+     *
+     * @since 3.7
+     */
+    class Post_Types extends \WP_Syntex\Polylang\Options\Business\Abstract_Object_Types
+    {
+        /**
+         * Returns option key.
+         *
+         * @since 3.7
+         *
+         * @return string
+         *
+         * @phpstan-return 'post_types'
+         */
+        public static function key() : string
+        {
+        }
+        /**
+         * Returns non-core post types.
+         *
+         * @since 3.7
+         *
+         * @return string[] Object type names list.
+         *
+         * @phpstan-return array<non-falsy-string>
+         */
+        protected function get_object_types() : array
+        {
+        }
+        /**
+         * Returns the description used in the JSON schema.
+         *
+         * @since 3.7
+         *
+         * @return string
+         */
+        protected function get_description() : string
+        {
+        }
+    }
+    /**
+     * Class defining the "previous version" option.
+     *
+     * @since 3.7
+     */
+    class Previous_Version extends \WP_Syntex\Polylang\Options\Primitive\Abstract_String
+    {
+        /**
+         * Returns option key.
+         *
+         * @since 3.7
+         *
+         * @return string
+         *
+         * @phpstan-return 'previous_version'
+         */
+        public static function key() : string
+        {
+        }
+        /**
+         * Returns the description used in the JSON schema.
+         *
+         * @since 3.7
+         *
+         * @return string
+         */
+        protected function get_description() : string
+        {
+        }
+    }
+    /**
+     * Class defining the "Remove the page name or page id from the URL of the front page" boolean option.
+     *
+     * @since 3.7
+     */
+    class Redirect_Lang extends \WP_Syntex\Polylang\Options\Primitive\Abstract_Boolean
+    {
+        /**
+         * Returns option key.
+         *
+         * @since 3.7
+         *
+         * @return string
+         *
+         * @phpstan-return 'redirect_lang'
+         */
+        public static function key() : string
+        {
+        }
+        /**
+         * Returns the description used in the JSON schema.
+         *
+         * @since 3.7
+         *
+         * @return string
+         */
+        protected function get_description() : string
+        {
+        }
+    }
+    /**
+     * Class defining the "Remove /language/ in pretty permalinks" boolean option.
+     *
+     * @since 3.7
+     */
+    class Rewrite extends \WP_Syntex\Polylang\Options\Primitive\Abstract_Boolean
+    {
+        /**
+         * Returns option key.
+         *
+         * @since 3.7
+         *
+         * @return string
+         *
+         * @phpstan-return 'rewrite'
+         */
+        public static function key() : string
+        {
+        }
+        /**
+         * Returns the default value.
+         *
+         * @since 3.7
+         *
+         * @return bool
+         */
+        protected function get_default()
+        {
+        }
+        /**
+         * Returns the description used in the JSON schema.
+         *
+         * @since 3.7
+         *
+         * @return string
+         */
+        protected function get_description() : string
+        {
+        }
+    }
+    /**
+     * Class defining synchronization settings list option.
+     *
+     * @since 3.7
+     *
+     * @phpstan-import-type SchemaType from \WP_Syntex\Polylang\Options\Abstract_Option
+     */
+    class Sync extends \WP_Syntex\Polylang\Options\Primitive\Abstract_List
+    {
+        /**
+         * Returns option key.
+         *
+         * @since 3.7
+         *
+         * @return string
+         *
+         * @phpstan-return 'sync'
+         */
+        public static function key() : string
+        {
+        }
+        /**
+         * Returns the JSON schema part specific to this option.
+         *
+         * @since 3.7
+         *
+         * @return array Partial schema.
+         *
+         * @phpstan-return array{type: 'array', items: array{type: SchemaType, enum: non-empty-array<non-falsy-string>}}
+         */
+        protected function get_data_structure() : array
+        {
+        }
+        /**
+         * Returns the description used in the JSON schema.
+         *
+         * @since 3.7
+         *
+         * @return string
+         */
+        protected function get_description() : string
+        {
+        }
+    }
+    /**
+     * Class defining taxonomies list option.
+     *
+     * @since 3.7
+     */
+    class Taxonomies extends \WP_Syntex\Polylang\Options\Business\Abstract_Object_Types
+    {
+        /**
+         * Returns option key.
+         *
+         * @since 3.7
+         *
+         * @return string
+         *
+         * @phpstan-return 'taxonomies'
+         */
+        public static function key() : string
+        {
+        }
+        /**
+         * Returns non-core taxonomies.
+         *
+         * @since 3.7
+         *
+         * @return string[] Object type names list.
+         *
+         * @phpstan-return array<non-falsy-string>
+         */
+        protected function get_object_types() : array
+        {
+        }
+        /**
+         * Returns the description used in the JSON schema.
+         *
+         * @since 3.7
+         *
+         * @return string
+         */
+        protected function get_description() : string
+        {
+        }
+    }
+    /**
+     * Class defining the "version" option.
+     *
+     * @since 3.7
+     */
+    class Version extends \WP_Syntex\Polylang\Options\Primitive\Abstract_String
+    {
+        /**
+         * Returns option key.
+         *
+         * @since 3.7
+         *
+         * @return string
+         *
+         * @phpstan-return 'version'
+         */
+        public static function key() : string
+        {
+        }
+        /**
+         * Returns the description used in the JSON schema.
+         *
+         * @since 3.7
+         *
+         * @return string
+         */
+        protected function get_description() : string
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang\Options {
+    /**
+     * Class that manages Polylang's options:
+     * - Automatically stores the options into the database on `shutdown` if they have been modified.
+     * - Behaves almost like an array, meaning only values can be get/set (implements `ArrayAccess`).
+     * - Handles `switch_to_blog()`.
+     * - Options are always defined: it is not possible to unset them from the list, they are set to their default value instead.
+     * - If an option is not registered but exists in database, its raw value will be kept and remain untouched.
+     *
+     * @since 3.7
+     *
+     * @implements \ArrayAccess<non-falsy-string, mixed>
+     */
+    class Options implements \ArrayAccess
+    {
+        public const OPTION_NAME = 'polylang';
+        /**
+         * Constructor.
+         *
+         * @since 3.7
+         */
+        public function __construct()
+        {
+        }
+        /**
+         * Registers an option.
+         * Options must be registered in the right order: some options depend on other options' value.
+         *
+         * @since 3.7
+         *
+         * @param string $class_name  Option class to register.
+         * @return self
+         *
+         * @phpstan-param class-string<Abstract_Option> $class_name
+         */
+        public function register(string $class_name) : self
+        {
+        }
+        /**
+         * Prevents storing an instance of `Options` into the database.
+         *
+         * @since 3.7
+         *
+         * @param array|Options $value The options to store.
+         * @return array
+         */
+        public function protect_wp_option_storage($value)
+        {
+        }
+        /**
+         * Initializes options for the given blog:
+         * - stores the blog ID,
+         * - stores the options.
+         * Hooked to `switch_blog`.
+         *
+         * @since 3.7
+         *
+         * @param int $blog_id The blog ID.
+         * @return void
+         */
+        public function init_options_for_blog($blog_id) : void
+        {
+        }
+        /**
+         * Stores the options into the database for all blogs.
+         * Hooked to `shutdown`.
+         *
+         * @since 3.7
+         *
+         * @return void
+         */
+        public function save_all() : void
+        {
+        }
+        /**
+         * Stores the options into the database.
+         *
+         * @since 3.7
+         *
+         * @return bool True if the options were updated, false otherwise.
+         */
+        public function save() : bool
+        {
+        }
+        /**
+         * Returns all options.
+         *
+         * @since 3.7
+         *
+         * @return mixed[] All options values.
+         */
+        public function get_all() : array
+        {
+        }
+        /**
+         * Merges a subset of options into the current blog ones.
+         *
+         * @since 3.7
+         *
+         * @param array $values Array of raw options.
+         * @return WP_Error
+         */
+        public function merge(array $values) : \WP_Error
+        {
+        }
+        /**
+         * Returns JSON schema for all options of the current blog.
+         *
+         * @since 3.7
+         *
+         * @return array The schema.
+         */
+        public function get_schema() : array
+        {
+        }
+        /**
+         * Tells if an option exists.
+         *
+         * @since 3.7
+         *
+         * @param string $key The name of the option to check for.
+         * @return bool
+         */
+        public function has(string $key) : bool
+        {
+        }
+        /**
+         * Returns the value of the specified option.
+         *
+         * @since 3.7
+         *
+         * @param string $key The name of the option to retrieve.
+         * @return mixed
+         */
+        public function &get(string $key)
+        {
+        }
+        /**
+         * Assigns a value to the specified option.
+         * This doesn't allow to set an unknown option.
+         * When doing multiple `set()`, options must be set in the right order: some options depend on other options' value.
+         *
+         * @since 3.7
+         *
+         * @param string $key   The name of the option to assign the value to.
+         * @param mixed  $value The value to set.
+         * @return WP_Error
+         */
+        public function set(string $key, $value) : \WP_Error
+        {
+        }
+        /**
+         * Resets an option to its default value.
+         *
+         * @since 3.7
+         *
+         * @param string $key The name of the option to reset.
+         * @return mixed The new value.
+         */
+        public function reset(string $key)
+        {
+        }
+        /**
+         * Tells if an option exists.
+         * Required by interface `ArrayAccess`.
+         *
+         * @since 3.7
+         *
+         * @param string $offset The name of the option to check for.
+         * @return bool
+         */
+        public function offsetExists($offset) : bool
+        {
+        }
+        /**
+         * Returns the value of the specified option.
+         * Required by interface `ArrayAccess`.
+         *
+         * @since 3.7
+         *
+         * @param string $offset The name of the option to retrieve.
+         * @return mixed
+         */
+        #[\ReturnTypeWillChange]
+        public function &offsetGet($offset)
+        {
+        }
+        /**
+         * Assigns a value to the specified option.
+         * This doesn't allow to set an unknown option.
+         * Required by interface `ArrayAccess`.
+         *
+         * @since 3.7
+         *
+         * @param string $offset The name of the option to assign the value to.
+         * @param mixed  $value  The value to set.
+         * @return void
+         */
+        public function offsetSet($offset, $value) : void
+        {
+        }
+        /**
+         * Resets an option.
+         * This doesn't allow to unset an option, this resets it to its default value instead.
+         * Required by interface `ArrayAccess`.
+         *
+         * @since 3.7
+         *
+         * @param string $offset The name of the option to unset.
+         * @return void
+         */
+        public function offsetUnset($offset) : void
+        {
+        }
+    }
+}
+namespace {
     /**
      * @package Polylang
      */
@@ -16662,6 +18113,63 @@ namespace {
      * @package Polylang
      */
     /**
+     * A class to match values against a given format.
+     *
+     * @since 3.6
+     * @since 3.7 Moved from Polylang Pro to Polylang.
+     */
+    class PLL_Format_Util
+    {
+        /**
+         * Filters the given list to return only the values whose the key or value matches the given format.
+         *
+         * @since 3.6
+         * @since 3.7 Only accepts arrays as first parameter.
+         *
+         * @param array  $list   A list with keys or values to match against `$format`.
+         * @param string $format A format, where `*` means "any characters" (`.*`), unless escaped.
+         * @param string $mode   Optional. Tell if we should filter the keys or values from `$list`.
+         *                       Possible values are `'use_keys'` and `'use_values'`. Default is `'use_keys'`.
+         * @return array
+         *
+         * @template TArrayValue
+         * @phpstan-param ($mode is 'use_keys' ? array<string, TArrayValue> : array<string>) $list
+         * @phpstan-param 'use_keys'|'use_values' $mode
+         * @phpstan-return ($mode is 'use_keys' ? array<string, TArrayValue> : array<string>)
+         */
+        public function filter_list(array $list, string $format, string $mode = 'use_keys') : array
+        {
+        }
+        /**
+         * Tells if the given string matches the given format.
+         *
+         * @since 3.6
+         *
+         * @param string $key    A string to test.
+         * @param string $format A format, where `*` means "any characters" (`.*`), unless escaped.
+         * @return bool
+         */
+        public function matches(string $key, string $format) : bool
+        {
+        }
+        /**
+         * Tells if the given string is a format (that includes a `*`).
+         *
+         * @since 3.7
+         *
+         * @param string $format Format to test.
+         * @return bool
+         *
+         * @phpstan-assert-if-true non-empty-string $format
+         */
+        public function is_format(string $format) : bool
+        {
+        }
+    }
+    /**
+     * @package Polylang
+     */
+    /**
      * Holds everything related to deprecated properties of `PLL_Language`.
      *
      * @since 3.4
@@ -16675,7 +18183,7 @@ namespace {
          *
          * @var string[][]
          */
-        const DEPRECATED_TERM_PROPERTIES = array('term_taxonomy_id' => array('language', 'term_taxonomy_id'), 'count' => array('language', 'count'), 'tl_term_id' => array('term_language', 'term_id'), 'tl_term_taxonomy_id' => array('term_language', 'term_taxonomy_id'), 'tl_count' => array('term_language', 'count'));
+        public const DEPRECATED_TERM_PROPERTIES = array('term_taxonomy_id' => array('language', 'term_taxonomy_id'), 'count' => array('language', 'count'), 'tl_term_id' => array('term_language', 'term_id'), 'tl_term_taxonomy_id' => array('term_language', 'term_taxonomy_id'), 'tl_count' => array('term_language', 'count'));
         /**
          * List of deprecated URL properties and related getter to use.
          *
@@ -16683,7 +18191,7 @@ namespace {
          *
          * @var string[]
          */
-        const DEPRECATED_URL_PROPERTIES = array('home_url' => 'get_home_url', 'search_url' => 'get_search_url');
+        public const DEPRECATED_URL_PROPERTIES = array('home_url' => 'get_home_url', 'search_url' => 'get_search_url');
         /**
          * Returns a language term property value (term ID, term taxonomy ID, or count).
          *
@@ -17176,7 +18684,7 @@ namespace {
          *     height?: positive-int
          * }
          */
-        public static function get_flag_informations($code)
+        public static function get_flag_information($code)
         {
         }
         /**
@@ -18274,11 +19782,11 @@ namespace {
      * @package Polylang
      */
     /**
-     * It is best practice that plugins do nothing before plugins_loaded is fired
-     * so it is what Polylang intends to do
-     * but some plugins load their text domain as soon as loaded, thus before plugins_loaded is fired
-     * this class differs text domain loading until the language is defined
-     * either in a plugins_loaded action or in a wp action ( when the language is set from content on frontend )
+     * It is best practice that plugins do nothing before `plugins_loaded` is fired.
+     * So it is what Polylang intends to do.
+     * But some plugins load their textdomain as soon as loaded, thus before `plugins_loaded` is fired.
+     * This class defers textdomain loading until the language is defined either in a `plugins_loaded` action
+     * or in a `wp` action (when the language is set from content on frontend).
      *
      * @since 1.2
      */
@@ -18291,25 +19799,7 @@ namespace {
          */
         protected static $instance;
         /**
-         * Stores the default site locale before it is modified.
-         *
-         * @var string|null
-         */
-        protected $default_locale;
-        /**
-         * Stores all loaded text domains and mo files.
-         *
-         * @var string[][]
-         */
-        protected $list_textdomains = array();
-        /**
-         * Stores post types an taxonomies labels to translate.
-         *
-         * @var string[][]
-         */
-        public $labels = array();
-        /**
-         * Constructor: setups relevant filters
+         * Constructor: setups relevant filters.
          *
          * @since 1.2
          */
@@ -18327,64 +19817,13 @@ namespace {
         {
         }
         /**
-         * Loads text domains
+         * Loads textdomains.
          *
          * @since 0.1
          *
          * @return void
          */
         public function load_textdomains()
-        {
-        }
-        /**
-         * Saves all text domains in a table for later usage.
-         * It replaces the 'override_load_textdomain' filter previously used.
-         *
-         * @since 2.0.4
-         *
-         * @param string $mofile The translation file name.
-         * @param string $domain The text domain name.
-         * @return string
-         */
-        public function load_textdomain_mofile($mofile, $domain)
-        {
-        }
-        /**
-         * Saves post types and taxonomies labels for a later usage
-         *
-         * @since 0.9
-         *
-         * @param string $translation not used
-         * @param string $text        string to translate
-         * @param string $domain      text domain
-         * @return string unmodified $translation
-         */
-        public function gettext($translation, $text, $domain)
-        {
-        }
-        /**
-         * Saves post types and taxonomies labels for a later usage
-         *
-         * @since 0.9
-         *
-         * @param string $translation not used
-         * @param string $text        string to translate
-         * @param string $context     some comment to describe the context of string to translate
-         * @param string $domain      text domain
-         * @return string unmodified $translation
-         */
-        public function gettext_with_context($translation, $text, $context, $domain)
-        {
-        }
-        /**
-         * Translates post types and taxonomies labels once the language is known.
-         *
-         * @since 0.9
-         *
-         * @param WP_Post_Type|WP_Taxonomy $type Either a post type or a taxonomy.
-         * @return void
-         */
-        public function translate_labels($type)
         {
         }
         /**
@@ -18584,7 +20023,7 @@ namespace {
      */
     class PLL_Switcher
     {
-        const DEFAULTS = array(
+        public const DEFAULTS = array(
             'dropdown' => 0,
             // Display as list and not as dropdown.
             'echo' => 1,
@@ -18694,6 +20133,42 @@ namespace {
          * @return string|array either the html markup of the switcher or the raw elements to build a custom language switcher
          */
         public function the_languages($links, $args = array())
+        {
+        }
+    }
+    /**
+     * @package Polylang
+     */
+    /**
+     * Class for handling term slugs.
+     *
+     * @since 3.7
+     */
+    class PLL_Term_Slug
+    {
+        /**
+         * Constructor.
+         *
+         * @since 3.7
+         *
+         * @param PLL_Model $model    Instance of PLL_Model.
+         * @param string    $slug     The term slug.
+         * @param string    $taxonomy The term taxonomy.
+         * @param string    $name     The term name.
+         * @param int       $term_id  The term ID if exists, or 0 if there's no need to know that we are editing an existing term.
+         */
+        public function __construct(\PLL_Model $model, string $slug, string $taxonomy, string $name, int $term_id = 0)
+        {
+        }
+        /**
+         * Returns the term slug, suffixed or not.
+         *
+         * @since 3.7
+         *
+         * @param string $separator The separator for the slug suffix.
+         * @return string The suffixed slug, or not if the lang isn't defined.
+         */
+        public function get_suffixed_slug(string $separator) : string
         {
         }
     }
@@ -18844,6 +20319,16 @@ namespace {
         {
         }
         /**
+         * Registers the language taxonomy.
+         *
+         * @since 3.7
+         *
+         * @return void
+         */
+        protected function register_language_taxonomy() : void
+        {
+        }
+        /**
          * Returns the language taxonomy name.
          *
          * @since 3.4
@@ -18983,7 +20468,7 @@ namespace {
         }
         /**
          * Sanitizes an ID as positive integer.
-         * Kind of similar to `absint()`, but rejects negetive integers instead of making them positive.
+         * Kind of similar to `absint()`, but rejects negative integers instead of making them positive.
          *
          * @since 3.2
          *
@@ -19078,6 +20563,14 @@ namespace {
          *
          * @param PLL_Translatable_Object $object The translatable object to register.
          * @return PLL_Translatable_Object
+         *
+         * @phpstan-return (
+         *     $object is PLL_Translated_Post ? PLL_Translated_Post : (
+         *         $object is PLL_Translated_Term ? PLL_Translated_Term : (
+         *             PLL_Translatable_Object
+         *         )
+         *     )
+         * )
          */
         public function register(\PLL_Translatable_Object $object)
         {
@@ -19197,7 +20690,7 @@ namespace {
          *
          * @param mixed      $values Either a string to translate or a list of strings to translate.
          * @param array|bool $key    Array of option keys to translate.
-         * @return array|string Translated string(s)
+         * @return array|string Translated string(s).
          */
         protected function translate_string_recursive($values, $key)
         {
@@ -19322,6 +20815,16 @@ namespace {
         {
         }
         /**
+         * Registers the translations taxonomy.
+         *
+         * @since 3.7
+         *
+         * @return void
+         */
+        protected function register_translations_taxonomy() : void
+        {
+        }
+        /**
          * Returns the translations group taxonomy name.
          *
          * @since 3.4
@@ -19418,9 +20921,9 @@ namespace {
          *
          * @param int                 $id   Object ID.
          * @param PLL_Language|string $lang Language (slug or object).
-         * @return int|false Object ID of the translation, `false` if there is none.
+         * @return int Object ID of the translation, `0` if there is none.
          *
-         * @phpstan-return positive-int|false
+         * @phpstan-return int<0, max>
          */
         public function get_translation($id, $lang)
         {
@@ -19429,11 +20932,11 @@ namespace {
          * Among the object and its translations, returns the ID of the object which is in `$lang`.
          *
          * @since 0.1
-         * @since 3.4 Returns 0 instead of false.
+         * @since 3.4 Returns `0` instead of `false`.
          *
          * @param int                     $id   Object ID.
          * @param PLL_Language|string|int $lang Language (object, slug, or term ID).
-         * @return int The translation object ID if exists, otherwise the passed ID. `0` if the passed object has no language.
+         * @return int The translation object ID if exists. `0` if the passed object has no language or if not translated.
          *
          * @phpstan-return int<0, max>
          */
@@ -19562,6 +21065,17 @@ namespace {
         {
         }
         /**
+         * Registers the language taxonomy.
+         *
+         * @since 1.2
+         * @since 3.7 Protected and renamed from `register_taxonomy()`.
+         *
+         * @return void
+         */
+        protected function register_language_taxonomy() : void
+        {
+        }
+        /**
          * Adds hooks.
          *
          * @since 3.4
@@ -19608,16 +21122,6 @@ namespace {
          * @phpstan-param non-empty-string|non-empty-string[] $object_type
          */
         public function is_translated_object_type($object_type)
-        {
-        }
-        /**
-         * Registers the language taxonomy.
-         *
-         * @since 1.2
-         *
-         * @return void
-         */
-        public function register_taxonomy()
         {
         }
         /**
@@ -20108,6 +21612,17 @@ namespace {
      * The language switcher widget
      *
      * @since 0.1
+     *
+     * @extends WP_Widget<T>
+     * @phpstan-template T of array{
+     *     title: string,
+     *     dropdown: 0|1,
+     *     show_names: 0|1,
+     *     show_flags: 0|1,
+     *     force_home: 0|1,
+     *     hide_current: 0|1,
+     *     hide_if_no_translation: 0|1
+     * }
      */
     class PLL_Widget_Languages extends \WP_Widget
     {
@@ -20127,6 +21642,23 @@ namespace {
          * @param array $args     Display arguments including before_title, after_title, before_widget, and after_widget.
          * @param array $instance The settings for the particular instance of the widget
          * @return void
+         *
+         * @phpstan-param array{
+         *     name: string,
+         *     id: string,
+         *     description: string,
+         *     class: string,
+         *     before_widget: string,
+         *     after_widget: string,
+         *     before_title: string,
+         *     after_title: string,
+         *     before_sidebar: string,
+         *     after_sidebar: string,
+         *     show_in_rest: boolean,
+         *     widget_id: string,
+         *     widget_name: string
+         * } $args
+         * @phpstan-param T $instance
          */
         public function widget($args, $instance)
         {
@@ -20139,6 +21671,9 @@ namespace {
          * @param array $new_instance New settings for this instance as input by the user via form()
          * @param array $old_instance Old settings for this instance
          * @return array Settings to save or bool false to cancel saving
+         *
+         * @phpstan-param T $new_instance
+         * @phpstan-param T $old_instance
          */
         public function update($new_instance, $old_instance)
         {
@@ -20150,6 +21685,8 @@ namespace {
          *
          * @param array $instance Current settings.
          * @return string
+         *
+         * @phpstan-param T $instance
          */
         public function form($instance)
         {
@@ -20258,9 +21795,6 @@ namespace {
         }
     }
     /**
-     * @package Polylang
-     */
-    /**
      * Polylang activation / de-activation class
      *
      * @since 1.7
@@ -20295,16 +21829,6 @@ namespace {
          * @return void
          */
         public function wp_version_notice()
-        {
-        }
-        /**
-         * Get default Polylang options.
-         *
-         * @since 1.8
-         *
-         * @return array
-         */
-        public static function get_default_options()
         {
         }
         /**
@@ -20459,7 +21983,7 @@ namespace {
          *
          * @var string
          */
-        const TRANSIENT_KEY_PLUGIN = 't15s-registry-plugins';
+        public const TRANSIENT_KEY_PLUGIN = 't15s-registry-plugins';
         /**
          * Adds a new project to load translations for.
          *
@@ -21419,14 +22943,14 @@ namespace {
         {
         }
         /**
-         * Sanitizes the settings before saving.
+         * Prepare the received data before saving.
          *
-         * @since 1.8
+         * @since 3.7
          *
-         * @param array $options Unsanitized options to save.
+         * @param array $options Raw values to save.
          * @return array
          */
-        protected function update($options)
+        protected function prepare_raw_data(array $options) : array
         {
         }
         /**
@@ -21886,9 +23410,6 @@ namespace {
         {
         }
     }
-    /**
-     * @package Polylang
-     */
     /**
      * Main class for Polylang wizard.
      *
@@ -22561,14 +24082,14 @@ namespace {
         }
         /**
          * Unlike pll_register_string, icl_register_string stores the string in database
-         * so we need to do the same as some plugins or themes may expect this
-         * we use a serialized option to do this
+         * so we need to do the same as some plugins or themes may expect this.
+         * We use a serialized option to store these strings.
          *
          * @since 1.0.2
          *
-         * @param string $context The group in which the string is registered.
-         * @param string $name    A unique name for the string.
-         * @param string $string  The string to register.
+         * @param string|string[] $context The group in which the string is registered.
+         * @param string          $name    A unique name for the string.
+         * @param string          $string  The string to register.
          * @return void
          */
         public function register_string($context, $name, $string)
@@ -23035,14 +24556,14 @@ namespace {
         {
         }
         /**
-         * Sanitizes the settings before saving.
+         * Prepares the received data before saving.
          *
-         * @since 1.8
+         * @since 3.7
          *
-         * @param array $options Unsanitized options to save.
+         * @param array $options Raw values to save.
          * @return array
          */
-        protected function update($options)
+        protected function prepare_raw_data(array $options) : array
         {
         }
     }
@@ -23237,25 +24758,14 @@ namespace {
         {
         }
         /**
-         * Sanitizes the settings before saving.
+         * Prepares the received data before saving.
          *
-         * @since 1.8
+         * @since 3.7
          *
-         * @param array $options Unsanitized options to save.
+         * @param array $options Raw values to save.
          * @return array
          */
-        protected function update($options)
-        {
-        }
-        /**
-         * Check if subdomains or domains are accessible
-         *
-         * @since 1.8
-         *
-         * @param array $options new set of options to test
-         * @return void
-         */
-        protected function check_domains($options)
+        protected function prepare_raw_data(array $options) : array
         {
         }
     }
@@ -23930,14 +25440,14 @@ namespace {
      *
      * @api
      * @since 0.5
-     * @since 3.4 Returns 0 instead of false.
-     * @since 3.4 $lang accepts PLL_Language or string.
+     * @since 3.4 Returns `0` instead of `false` if not translated or if the post has no language.
+     * @since 3.4 $lang accepts `PLL_Language` or string.
      *
      * @param int                 $post_id Post ID.
      * @param PLL_Language|string $lang    Optional language (object or slug), defaults to the current language.
-     * @return int|false The translation post ID if exists, otherwise the passed ID. False if the passed object has no language or if the language doesn't exist.
+     * @return int The translation post ID if exists. 0 if not translated, the post has no language or if the language doesn't exist.
      *
-     * @phpstan-return int<0, max>|false
+     * @phpstan-return int<0, max>
      */
     function pll_get_post($post_id, $lang = '')
     {
@@ -23947,16 +25457,16 @@ namespace {
      *
      * @api
      * @since 0.5
-     * @since 3.4 Returns 0 instead of false.
+     * @since 3.4 Returns `0` instead of `false` if not translated or if the term has no language.
      * @since 3.4 $lang accepts PLL_Language or string.
      *
      * @param int                 $term_id Term ID.
      * @param PLL_Language|string $lang    Optional language (object or slug), defaults to the current language.
-     * @return int|false The translation term ID if exists, otherwise the passed ID. False if the passed object has no language or if the language doesn't exist.
+     * @return int The translation term ID if exists. 0 if not translated, the term has no language or if the language doesn't exist.
      *
-     * @phpstan-return int<0, max>|false
+     * @phpstan-return int<0, max>
      */
-    function pll_get_term($term_id, $lang = \null)
+    function pll_get_term($term_id, $lang = '')
     {
     }
     /**

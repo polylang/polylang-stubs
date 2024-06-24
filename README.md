@@ -7,7 +7,7 @@ Stubs are generated directly from the source using [php-stubs/generator](https:/
 
 ## Requirements
 
-- PHP >=7.1
+- PHP >=7.3
 
 ## Installation
 

@@ -8,10 +8,7 @@ namespace WP_Syntex\Polylang\Options {
      *
      * @phpstan-type SchemaType 'string'|'null'|'number'|'integer'|'boolean'|'array'|'object'
      * @phpstan-type Schema array{
-     *     '$schema': non-falsy-string,
-     *     title: non-falsy-string,
-     *     type: SchemaType,
-     *     context: array<non-falsy-string>
+     *     type: SchemaType
      * }
      */
     abstract class Abstract_Option
@@ -251,29 +248,14 @@ namespace WP_Syntex\Polylang_Pro\Options\Business {
          *
          * @phpstan-return array{
          *     type: 'object',
-         *     properties: array{
-         *         deepl: array{
+         *     properties: array<
+         *         non-falsy-string,
+         *         array{
          *             type: 'object',
-         *             required: true,
-         *             properties: array{
-         *                 api_key: array{
-         *                     type: 'string',
-         *                     required: true
-         *                 },
-         *                 formality: array{
-         *                     type: 'string',
-         *                     required: true,
-         *                     enum: list<'default'|'prefer_more'|'prefer_less'>
-         *                 }
-         *             },
+         *             properties: array,
          *             additionalProperties: false
          *         }
-         *     },
-         *     patternProperties: array{
-         *         '^\w+$': array{
-         *             type: 'object'
-         *         }
-         *     },
+         *     >,
          *     additionalProperties: false
          * }
          */
@@ -467,6 +449,377 @@ namespace {
         public function pre_set_site_transient_update_plugins($value)
         {
         }
+        /**
+         * Converts the Polylang plugin slug to Polylang Pro for plugin dependencies.
+         *
+         * This allows plugins requiring Polylang to work with Polylang Pro too.
+         *
+         * @since 3.7
+         *
+         * @param string $slug The plugin slug.
+         * @return string
+         */
+        public function convert_plugin_dependency($slug) : string
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang_Pro\Editors {
+    /**
+     * Class to filter REST preload paths.
+     *
+     * @since 3.7
+     */
+    class Filter_Preload_Paths
+    {
+        /**
+         * @var PLL_Model
+         */
+        protected $model;
+        /**
+         * @var PLL_Language|false|null
+         */
+        protected $curlang;
+        /**
+         * @var PLL_Admin_Block_Editor|null
+         */
+        protected $block_editor;
+        /**
+         * Constructor
+         *
+         * @since 2.6
+         *
+         * @param PLL_Base $polylang Polylang object.
+         */
+        public function __construct(\PLL_Base &$polylang)
+        {
+        }
+        /**
+         * Adds required hooks.
+         *
+         * @since 3.7
+         *
+         * @return self
+         */
+        public function init() : self
+        {
+        }
+        /**
+         * Filters preload paths based on the context (block editor for posts, site editor or widget editor for instance).
+         *
+         * @since 3.4
+         *
+         * @param (string|string[])[]     $preload_paths Preload paths.
+         * @param WP_Block_Editor_Context $context       Editor context.
+         * @return array Filtered preload paths.
+         */
+        public function filter_preload_paths($preload_paths, $context)
+        {
+        }
+        /**
+         * Adds navigation fallback REST route to the filterable ones.
+         *
+         * @since 3.7
+         *
+         * @param string[] $routes Filterable REST routes.
+         * @return string[] Filtered filterable REST routes.
+         */
+        public function filter_navigation_fallback_route($routes)
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang_Pro\Editors\Screens {
+    /**
+     * Template class to manage editors scripts.
+     *
+     * @since 3.7
+     */
+    abstract class Abstract_Screen
+    {
+        /**
+         * The script suffix, default empty.
+         *
+         * @var string
+         */
+        protected $suffix = '';
+        /**
+         * @var PLL_Admin_Block_Editor|null
+         */
+        protected $block_editor;
+        /**
+         * @var PLL_Model
+         */
+        protected $model;
+        /**
+         * Constructor.
+         *
+         * @since 3.7
+         *
+         * @param PLL_Base $polylang Polylang main object.
+         */
+        public function __construct(&$polylang)
+        {
+        }
+        /**
+         * Adds required hooks.
+         *
+         * @since 3.7
+         *
+         * @return static
+         */
+        public function init()
+        {
+        }
+        /**
+         * Enqueues script for the editors.
+         *
+         * @since 3.7
+         *
+         * @return void
+         */
+        public function enqueue() : void
+        {
+        }
+        /**
+         * Tells if the given screen matches the type of the current object.
+         *
+         * @since 3.7
+         *
+         * @param WP_Screen $screen The WordPress screen object.
+         * @return bool True is the screen is a match, false otherwise.
+         */
+        protected abstract function screen_matches(\WP_Screen $screen) : bool;
+        /**
+         * Returns the current editor language.
+         *
+         * @since 3.7
+         *
+         * @return PLL_Language|null The language object if found, `null` otherwise.
+         */
+        protected abstract function get_language() : ?\PLL_Language;
+        /**
+         * Returns the screen name to use across all process.
+         *
+         * @since 3.7
+         *
+         * @return string
+         */
+        protected abstract function get_screen_name() : string;
+        /**
+         * Tells if the given screen is suitable for stylesheet enqueueing.
+         *
+         * @since 3.7
+         *
+         * @param WP_Screen $screen The WordPress screen object.
+         * @return bool
+         */
+        protected function can_enqueue_style(\WP_Screen $screen) : bool
+        {
+        }
+        /**
+         * Returns the main script handle for the editor.
+         * Useful to add inline scripts or to register translations for instance.
+         *
+         * @since 3.7
+         *
+         * @return string The handle.
+         */
+        protected function get_handle() : string
+        {
+        }
+        /**
+         * Returns the path to the main script for the editor.
+         *
+         * @since 3.7
+         *
+         * @return string The full path.
+         */
+        protected function get_script_path() : string
+        {
+        }
+        /**
+         * Enqueues stylesheet commonly used in all editors.
+         * Override to your taste.
+         *
+         * @since 3.7
+         *
+         * @return void
+         */
+        protected function enqueue_style() : void
+        {
+        }
+    }
+    /**
+     * Class to manage Post editor scripts.
+     */
+    class Post extends \WP_Syntex\Polylang_Pro\Editors\Screens\Abstract_Screen
+    {
+        /**
+         * @var PLL_CRUD_Posts|null
+         */
+        protected $posts;
+        /**
+         * Constructor
+         *
+         * @since 3.7
+         *
+         * @param PLL_Base $polylang Polylang object.
+         */
+        public function __construct(\PLL_Base &$polylang)
+        {
+        }
+        /**
+         * Tells whether the given screen is the Post edtitor or not.
+         *
+         * @since 3.7
+         *
+         * @param  WP_Screen $screen The current screen.
+         * @return bool True if Post editor screen, false otherwise.
+         */
+        protected function screen_matches(\WP_Screen $screen) : bool
+        {
+        }
+        /**
+         * Returns the language to use in the Post editor.
+         *
+         * @since 3.7
+         *
+         * @return PLL_Language|null
+         */
+        protected function get_language() : ?\PLL_Language
+        {
+        }
+        /**
+         * Returns the screen name for the Post editor to use across all process.
+         *
+         * @since 3.7
+         *
+         * @return string
+         */
+        protected function get_screen_name() : string
+        {
+        }
+    }
+    /**
+     * Class to manage Site editor scripts.
+     */
+    class Site extends \WP_Syntex\Polylang_Pro\Editors\Screens\Abstract_Screen
+    {
+        /**
+         * @var PLL_Language|false|null
+         */
+        protected $curlang;
+        /**
+         * Constructor
+         *
+         * @since 3.7
+         *
+         * @param PLL_Base $polylang Polylang object.
+         */
+        public function __construct(\PLL_Base &$polylang)
+        {
+        }
+        /**
+         * Tells whether the given screen is the Site edtitor or not.
+         *
+         * @since 3.7
+         *
+         * @param  WP_Screen $screen The current screen.
+         * @return bool True if Site editor screen, false otherwise.
+         */
+        protected function screen_matches(\WP_Screen $screen) : bool
+        {
+        }
+        /**
+         * Returns the language to use in the Site editor.
+         *
+         * @since 3.7
+         *
+         * @return PLL_Language|null
+         */
+        protected function get_language() : ?\PLL_Language
+        {
+        }
+        /**
+         * Returns the screen name for the Site editor to use across all process.
+         *
+         * @since 3.7
+         *
+         * @return string
+         */
+        protected function get_screen_name() : string
+        {
+        }
+    }
+    /**
+     * Class to manage Widget editor scripts.
+     */
+    class Widget extends \WP_Syntex\Polylang_Pro\Editors\Screens\Abstract_Screen
+    {
+        /**
+         * Adds required hooks.
+         *
+         * @since 3.7
+         *
+         * @return static
+         */
+        public function init()
+        {
+        }
+        /**
+         * Tells if the given screen can enqueue stylesheet for the customizer.
+         *
+         * @since 3.7
+         *
+         * @param WP_Screen $screen The WordPress screen object.
+         * @return bool
+         */
+        protected function can_enqueue_style(\WP_Screen $screen) : bool
+        {
+        }
+        /**
+         * Method that allows legacy widgets in widget block editor previously removed by WP and hide legacy Polylang widget.
+         *
+         * @since 3.2
+         *
+         * @param array $widget_ids An array of hidden widget ids.
+         * @return array
+         */
+        public function filter_legacy_widgets($widget_ids)
+        {
+        }
+        /**
+         * Tells whether the given screen is the Widget edtitor or not.
+         *
+         * @since 3.7
+         *
+         * @param  WP_Screen $screen The current screen.
+         * @return bool True if Widget editor screen, false otherwise.
+         */
+        protected function screen_matches(\WP_Screen $screen) : bool
+        {
+        }
+        /**
+         * Returns the language to use in the Widget editor.
+         *
+         * @since 3.7
+         *
+         * @return PLL_Language|null
+         */
+        protected function get_language() : ?\PLL_Language
+        {
+        }
+        /**
+         * Returns the screen name for the Widget editor to use across all process.
+         *
+         * @since 3.7
+         *
+         * @return string
+         */
+        protected function get_screen_name() : string
+        {
+        }
     }
 }
 namespace WP_Syntex\Polylang_Pro\Modules\Machine_Translation {
@@ -519,6 +872,10 @@ namespace WP_Syntex\Polylang_Pro\Modules\Machine_Translation {
          * @var PLL_Admin_Sync
          */
         protected $sync;
+        /**
+         * @var PLL_Admin_Links|null
+         */
+        protected $links;
         /**
          * Constructor.
          *
@@ -1172,6 +1529,17 @@ namespace WP_Syntex\Polylang_Pro\Modules\Machine_Translation {
         public function get_all() : array
         {
         }
+        /**
+         * Returns all services classnames for static usage.
+         *
+         * @since 3.7
+         *
+         * @return string[]
+         * @phpstan-return non-empty-list<class-string<Service_Interface>>
+         */
+        public static function get_classnames() : array
+        {
+        }
     }
 }
 namespace {
@@ -1480,14 +1848,14 @@ namespace WP_Syntex\Polylang_Pro\Modules\Machine_Translation {
         {
         }
         /**
-         * Sanitizes the settings before saving.
+         * Prepare the received data before saving.
          *
-         * @since 3.6
+         * @since 3.7
          *
-         * @param array $options Raw options to save.
-         * @return array Sanitized options.
+         * @param array $options Raw values to save.
+         * @return array
          */
-        protected function update($options)
+        protected function prepare_raw_data(array $options) : array
         {
         }
     }
@@ -1618,15 +1986,25 @@ namespace WP_Syntex\Polylang_Pro\Modules\Machine_Translation\Services {
          * @phpstan-param non-falsy-string $input_base_name
          */
         public function get_settings(string $input_base_name) : \WP_Syntex\Polylang_Pro\Modules\Machine_Translation\Settings\Settings_Interface;
+        /**
+         * Returns the object that holds information about the service's options.
+         *
+         * @since 3.7
+         *
+         * @return array
+         */
+        public static function get_option_schema() : array;
     }
     /**
      * Machine translation service: DeepL.
      *
      * @phpstan-import-type iconProperties from Service_Interface
+     * @phpstan-type DeeplOptions array{
+     *    api_key: string,
+     *    formality: 'default'|'prefer_more'|'prefer_less'
+     * }
      *
      * @since 3.6
-     *
-     * @phpstan-import-type DeeplOptions from Settings
      */
     class Deepl implements \WP_Syntex\Polylang_Pro\Modules\Machine_Translation\Services\Service_Interface
     {
@@ -1732,6 +2110,16 @@ namespace WP_Syntex\Polylang_Pro\Modules\Machine_Translation\Services {
         {
         }
         /**
+         * Returns the object that holds information about the service's options.
+         *
+         * @since 3.6
+         *
+         * @return array
+         */
+        public static function get_option_schema() : array
+        {
+        }
+        /**
          * Returns machine translation service code for target language if available.
          *
          * @since 3.6
@@ -1763,15 +2151,6 @@ namespace WP_Syntex\Polylang_Pro\Modules\Machine_Translation\Settings {
      */
     interface Settings_Interface
     {
-        /**
-         * Sanitizes and validates the options for this service.
-         *
-         * @since 3.6
-         *
-         * @param array $options Options for this service.
-         * @return array Validated options.
-         */
-        public function sanitize_options(array $options) : array;
         /**
          * Tells if the given service options contain a non-empty authentication key.
          *
@@ -1818,11 +2197,6 @@ namespace WP_Syntex\Polylang_Pro\Modules\Machine_Translation\Settings {
      * Machine translation settings: DeepL.
      *
      * @since 3.6
-     *
-     * @phpstan-type DeeplOptions array{
-     *    api_key: string,
-     *    formality: 'default'|'prefer_more'|'prefer_less'
-     * }
      */
     class Deepl implements \WP_Syntex\Polylang_Pro\Modules\Machine_Translation\Settings\Settings_Interface
     {
@@ -1913,19 +2287,6 @@ namespace WP_Syntex\Polylang_Pro\Modules\Machine_Translation\Settings {
         {
         }
         /**
-         * Sanitizes and validates the options for this service.
-         *
-         * @since 3.6
-         *
-         * @param array $options Options for this service.
-         * @return array Validated options.
-         *
-         * @phpstan-return DeeplOptions
-         */
-        public function sanitize_options(array $options) : array
-        {
-        }
-        /**
          * Prints error notices.
          *
          * @since 3.6
@@ -1943,6 +2304,209 @@ namespace WP_Syntex\Polylang_Pro\Modules\Machine_Translation\Settings {
          * @return void
          */
         public function print_settings_fields()
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang_Pro\Modules\Site_Health {
+    /**
+     * Add debug info in WP Site Health.
+     *
+     * @since 3.7
+     */
+    class Info
+    {
+        /**
+         * Constructor.
+         *
+         * @since 3.7
+         */
+        public function __construct()
+        {
+        }
+        /**
+         * Requires libxml and ZipArchive in Site Health.
+         *
+         * @since 3.7
+         *
+         * @param array $modules An associative array of modules to test for.
+         * @return array
+         */
+        public function site_status_test_php_modules($modules)
+        {
+        }
+    }
+}
+namespace {
+    /**
+     * @package Polylang
+     */
+    /**
+     * Filters widgets by language on frontend
+     *
+     * @since 3.1
+     */
+    class PLL_Frontend_Filters_Widgets
+    {
+        /**
+         * Internal non persistent cache object.
+         *
+         * @var PLL_Cache<array>
+         */
+        public $cache;
+        /**
+         * Current language.
+         *
+         * @var PLL_Language|null
+         */
+        public $curlang;
+        /**
+         * Constructor: setups filters and actions.
+         *
+         * @since 1.2
+         *
+         * @param object $polylang The Polylang object.
+         */
+        public function __construct(&$polylang)
+        {
+        }
+        /**
+         * Remove widgets from sidebars if they are not visible in the current language
+         * Needed to allow is_active_sidebar() to return false if all widgets are not for the current language. See #54
+         *
+         * @since 2.1
+         * @since 2.4 The result is cached as the function can be very expensive in case there are a lot of widgets
+         *
+         * @param array $sidebars_widgets An associative array of sidebars and their widgets
+         * @return array
+         */
+        public function sidebars_widgets($sidebars_widgets)
+        {
+        }
+        /**
+         * Method that handles the removal of widgets in the sidebars depending on their display language.
+         *
+         * @since 3.1
+         *
+         * @param array  $widget_data      An array containing the widget data
+         * @param array  $sidebars_widgets An associative array of sidebars and their widgets
+         * @param string $sidebar          Sidebar name
+         * @param int    $key              Widget number
+         * @return array                   An associative array of sidebars and their widgets
+         */
+        public function handle_widget_in_sidebar_callback($widget_data, $sidebars_widgets, $sidebar, $key)
+        {
+        }
+        /**
+         * Browse the widgets sidebars and sort the ones that should be displayed or not.
+         *
+         * @since 3.1
+         *
+         * @param  array $sidebars_widgets       An associative array of sidebars and their widgets
+         * @param  array $wp_registered_widgets  Array of all registered widgets.
+         * @return array                         An associative array of sidebars and their widgets
+         */
+        public function filter_widgets_sidebars($sidebars_widgets, $wp_registered_widgets)
+        {
+        }
+        /**
+         * Test if the widget is an object.
+         *
+         * @since 3.1
+         *
+         * @param  array  $wp_registered_widgets Array of all registered widgets.
+         * @param  string $widget                String that identifies the widget.
+         * @return bool                          True if object, false otherwise.
+         */
+        protected function is_widget_object($wp_registered_widgets, $widget)
+        {
+        }
+        /**
+         * Get widgets settings and number.
+         *
+         * @since 3.1
+         *
+         * @param array  $wp_registered_widgets Array of all registered widgets.
+         * @param string $widget                String that identifies the widget.
+         * @return array An array containing the widget settings and number.
+         */
+        protected function get_widget_data($wp_registered_widgets, $widget)
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang_Pro\Widget_Blocks {
+    /**
+     * Filters widgets blocks by language on frontend.
+     *
+     * @since 3.1
+     * @since 3.7 Formerly PLL_Frontend_Filters_Widgets_Blocks.
+     */
+    class Frontend_Filters extends \PLL_Frontend_Filters_Widgets
+    {
+        /**
+         * Method that handles the removal of widgets in the sidebars depending on their display language.
+         *
+         * @since 3.1
+         *
+         * @param array  $widget_data      An array containing the widget data.
+         * @param array  $sidebars_widgets An associative array of sidebars and their widgets.
+         * @param string $sidebar          Sidebar name.
+         * @param int    $key              Widget number.
+         * @return array                   An associative array of sidebars and their widgets.
+         */
+        public function handle_widget_in_sidebar_callback($widget_data, $sidebars_widgets, $sidebar, $key)
+        {
+        }
+    }
+    /**
+     * Widget editor language attribute.
+     *
+     * @since 3.1
+     * @since 3.7 Formerly PLL_Widget_Editor_Language_Attribute.
+     */
+    class Language_Attribute
+    {
+        /**
+         * Adds hooks.
+         *
+         * @since 3.7
+         */
+        public function init() : self
+        {
+        }
+        /**
+         *
+         * Adds the 'pll_lang' attribute to an existing block.
+         * Do not add the 'pll_lang' attribute if the block is a legacy widget.
+         *
+         * @since 3.1
+         *
+         * @param array $block_properties Array of parameters for registering a block type.
+         *                                Each of them becomes a property of the block type object.
+         * @return array Array of modified parameters for registering a block type.
+         */
+        public function add_block_attribute($block_properties)
+        {
+        }
+        /**
+         * Whether the block is a dynamic one or not.
+         *
+         * Copied from {@see https://github.com/WordPress/wordpress-develop/blob/2382765afa36e10bf3c74420024ad4e85763a47c/src/wp-includes/class-wp-block-type.php#L261 WP_Block_Type::is_dynamic()}.
+         *
+         * Explanation: 'register_block_type_args' filter only passes the WP_Block_Type::name property, so the WP_Block_Type::is_dynamic() method is inaccessible in a callback function, {@see https://github.com/WordPress/WordPress/blob/5.7/wp-includes/class-wp-block-type.php#L330 }.
+         * We could not use the WP_Block_Type_Registry to get the block object neither, because the WP_Block_Type instance is added to the registry only after the use of the 'register_block_type_args' filter ( done in WP_Block_Type::set_props itself done in the WP_Block_Type constructor ):
+         *   - {@see https://github.com/WordPress/WordPress/blob/5.7/wp-includes/class-wp-block-type.php#L223}
+         *   - {@see https://github.com/WordPress/WordPress/blob/5.7/wp-includes/class-wp-block-type.php#L312}
+         *   - {@see https://github.com/WordPress/WordPress/blob/058f9903676a7efaee534a682df0a2a8b87574d8/wp-includes/class-wp-block-type-registry.php#L80-L84}
+         *
+         * @since 3.1
+         *
+         * @param array $block_properties Associative array mimicking the structure of a {@see https://github.com/WordPress/wordpress-develop/blob/2382765afa36e10bf3c74420024ad4e85763a47c/src/wp-includes/class-wp-block-parser.php#L15 WP_Block_Parser_Block}.
+         *
+         * @return bool
+         */
+        public function is_block_dynamic($block_properties)
         {
         }
     }
@@ -2201,6 +2765,8 @@ namespace {
          * @param WP_REST_Server  $server  Server instance.
          * @param WP_REST_Request $request Request used to generate the response.
          * @return mixed
+         * @template T of WP_REST_Request
+         * @phpstan-param T $request
          */
         public function get_rest_query_params($result, $server, $request)
         {
@@ -2215,201 +2781,6 @@ namespace {
          * @return array The modified attributes.
          */
         protected function set_attributes_for_block($attributes)
-        {
-        }
-    }
-    /**
-     * @package Polylang-Pro
-     */
-    /**
-     * Setup the block editor plugin
-     *
-     * @since 2.6
-     */
-    class PLL_Block_Editor_Plugin
-    {
-        /**
-         * @var PLL_Model
-         */
-        protected $model;
-        /**
-         * @var PLL_CRUD_Posts
-         */
-        protected $posts;
-        /**
-         * @var array
-         */
-        protected $options;
-        /**
-         * @var PLL_Language|false
-         */
-        protected $curlang;
-        /**
-         * @var PLL_Admin_Block_Editor|null
-         */
-        protected $block_editor;
-        /**
-         * Constructor
-         *
-         * @since 2.6
-         *
-         * @param PLL_Frontend|PLL_Admin|PLL_Settings|PLL_REST_Request $polylang Polylang object.
-         */
-        public function __construct(&$polylang)
-        {
-        }
-        /**
-         * Filters preload paths based on the context (block editor for posts, site editor or widget editor for instance).
-         *
-         * @since 3.4
-         *
-         * @param (string|string[])[]     $preload_paths Preload paths.
-         * @param WP_Block_Editor_Context $context       Editor context.
-         * @return array Filtered preload paths.
-         */
-        public function filter_preload_paths($preload_paths, $context)
-        {
-        }
-        /**
-         * Enqueue scripts for the block editor plugin.
-         *
-         * @since 2.6
-         *
-         * @return void
-         */
-        public function admin_enqueue_scripts()
-        {
-        }
-        /**
-         * Method that allow legacy widgets in widget block editor previously removed by WP and hide legacy Polylang widget.
-         *
-         * @since 3.2
-         *
-         * @param array $widget_ids An array of hidden widget ids.
-         * @return array
-         */
-        public function filter_legacy_widgets($widget_ids)
-        {
-        }
-    }
-    /**
-     * @package Polylang
-     */
-    /**
-     * Filters widgets by language on frontend
-     *
-     * @since 3.1
-     */
-    class PLL_Frontend_Filters_Widgets
-    {
-        /**
-         * Internal non persistent cache object.
-         *
-         * @var PLL_Cache<array>
-         */
-        public $cache;
-        /**
-         * Current language.
-         *
-         * @var PLL_Language|null
-         */
-        public $curlang;
-        /**
-         * Constructor: setups filters and actions.
-         *
-         * @since 1.2
-         *
-         * @param object $polylang The Polylang object.
-         */
-        public function __construct(&$polylang)
-        {
-        }
-        /**
-         * Remove widgets from sidebars if they are not visible in the current language
-         * Needed to allow is_active_sidebar() to return false if all widgets are not for the current language. See #54
-         *
-         * @since 2.1
-         * @since 2.4 The result is cached as the function can be very expensive in case there are a lot of widgets
-         *
-         * @param array $sidebars_widgets An associative array of sidebars and their widgets
-         * @return array
-         */
-        public function sidebars_widgets($sidebars_widgets)
-        {
-        }
-        /**
-         * Method that handles the removal of widgets in the sidebars depending on their display language.
-         *
-         * @since 3.1
-         *
-         * @param array  $widget_data      An array containing the widget data
-         * @param array  $sidebars_widgets An associative array of sidebars and their widgets
-         * @param string $sidebar          Sidebar name
-         * @param int    $key              Widget number
-         * @return array                   An associative array of sidebars and their widgets
-         */
-        public function handle_widget_in_sidebar_callback($widget_data, $sidebars_widgets, $sidebar, $key)
-        {
-        }
-        /**
-         * Browse the widgets sidebars and sort the ones that should be displayed or not.
-         *
-         * @since 3.1
-         *
-         * @param  array $sidebars_widgets       An associative array of sidebars and their widgets
-         * @param  array $wp_registered_widgets  Array of all registered widgets.
-         * @return array                         An associative array of sidebars and their widgets
-         */
-        public function filter_widgets_sidebars($sidebars_widgets, $wp_registered_widgets)
-        {
-        }
-        /**
-         * Test if the widget is an object.
-         *
-         * @since 3.1
-         *
-         * @param  array  $wp_registered_widgets Array of all registered widgets.
-         * @param  string $widget                String that identifies the widget.
-         * @return bool                          True if object, false otherwise.
-         */
-        protected function is_widget_object($wp_registered_widgets, $widget)
-        {
-        }
-        /**
-         * Get widgets settings and number.
-         *
-         * @since 3.1
-         *
-         * @param array  $wp_registered_widgets Array of all registered widgets.
-         * @param string $widget                String that identifies the widget.
-         * @return array An array containing the widget settings and number.
-         */
-        protected function get_widget_data($wp_registered_widgets, $widget)
-        {
-        }
-    }
-    /**
-     * @package Polylang-Pro
-     */
-    /**
-     * Filters widgets blocks by language on frontend.
-     *
-     * @since 3.1
-     */
-    class PLL_Frontend_Filters_Widgets_Blocks extends \PLL_Frontend_Filters_Widgets
-    {
-        /**
-         * Method that handles the removal of widgets in the sidebars depending on their display language.
-         *
-         * @since 3.1
-         *
-         * @param array  $widget_data      An array containing the widget data.
-         * @param array  $sidebars_widgets An associative array of sidebars and their widgets.
-         * @param string $sidebar          Sidebar name.
-         * @param int    $key              Widget number.
-         * @return array                   An associative array of sidebars and their widgets.
-         */
-        public function handle_widget_in_sidebar_callback($widget_data, $sidebars_widgets, $sidebar, $key)
         {
         }
     }
@@ -2546,61 +2917,6 @@ namespace {
          * @return string A formatted HTML string representing the core/navigation-link or core/navigation-submenu block.
          */
         public function render_custom_attributes($block_content, $block, $instance)
-        {
-        }
-    }
-    /**
-     * @package Polylang-Pro
-     */
-    /**
-     * Widget editor language attribute.
-     *
-     * @since 3.1
-     */
-    class PLL_Widget_Editor_Language_Attribute
-    {
-        /**
-         * Constructor.
-         *
-         * Adds filters.
-         *
-         * @since 3.1
-         */
-        public function __construct()
-        {
-        }
-        /**
-         *
-         * Adds the 'pll_lang' attribute to an existing block.
-         * Do not add the 'pll_lang' attribute if the block is a legacy widget.
-         *
-         * @since 3.1
-         *
-         * @param array $block_properties Array of parameters for registering a block type.
-         *                                Each of them becomes a property of the block type object.
-         * @return array Array of modified parameters for registering a block type.
-         */
-        public function add_block_attribute($block_properties)
-        {
-        }
-        /**
-         * Whether the block is a dynamic one or not.
-         *
-         * Copied from {@see https://github.com/WordPress/wordpress-develop/blob/2382765afa36e10bf3c74420024ad4e85763a47c/src/wp-includes/class-wp-block-type.php#L261 WP_Block_Type::is_dynamic()}.
-         *
-         * Explanation: 'register_block_type_args' filter only passes the WP_Block_Type::name property, so the WP_Block_Type::is_dynamic() method is inaccessible in a callback function, {@see https://github.com/WordPress/WordPress/blob/5.7/wp-includes/class-wp-block-type.php#L330 }.
-         * We could not use the WP_Block_Type_Registry to get the block object neither, because the WP_Block_Type instance is added to the registry only after the use of the 'register_block_type_args' filter ( done in WP_Block_Type::set_props itself done in the WP_Block_Type constructor ):
-         *   - {@see https://github.com/WordPress/WordPress/blob/5.7/wp-includes/class-wp-block-type.php#L223}
-         *   - {@see https://github.com/WordPress/WordPress/blob/5.7/wp-includes/class-wp-block-type.php#L312}
-         *   - {@see https://github.com/WordPress/WordPress/blob/058f9903676a7efaee534a682df0a2a8b87574d8/wp-includes/class-wp-block-type-registry.php#L80-L84}
-         *
-         * @since 3.1
-         *
-         * @param array $block_properties Associative array mimicking the structure of a {@see https://github.com/WordPress/wordpress-develop/blob/2382765afa36e10bf3c74420024ad4e85763a47c/src/wp-includes/class-wp-block-parser.php#L15 WP_Block_Parser_Block}.
-         *
-         * @return bool
-         */
-        public function is_block_dynamic($block_properties)
         {
         }
     }
@@ -2754,9 +3070,7 @@ namespace {
         {
         }
     }
-    /**
-     * @package Polylang-Pro
-     */
+    // Don't access directly
     /**
      * A class to bulk translate posts.
      *
@@ -2950,6 +3264,10 @@ namespace {
          */
         protected $sync_content;
         /**
+         * @var PLL_Admin_Links|null
+         */
+        protected $links;
+        /**
          * Used to manage user meta.
          *
          * @var PLL_Toggle_User_Meta
@@ -2960,9 +3278,9 @@ namespace {
          *
          * @since 3.6
          *
-         * @param object $polylang Polylang object.
+         * @param PLL_Admin $polylang Polylang object.
          */
-        public function __construct(&$polylang)
+        public function __construct(\PLL_Admin &$polylang)
         {
         }
         /**
@@ -2988,6 +3306,10 @@ namespace {
     class PLL_Duplicate_REST
     {
         /**
+         * @var PLL_Admin_Links
+         */
+        protected $links;
+        /**
          * Used to manage user meta.
          *
          * @var PLL_Toggle_User_Meta
@@ -2997,8 +3319,10 @@ namespace {
          * Constructor
          *
          * @since 2.6
+         *
+         * @param PLL_REST_Request|PLL_Admin $polylang Polylang object.
          */
-        public function __construct()
+        public function __construct(&$polylang)
         {
         }
         /**
@@ -3034,6 +3358,238 @@ namespace {
          * @since 1.9
          */
         public function __construct()
+        {
+        }
+    }
+    /**
+     * @package Polylang-Pro
+     */
+    /**
+     * Abstract class to filter templates for translatable objects.
+     *
+     * @since 3.7
+     */
+    abstract class PLL_Abstract_Filter_Template
+    {
+        /**
+         * Instance of Polylang model.
+         *
+         * @var PLL_Model
+         */
+        protected $model;
+        /**
+         * Default language object.
+         *
+         * @var PLL_Language
+         */
+        protected $default_language;
+        /**
+         * Constructor.
+         *
+         * @since 3.7
+         *
+         * @param PLL_Model $model Instance of Polylang model.
+         */
+        public function __construct(\PLL_Model $model)
+        {
+        }
+        /**
+         * Filters templates according to the current queried object.
+         *
+         * @since 3.7
+         *
+         * @param array $templates Array of templates guessed from the hierarchy.
+         * @return array Filtered array of templates.
+         */
+        public function filter($templates)
+        {
+        }
+        /**
+         * Adds templates of the default language from an object.
+         *
+         * @since 3.7
+         *
+         * @param array  $templates Array of templates guessed from the hierarchy.
+         * @param object $object    Object to use to guess templates.
+         * @return array Array of templates with added ones.
+         */
+        protected abstract function add_def_lang_templates_from_object(array $templates, object $object) : array;
+        /**
+         * Returns the language of the given object.
+         *
+         * @since 3.7
+         *
+         * @param object $object The object (e.g. `WP_Post` or `WP_Term`).
+         * @return PLL_Language|false Object language, `false` if none found.
+         */
+        protected abstract function get_object_language(object $object);
+    }
+    /**
+     * @package Polylang-Pro
+     */
+    /**
+     * Class to filter templates for terms.
+     *
+     * @since 3.7
+     */
+    class PLL_Filter_Template_Core_Taxonomy extends \PLL_Abstract_Filter_Template
+    {
+        /**
+         * Adds templates of the default language from a term.
+         *
+         * @since 3.7
+         *
+         * @param array  $templates Array of templates guessed from the hierarchy.
+         * @param object $object    Term to use to guess templates.
+         * @return array Array of templates with added ones.
+         */
+        protected function add_def_lang_templates_from_object(array $templates, object $object) : array
+        {
+        }
+        /**
+         * Returns the language of the given term.
+         *
+         * @since 3.7
+         *
+         * @param object $object The term object.
+         * @return PLL_Language|false Term language, `false` if none found.
+         */
+        protected function get_object_language(object $object)
+        {
+        }
+        /**
+         * Prepends templates for the given term to the given array.
+         *
+         * @since 3.7
+         *
+         * @param array   $templates Array of templates.
+         * @param WP_Term $term      Term object to use.
+         * @return array Array of templates with prepended ones.
+         */
+        protected function prepend_templates(array $templates, \WP_Term $term) : array
+        {
+        }
+    }
+    /**
+     * @package Polylang-Pro
+     */
+    /**
+     * Class to filter custom taxonomy type templates for terms.
+     *
+     * @since 3.7
+     */
+    class PLL_Filter_Template_Custom_Taxonomy extends \PLL_Filter_Template_Core_Taxonomy
+    {
+        /**
+         * Prepends templates for the given term to the given array.
+         *
+         * @since 3.7
+         *
+         * @param array   $templates Array of templates.
+         * @param WP_Term $term      Term object to use.
+         * @return array Array of templates with prepended ones.
+         */
+        protected function prepend_templates(array $templates, \WP_Term $term) : array
+        {
+        }
+    }
+    /**
+     * @package Polylang-Pro
+     */
+    /**
+     * Class to filter templates for posts.
+     *
+     * @since 3.7
+     */
+    class PLL_Filter_Template_Page extends \PLL_Abstract_Filter_Template
+    {
+        /**
+         * Adds templates of the default language from a post.
+         *
+         * @since 3.7
+         *
+         * @param array  $templates Array of templates guessed from the hierarchy.
+         * @param object $object    Post to use to guess templates.
+         * @return array Array of templates with added ones.
+         */
+        protected function add_def_lang_templates_from_object(array $templates, object $object) : array
+        {
+        }
+        /**
+         * Returns the language of the given post.
+         *
+         * @since 3.7
+         *
+         * @param object $object The post object.
+         * @return PLL_Language|false Post language, `false` if none found.
+         */
+        protected function get_object_language(object $object)
+        {
+        }
+        /**
+         * Prepends templates for the given post to the given array.
+         *
+         * @since 3.7
+         *
+         * @param array   $templates Array of templates.
+         * @param WP_Post $post      Post object to use.
+         * @return array Array of templates with prepended ones.
+         */
+        protected function prepend_templates(array $templates, \WP_Post $post) : array
+        {
+        }
+    }
+    /**
+     * @package Polylang-Pro
+     */
+    /**
+     * Class to filter single type templates for posts.
+     *
+     * @since 3.7
+     */
+    class PLL_Filter_Template_Single extends \PLL_Filter_Template_Page
+    {
+        /**
+         * Prepends templates for the given post to the given array.
+         *
+         * @since 3.7
+         *
+         * @param array   $templates Array of templates.
+         * @param WP_Post $post      Post object to use.
+         * @return array Array of templates with prepended ones.
+         */
+        protected function prepend_templates(array $templates, \WP_Post $post) : array
+        {
+        }
+    }
+    /**
+     * @package Polylang-Pro
+     */
+    /**
+     * Class to filter the template hierarchy.
+     *
+     * @since 3.7
+     */
+    class PLL_Filter_Templates
+    {
+        /**
+         * Constructor.
+         *
+         * @since 3.7
+         *
+         * @param PLL_Frontend $polylang Main Polylang object.
+         */
+        public function __construct(\PLL_Frontend $polylang)
+        {
+        }
+        /**
+         * Hooks to the template hierarchy filters with the corresponding objects.
+         *
+         * @since 3.7
+         *
+         * @return self
+         */
+        public function init() : self
         {
         }
     }
@@ -3204,9 +3760,10 @@ namespace {
          *
          * @param  string $new_def_lang_slug Slug of the new default language.
          *                                   At this point, the default language has not been changed in PLL's settings yet.
+         * @param  string $old_def_lang_slug Slug of the old default language.
          * @return void
          */
-        public function change_template_slugs($new_def_lang_slug)
+        public function change_template_slugs($new_def_lang_slug, $old_def_lang_slug)
         {
         }
     }
@@ -4336,13 +4893,14 @@ namespace {
          * Translates the content of the given template.
          *
          * @since 3.2
+         * @since 3.7 Deprecate `$from_template_id` argument and move `$target_language` to second position.
          *
-         * @param  WP_Post      $target_template  The template to translate.
-         * @param  int          $from_template_id The source template post ID.
-         * @param  PLL_Language $target_language  The target language object.
-         * @return int          The post ID on success. The value 0 on failure.
+         * @param  WP_Post           $target_template The template to translate.
+         * @param  PLL_Language      $target_language The target language object.
+         * @param  PLL_Language|null $deprecated      Deprecated target language object for backward compatibility.
+         * @return int The post ID on success. The value 0 on failure.
          */
-        public function translate_template_content(\WP_Post $target_template, $from_template_id, \PLL_Language $target_language)
+        public function translate_template_content(\WP_Post $target_template, $target_language, ?\PLL_Language $deprecated = \null)
         {
         }
     }
@@ -5098,10 +5656,12 @@ namespace {
          * Adds 'pll_export_post' bulk option in Translate bulk action {@see PLL_Bulk_Translate::register_options()}
          *
          * @since 2.7
+         * @since 3.6.5 Added `$bulk_translate` parameter.
          *
+         * @param PLL_Bulk_Translate $bulk_translate Instance of `PLL_Bulk_Translate`.
          * @return void
          */
-        public function add_bulk_export()
+        public function add_bulk_translate_options($bulk_translate) : void
         {
         }
         /**
@@ -5304,7 +5864,7 @@ namespace {
          */
         public function translate($entry, $target_language);
         /**
-         * Get update notices to display.
+         * Returns update notices to display.
          *
          * @since 3.3
          *
@@ -5312,7 +5872,7 @@ namespace {
          */
         public function get_updated_notice();
         /**
-         * Get warnings notices to display.
+         * Returns warning notices to display.
          *
          * @since 3.3
          *
@@ -5343,6 +5903,8 @@ namespace {
      * A class to handle posts import.
      *
      * @since 3.3
+     *
+     * @phpstan-import-type EntryData from PLL_Translation_Post_Model
      */
     class PLL_Import_Posts implements \PLL_Import_Object_Interface
     {
@@ -5354,8 +5916,9 @@ namespace {
         protected $translation_post_model;
         /**
          * The success counter.
+         * Null means that the translation process has not been fired yet.
          *
-         * @var int
+         * @var int|null
          */
         protected $success;
         /**
@@ -5387,6 +5950,8 @@ namespace {
          *
          * @param array        $entry           The current entry to import.
          * @param PLL_Language $target_language The targeted language for import.
+         *
+         * @phpstan-param EntryData $entry
          */
         public function translate($entry, $target_language)
         {
@@ -5415,7 +5980,7 @@ namespace {
         {
         }
         /**
-         * Get update notices to display.
+         * Returns update notices to display.
          *
          * @since 3.3
          *
@@ -5425,7 +5990,7 @@ namespace {
         {
         }
         /**
-         * Get warnings notices to display.
+         * Returns warnings notices to display.
          *
          * @since 3.3
          *
@@ -5468,7 +6033,7 @@ namespace {
         /**
          * The success counter.
          *
-         * @var int
+         * @var int|null
          */
         protected $success;
         /**
@@ -5494,7 +6059,7 @@ namespace {
         {
         }
         /**
-         * Gets update notices to display.
+         * Returns update notices to display.
          *
          * @since 3.3
          *
@@ -5504,7 +6069,7 @@ namespace {
         {
         }
         /**
-         * Gets warnings notices to display.
+         * Returns warning notices to display.
          *
          * @since 3.3
          *
@@ -5547,7 +6112,7 @@ namespace {
         /**
          * The success counter.
          *
-         * @var int
+         * @var int|null
          */
         protected $success;
         /**
@@ -5591,7 +6156,7 @@ namespace {
         {
         }
         /**
-         * Get update notices to display.
+         * Returns update notices to display.
          *
          * @since 3.3
          *
@@ -5601,7 +6166,7 @@ namespace {
         {
         }
         /**
-         * Get warnings notices to display.
+         * Returns warnings notices to display.
          *
          * @since 3.3
          *
@@ -6937,9 +7502,6 @@ namespace {
         }
     }
     /**
-     * @package Polylang-Pro
-     */
-    /**
      * Allows to load a fallback translation file if a translation doesn't exist in the current locale.
      *
      * @since 2.9
@@ -6988,12 +7550,30 @@ namespace {
         /**
          * Attempts to load the translation in the fallback locale if it doesn't exist in the current locale.
          *
+         * This method is used for translations loaded with `load_textdomain()` and `load_script_textdomain()`.
+         *
          * @since 2.9
          *
          * @param  string|false $file Translation file name.
          * @return string|false
          */
         public function load_file($file)
+        {
+        }
+        /**
+         * Returns the languages directory path for a specific domain and locale.
+         *
+         * This method is used for translations loaded with `_load_textdomain_just_in_time()`.
+         *
+         * @since 3.6.3
+         *
+         * @param string|false $path   Languages directory path for the given domain and locale.
+         * @param string       $domain Text domain.
+         * @param string       $locale Locale.
+         *
+         * @return string|false Languages directory path or false if there is none available.
+         */
+        public function get_lang_dir_for_domain($path, $domain, $locale)
         {
         }
         /**
@@ -7050,10 +7630,6 @@ namespace {
          */
         public $model;
         /**
-         * @var PLL_CRUD_Posts
-         */
-        public $posts;
-        /**
          * Constructor: setups filters and actions
          *
          * @since 1.9
@@ -7062,6 +7638,17 @@ namespace {
          * @param PLL_Admin $polylang Polylang object.
          */
         public function __construct(&$polylang)
+        {
+        }
+        /**
+         * Registers options of the Translate bulk action.
+         *
+         * @since 3.6.5
+         *
+         * @param PLL_Bulk_Translate $bulk_translate Instance of `PLL_Bulk_Translate`.
+         * @return void
+         */
+        public function add_bulk_translate_options($bulk_translate) : void
         {
         }
         /**
@@ -7098,21 +7685,6 @@ namespace {
      */
     class PLL_Media_Bulk_Option extends \PLL_Bulk_Translate_Option
     {
-        /**
-         * PLL_Media_Bulk_Action constructor.
-         *
-         * @since 2.7
-         *
-         * @param array          $args {
-         *     string $name
-         *     string $description
-         * }.
-         * @param PLL_Model      $model An instance to the current PLL_Model.
-         * @param PLL_CRUD_Posts $posts Used to create translations.
-         */
-        public function __construct($args, $model, $posts)
-        {
-        }
         /**
          * Checks whether the option should be selectable by the user.
          *
@@ -7174,14 +7746,14 @@ namespace {
         {
         }
         /**
-         * Sanitizes the settings before saving
+         * Prepare the received data before saving.
          *
-         * @since 1.9
+         * @since 3.7
          *
-         * @param array $options Raw options to save.
-         * @return array Sanitized options.
+         * @param array $options Raw values to save.
+         * @return array
          */
-        protected function update($options)
+        protected function prepare_raw_data(array $options) : array
         {
         }
         /**
@@ -7199,7 +7771,7 @@ namespace {
      * @package Polylang-Pro
      */
     /**
-     * Setup the REST API endpoints and filters
+     * Setup the REST API endpoints and filters.
      *
      * @since 2.2
      */
@@ -7240,13 +7812,13 @@ namespace {
          *
          * @since 2.2
          *
-         * @param object $polylang Instance of PLL_REST_Request.
+         * @param object $polylang Instance of `PLL_REST_Request`.
          */
         public function __construct(&$polylang)
         {
         }
         /**
-         * Init filters and new endpoints.
+         * Inits filters and new endpoints.
          *
          * @since 2.2
          *
@@ -7274,17 +7846,6 @@ namespace {
          * @return array
          */
         public function get_untranslated_posts(\WP_REST_Request $request)
-        {
-        }
-        /**
-         * Returns the list of available languages specifying the default language.
-         *
-         * @since 3.2
-         *
-         * @return array[] List of PLL_Language objects.
-         * @phpstan-return array<int, array<string, mixed>>
-         */
-        public function get_languages_list()
         {
         }
     }
@@ -7698,6 +8259,17 @@ namespace {
         {
         }
         /**
+         * Stores the term ID to use in `pre_term_slug`.
+         *
+         * @since 3.7
+         *
+         * @param int $term_id Term ID.
+         * @return int Unmodified term ID.
+         */
+        public function set_pre_term_id($term_id)
+        {
+        }
+        /**
          * Appends language slug to the term slug if needed.
          *
          * @since 3.3
@@ -8059,6 +8631,10 @@ namespace {
          */
         public $sync_model;
         /**
+         * @var PLL_Model
+         */
+        public $model;
+        /**
          * Stores all synchronization buttons.
          *
          * @var PLL_Sync_Post_Button[]
@@ -8073,6 +8649,27 @@ namespace {
          * @param PLL_Frontend|PLL_Admin|PLL_Settings $polylang Polylang object.
          */
         public function __construct(&$polylang)
+        {
+        }
+        /**
+         * Registers the buttons.
+         *
+         * @since 3.6.5
+         *
+         * @return void
+         */
+        public function add_metabox_buttons() : void
+        {
+        }
+        /**
+         * Registers options of the Translate bulk action.
+         *
+         * @since 3.6.5
+         *
+         * @param PLL_Bulk_Translate $bulk_translate Instance of `PLL_Bulk_Translate`.
+         * @return void
+         */
+        public function add_bulk_translate_options($bulk_translate) : void
         {
         }
         /**
@@ -8131,6 +8728,73 @@ namespace {
      * @package Polylang-Pro
      */
     /**
+     * Holds the rules defining which part of a block should be "synchronized".
+     *
+     * @since 3.7
+     */
+    class PLL_Sync_Block_Parsing_Rules
+    {
+        /**
+         * Extracts translatable parts from HTML block content.
+         * Returns an array of XPath, empty if no rules defined.
+         *
+         * @since 3.7
+         *
+         * @param array $block An array mimicking a {@see WP_Block_Parser_Block}.
+         * @return string[][] Parsing rules as array keys, strings to translate as array values.
+         *
+         * @phpstan-return array<string,array<string, string>>
+         */
+        public function html(array $block) : array
+        {
+        }
+        /**
+         * Checks if a block has synchronized attributes (or not) and returns them.
+         *
+         * @since 3.7
+         *
+         * @param array $block An array mimicking a {@see WP_Block_Parser_Block}.
+         * @return array An array with attributes to synchronize or an empty array.
+         *
+         * @phpstan-return array<non-empty-string, array<'post'|'term'|'attachment', array<non-empty-string>>>
+         */
+        public function attributes(array $block) : array
+        {
+        }
+    }
+    /**
+     * Translates blocks to keep them synchronized across pieces of content.
+     *
+     * @since 3.7
+     */
+    class PLL_Sync_Blocks
+    {
+        /**
+         * Constructor.
+         *
+         * @since 3.7
+         *
+         * @param PLL_Sync_Shortcodes $shortcodes Shortcodes translator.
+         * @param PLL_Sync_HTML       $html       HTML translator.
+         */
+        public function __construct(\PLL_Sync_Shortcodes $shortcodes, \PLL_Sync_HTML $html)
+        {
+        }
+        /**
+         * Recursively translates blocks.
+         *
+         * @since 3.7
+         *
+         * @param string       $content         Content, ideally containing blocks.
+         * @param PLL_Language $target_language Target language.
+         * @param WP_Post|null $target_post     Main target post object.
+         * @return string Content with translated blocks.
+         */
+        public function translate(string $content, \PLL_Language $target_language, ?\WP_Post $target_post) : string
+        {
+        }
+    }
+    /**
      * Smart copy of post content
      *
      * @since 2.6
@@ -8140,7 +8804,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var array
+         * @var Options
          */
         protected $options;
         /**
@@ -8154,27 +8818,23 @@ namespace {
          */
         protected $links_model;
         /**
-         * @var PLL_CRUD_Posts
-         */
-        protected $posts;
-        /**
-         * The post object to fill with translated data.
+         * Shortcodes translator.
          *
-         * @var WP_Post
+         * @var PLL_Sync_Shortcodes
          */
-        protected $target_post;
+        protected $shortcodes;
         /**
-         * Language of the target post.
+         * Blocks translator.
          *
-         * @var PLL_Language
+         * @var PLL_Sync_Blocks
          */
-        protected $target_language;
+        protected $blocks;
         /**
-         * Language of the source post.
+         * HTML translator.
          *
-         * @var PLL_Language
+         * @var PLL_Sync_HTML
          */
-        protected $from_language;
+        protected $html;
         /**
          * Constructor
          *
@@ -8199,19 +8859,19 @@ namespace {
         {
         }
         /**
-         * Translate shortcodes and <img> attributes in a given text
+         * Translates shortcodes, HTML and blocks in text.
          *
          * @since 1.9
          * @since 3.3 Requires $target_post, $from_language and $target_language parameters.
-         * @global array $shortcode_tags
+         * @since 3.7 Deprecate `$from_language` argument and move `$target_language` to third position.
          *
-         * @param string       $content         Text to translate.
-         * @param WP_Post      $target_post     The post object to populate with translated content.
-         * @param PLL_Language $from_language   The source language .
-         * @param PLL_Language $target_language The language to translate to.
-         * @return string Translated text
+         * @param string            $content         Text to translate.
+         * @param WP_Post           $target_post     The post object to translate to.
+         * @param PLL_Language      $target_language The language to translate to.
+         * @param PLL_Language|null $deprecated      Deprecated target language object for backward compatibility.
+         * @return string Translated text.
          */
-        public function translate_content($content, $target_post, \PLL_Language $from_language, \PLL_Language $target_language)
+        public function translate_content($content, \WP_Post $target_post, \PLL_Language $target_language, ?\PLL_Language $deprecated = \null)
         {
         }
         /**
@@ -8240,98 +8900,82 @@ namespace {
         public function duplicate_term($tr_term_id, $term_id, $lang)
         {
         }
+    }
+    /**
+     * Translates HTML to keep it synchronized across pieces of content.
+     *
+     * @since 3.7
+     */
+    class PLL_Sync_HTML
+    {
         /**
-         * Get the media translation id
-         * Create the translation if it does not exist
-         * Attach the media to the parent post
+         * Translates object IDs.
          *
-         * @since 1.9
-         *
-         * @param int $id Media ID.
-         * @return int Translated media ID.
+         * @var PLL_Sync_Ids
          */
-        protected function translate_media($id)
+        public $ids;
+        /**
+         * Constructor.
+         *
+         * @since 3.7
+         *
+         * @param PLL_Sync_Ids $ids Ids translator.
+         */
+        public function __construct(\PLL_Sync_Ids $ids)
         {
         }
         /**
-         * Translates the 'gallery' and 'playlist' shortcodes
+         * Translates images and caption in HTML.
          *
-         * @since 1.9
+         * @since 3.7
          *
-         * @param array  $attr Shortcode attributes.
-         * @param null   $null Shortcode content, not used.
-         * @param string $tag  Shortcode tag (either 'gallery' or 'playlist').
-         * @return string Translated shortcode.
+         * @param string       $content         HTML string.
+         * @param PLL_Language $target_language Target language.
+         * @param WP_Post|null $target_post     Main target post object.
+         * @return string Translated HTML.
          */
-        public function ids_list_shortcode($attr, $null, $tag)
+        public function translate(string $content, \PLL_Language $target_language, ?\WP_Post $target_post) : string
+        {
+        }
+    }
+    /**
+     * @package Polylang-Pro
+     */
+    /**
+     * Class to manage object IDs translation across pieces of content.
+     *
+     * @since 3.7
+     */
+    class PLL_Sync_Ids
+    {
+        /**
+         * @var PLL_Model
+         */
+        public $model;
+        /**
+         * Constructor.
+         *
+         * @since 3.7
+         *
+         * @param PLL_Model $model Main model.
+         */
+        public function __construct(\PLL_Model $model)
         {
         }
         /**
-         * Translates the caption shortcode
-         * Compatible only with the new style introduced in WP 3.4
+         * Translates a single ID according to the given type.
          *
-         * @since 1.9
+         * @since 3.7
          *
-         * @param array  $attr    Shortcode attribute.
-         * @param string $content Shortcode content.
-         * @param string $tag     Shortcode tag (either 'caption' or 'wp-caption').
-         * @return string Translated shortcode.
+         * @param string|int   $id              Numeric value of the source object ID.
+         * @param string       $type            Object type (`post`, `term`, `attachment` or `wp_block`).
+         * @param PLL_Language $target_language Target language.
+         * @param WP_Post|null $target_post     Main target post object. Default to `null`, meaning not saved yet or not applicable.
+         * @return string|int Translated ID, `0` if not found.
+         *
+         * @phpstan-return ($id is int ? int : string)
          */
-        public function caption_shortcode($attr, $content, $tag)
-        {
-        }
-        /**
-         * Translate images and caption in inner html
-         *
-         * Since 2.5
-         *
-         * @param string $content HTML string.
-         * @return string
-         */
-        protected function translate_html($content)
-        {
-        }
-        /**
-         * Translates <img> 'class' and 'alt' attributes.
-         *
-         * @since 1.9
-         * @since 2.5 The html is passed by reference and the return value is the image ID.
-         *
-         * @param string $text Reference to <img> html with attributes.
-         * @return null|int Translated image id if exist.
-         */
-        protected function translate_img(&$text)
-        {
-        }
-        /**
-         * Recursively translate blocks.
-         *
-         * @param array[] $blocks An array of arrays representing a block.
-         * @return array
-         */
-        protected function translate_blocks($blocks)
-        {
-        }
-        /**
-         * Translates media ids in blocks.
-         *
-         * @since 3.3
-         *
-         * @param array $block A representative array of a block.
-         * @return array The translated block.
-         */
-        protected function translate_media_block($block)
-        {
-        }
-        /**
-         * Updates the block properties with a translation if it is found.
-         *
-         * @since 2.9
-         *
-         * @param array $block An array mimicking the structure of {@see https://github.com/WordPress/WordPress/blob/5.5.1/wp-includes/class-wp-block-parser.php WP_Block_Parser_Block}.
-         * @return array The updated array formatted block.
-         */
-        protected function translate_block_content($block)
+        public function translate($id, string $type, \PLL_Language $target_language, ?\WP_Post $target_post = \null)
         {
         }
     }
@@ -8345,17 +8989,6 @@ namespace {
      */
     class PLL_Sync_Navigation
     {
-        /**
-         * @var PLL_Model
-         */
-        public $model;
-        /**
-         *
-         * Reference to the PLL_Sync_Content instance.
-         *
-         * @var PLL_Sync_Content
-         */
-        public $sync_content;
         /**
          * Constructor.
          * Setup filters.
@@ -8383,54 +9016,81 @@ namespace {
          * Recursively translate navigation blocks.
          *
          * @since 3.2
+         * @since 3.7 `$from_language` parameter removed.
          *
          * @param array[] $blocks        An array of block arrays.
          * @param string  $language      Slug language of the target post.
-         * @param string  $from_language Slug language of the source post.
          * @return array Array of translated blocks.
          */
-        public function translate_blocks($blocks, $language, $from_language)
+        public function translate_blocks($blocks, $language)
+        {
+        }
+    }
+    /**
+     * Translates shortcodes to keep them synchronized across pieces of content.
+     *
+     * @since 3.7
+     */
+    class PLL_Sync_Shortcodes
+    {
+        /**
+         * Translates object IDs.
+         *
+         * @var PLL_Sync_Ids
+         */
+        public $ids;
+        /**
+         * Constructor.
+         *
+         * @since 3.7
+         *
+         * @param PLL_Sync_Ids $ids Ids translator.
+         */
+        public function __construct(\PLL_Sync_Ids $ids)
         {
         }
         /**
-         * Get the navigation link id.
+         * Translates shortcodes from a given content.
          *
-         * @since 3.2
+         * @since 3.7
          *
-         * @param int    $id       Navigation link id.
-         * @param string $kind     Link type (post-type or taxonomy).
-         * @param string $language Slug language of the target post.
-         * @return array An array with the untranslated id if the navigation link post type isn't translated, or an array
-         *               with the translated id, label and url.
+         * @global array $shortcode_tags
+         *
+         * @param string       $content         Content to translate.
+         * @param PLL_Language $target_language Target language.
+         * @param WP_Post|null $target_post     Main target post object.
+         * @return string Content with its shortcodes translated.
          */
-        public function translate_navigation_link($id, $kind, $language)
+        public function translate(string $content, \PLL_Language $target_language, ?\WP_Post $target_post) : string
         {
         }
         /**
-         * Get the navigation block translation id.
-         * Create the translation if it does not exist.
+         * Translates the 'gallery' and 'playlist' shortcodes
          *
-         * @since 3.2
+         * @since 1.9
+         * @since 3.7 Moved from `PLL_Sync_Content` to `PLL_Sync_Shortcodes`.
          *
-         * @param int    $id            Navigation block id.
-         * @param string $language      Slug language of the target post.
-         * @param string $from_language Slug language of the source post.
-         * @return false|int|WP_Error   Id of the translated navigation block.
+         * @param array  $attr Shortcode attributes.
+         * @param null   $null Shortcode content, not used.
+         * @param string $tag  Shortcode tag (either 'gallery' or 'playlist').
+         * @return string Translated shortcode.
          */
-        public function translate_navigation_block($id, $language, $from_language)
+        public function ids_list_shortcode($attr, $null, $tag)
         {
         }
         /**
-         * Creates a navigation block translation.
+         * Translates the caption shortcode
+         * Compatible only with the new style introduced in WP 3.4
          *
-         * @since 3.2
+         * @since 1.9
+         * @since 3.7 Moved from `PLL_Sync_Content` to `PLL_Sync_Shortcodes`.
          *
-         * @param int    $id            The source navigation block ID.
-         * @param string $lang          New translation language slug.
-         * @param string $from_language Slug language of the source post.
-         * @return int|WP_Error ID of the translated navigation block.
+         * @param array  $attr    Shortcode attribute.
+         * @param string $content Shortcode content.
+         * @param string $tag     Shortcode tag (either 'caption' or 'wp-caption').
+         * @return string Translated shortcode.
          */
-        public function create_navigation_block_translation($id, $lang, $from_language)
+        public function caption_shortcode($attr, $content, $tag)
         {
         }
     }
@@ -9474,9 +10134,6 @@ namespace {
         }
     }
     /**
-     * @package Polylang-Pro
-     */
-    /**
      * A Service to collect linked post ids.
      *
      * @since 3.3
@@ -9486,7 +10143,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var array
+         * @var Options
          */
         protected $options;
         /**
@@ -9494,7 +10151,7 @@ namespace {
          *
          * @since 3.3
          *
-         * @param array $options The plugin options.
+         * @param Options $options The plugin options.
          */
         public function __construct($options)
         {
@@ -9646,6 +10303,30 @@ namespace {
         {
         }
         /**
+         * Gets terms assigned to linked posts.
+         *
+         * @since 3.7
+         *
+         * @param  WP_Post[] $posts      An array of post objects.
+         * @param  string[]  $taxonomies Terms will be limited to the given taxonomies.
+         * @return WP_Term[]             An array of assigned term objects.
+         */
+        protected function get_terms_assigned_to_posts(array $posts, array $taxonomies) : array
+        {
+        }
+        /**
+         * Gets all the term objects from a set of posts content.
+         *
+         * @since 3.7
+         *
+         * @param  WP_Post[] $posts      An array of post objects.
+         * @param  string[]  $taxonomies Terms will be limited to the given taxonomies.
+         * @return WP_Term[]             An array of linked term objects.
+         */
+        protected function get_terms_from_posts(array $posts, array $taxonomies) : array
+        {
+        }
+        /**
          * Returns all the term IDs linked in a post.
          *
          * @since 3.3
@@ -9733,6 +10414,17 @@ namespace {
          * @phpstan-return array<int<0, max>, positive-int>
          */
         protected function get_term_ids_from_query_block(array $block)
+        {
+        }
+        /**
+         * Gets the parent terms of all terms linked to posts.
+         *
+         * @since 3.7
+         *
+         * @param WP_Term[] $terms An array of terms.
+         * @return array The array of terms parents, if any.
+         */
+        protected function get_terms_parents(array $terms) : array
         {
         }
     }
@@ -10961,14 +11653,14 @@ namespace {
     class PLL_Translation_Content
     {
         /**
-         * Setter
+         * Constructor
          *
-         * @since 3.3
+         * @since 3.7
          *
          * @param Translations $translations Used to translate the content.
          * @return void
          */
-        public function set_translations($translations)
+        public function __construct(\Translations $translations)
         {
         }
         /**
@@ -11013,18 +11705,6 @@ namespace {
     abstract class PLL_Translation_Metas
     {
         /**
-         * Meta type. Typically 'post' or 'term' and must be filled by the child class.
-         *
-         * @var string
-         */
-        protected $meta_type;
-        /**
-         * The context to translate entry.
-         *
-         * @var string
-         */
-        protected $context;
-        /**
          * Translations set where to look for the post metas translations.
          *
          * @var Translations
@@ -11054,12 +11734,30 @@ namespace {
          * Constructor.
          *
          * @since 3.3
+         * @since 3.7 $translations parameter added.
          *
-         * @param PLL_Sync_Metas $sync_metas Object to manage copied metas during import.
+         * @param PLL_Sync_Metas $sync_metas    Object to manage copied metas during import.
+         * @param Translations   $translations  Translations set where to look for the metas translations.
          */
-        public function __construct(\PLL_Sync_Metas $sync_metas)
+        public function __construct(\PLL_Sync_Metas $sync_metas, \Translations $translations)
         {
         }
+        /**
+         * Returns the meta type.
+         *
+         * @since 3.7
+         *
+         * @return string Meta type. Typically 'post' or 'term'.
+         */
+        protected abstract function get_type() : string;
+        /**
+         * Returns the context to translate entry.
+         *
+         * @since 3.7
+         *
+         * @return string The context.
+         */
+        protected abstract function get_context() : string;
         /**
          * Translates the metas from a given object, whether it's a copy or a real translation.
          *
@@ -11072,18 +11770,6 @@ namespace {
          * @return void
          */
         public function translate($src_object_id, $tr_object_id, \PLL_Language $target_language, $copy)
-        {
-        }
-        /**
-         * Setter for translations.
-         * Translations of the matching context are sanitized.
-         *
-         * @since 3.3
-         *
-         * @param Translations $translations A set of translations to search the metas translations in.
-         * @return void
-         */
-        public function set_translations(\Translations $translations)
         {
         }
         /**
@@ -11117,15 +11803,16 @@ namespace {
          */
         public function translate(array $entry, \PLL_Language $target_language) : int;
         /**
-         * Translates parent objects if any.
+         * Assigns parent objects if any.
          *
          * @since 3.6
+         * @since 3.7 Renamed from `translate_parents`.
          *
          * @param int[]        $ids             Array of source entity ids.
          * @param PLL_Language $target_language The target language.
          * @return void
          */
-        public function translate_parents(array $ids, \PLL_Language $target_language);
+        public function assign_parents(array $ids, \PLL_Language $target_language);
     }
     /**
      * @package Polylang-Pro
@@ -11140,13 +11827,23 @@ namespace {
     class PLL_Translation_Post_Metas extends \PLL_Translation_Metas
     {
         /**
-         * The PLL_Translation_Post_Metas constructor that allows to define the meta type.
+         * Returns the meta type.
          *
-         * @since 3.3
+         * @since 3.7
          *
-         * @param PLL_Sync_Post_Metas $sync_metas Object to manage copied post metas during import.
+         * @return string Meta type. Typically 'post' or 'term'.
          */
-        public function __construct(\PLL_Sync_Post_Metas $sync_metas)
+        protected function get_type() : string
+        {
+        }
+        /**
+         * Returns the context to translate entry.
+         *
+         * @since 3.7
+         *
+         * @return string The context.
+         */
+        protected function get_context() : string
         {
         }
     }
@@ -11157,21 +11854,17 @@ namespace {
      * Manages posts translations.
      *
      * @since 3.3
+     *
+     * @phpstan-type EntryData array{
+     *    id: int,
+     *    data: Translations,
+     *    fields: array{
+     *        post_status?: string,
+     *    }
+     * }
      */
     class PLL_Translation_Post_Model implements \PLL_Translation_Object_Model_Interface
     {
-        /**
-         * @var PLL_Translation_Content
-         */
-        protected $translate_content;
-        /**
-         * @var PLL_Translation_Post_Metas
-         */
-        protected $translate_post_metas;
-        /**
-         * @var PLL_Sync_Content
-         */
-        protected $sync_content;
         /**
          * Used to query languages and translations.
          *
@@ -11193,6 +11886,12 @@ namespace {
          */
         protected $user_capabilities_manager;
         /**
+         * Used to sync the post content.
+         *
+         * @var PLL_Sync_Content
+         */
+        protected $sync_content;
+        /**
          * Constructor.
          *
          * @since 3.3
@@ -11207,9 +11906,19 @@ namespace {
          *
          * @since 3.3
          *
-         * @param  array        $entry           Properties array of an entry.
+         * @param  array        $entry           {
+         *    Import data.
+         *    int          $id     Source object ID.
+         *    Translations $data   Object containing translated data.
+         *    array        $fields {
+         *        Fields to create the new translation.
+         *        string $post_status Post status to use during translation creation.
+         *    }
+         * }.
          * @param  PLL_Language $target_language A language to translate into.
          * @return int The translated post ID, 0 on failure.
+         *
+         * @phpstan-param EntryData $entry
          */
         public function translate(array $entry, \PLL_Language $target_language) : int
         {
@@ -11219,15 +11928,14 @@ namespace {
          *
          * @since 3.3
          *
-         * @param array        $data_import {
-         *    Import options.
-         *    string $post_status The post status of the imported posts.
-         * }.
+         * @param array        $data_import     Import data, @see {self::translate()}.
          * @param WP_Post      $source_post     The source post object.
          * @param PLL_Language $target_language The language to translate into.
-         * @return int The translated post ID, 0 on failure.
+         * @return WP_Post|null The translated post object, `null` on failure.
+         *
+         * @phpstan-param EntryData $data_import
          */
-        protected function create_post_translation($data_import, $source_post, $target_language)
+        protected function create_post_translation(array $data_import, \WP_Post $source_post, \PLL_Language $target_language) : ?\WP_Post
         {
         }
         /**
@@ -11247,26 +11955,32 @@ namespace {
          * Updates an existing post translation.
          *
          * @since 3.3
+         * @since 3.7 $data_import parameter added.
          *
+         * @param array        $data_import     Import data, @see {self::translate()}.
          * @param WP_Post      $source_post     The source post object.
-         * @param WP_Post      $tr_post         The translated post object.
          * @param PLL_Language $target_language The language to translate into.
-         * @return int The translated post ID, 0 on failure.
+         * @param WP_Post      $tr_post         The translated post object.
+         * @return WP_Post|null The translated post object, `null` on failure.
+         *
+         * @phpstan-param EntryData $data_import
          */
-        protected function update_post_translation($source_post, $tr_post, $target_language)
+        protected function update_post_translation(array $data_import, \WP_Post $source_post, \PLL_Language $target_language, \WP_Post $tr_post) : ?\WP_Post
         {
         }
         /**
          * Translates all content type of a post (i.e. title, excerpt and content).
          *
          * @since 3.3
+         * @since 3.7 $translations parameter added.
          *
+         * @param array        $data_import     Import data, @see {self::translate()}.
          * @param WP_Post      $source_post     The source post object.
-         * @param WP_Post      $tr_post         The translated post object.
          * @param PLL_Language $target_language The language to translate into.
-         * @return WP_Post|int The translated post object populated with new data. 0 otherwise.
+         * @param WP_Post      $tr_post         The translated post object.
+         * @return WP_Post|null The translated post object populated with new data. Null otherwise.
          */
-        protected function translate_content($source_post, $tr_post, $target_language)
+        protected function translate_content(array $data_import, \WP_Post $source_post, \PLL_Language $target_language, \WP_Post $tr_post) : ?\WP_Post
         {
         }
         /**
@@ -11283,15 +11997,16 @@ namespace {
         {
         }
         /**
-         * Translates post parent if there is one.
+         * Assigns the parents to posts creating during the import.
          *
          * @since 3.3
+         * @since 3.7 Renamed from `translate_parents`.
          *
          * @param int[]        $ids             Array of source post ids.
          * @param PLL_Language $target_language The target language.
          * @return void
          */
-        public function translate_parents(array $ids, \PLL_Language $target_language)
+        public function assign_parents(array $ids, \PLL_Language $target_language)
         {
         }
         /**
@@ -11337,13 +12052,23 @@ namespace {
     class PLL_Translation_Term_Metas extends \PLL_Translation_Metas
     {
         /**
-         * The PLL_Translation_Term_Metas constructor that allows to define the meta type.
+         * Returns the meta type.
          *
-         * @since 3.3
+         * @since 3.7
          *
-         * @param PLL_Sync_Term_Metas $sync_metas Object to manage copied term metas during import.
+         * @return string Meta type. Typically 'post' or 'term'.
          */
-        public function __construct(\PLL_Sync_Term_Metas $sync_metas)
+        protected function get_type() : string
+        {
+        }
+        /**
+         * Returns the context to translate entry.
+         *
+         * @since 3.7
+         *
+         * @return string The context.
+         */
+        protected function get_context() : string
         {
         }
     }
@@ -11365,17 +12090,6 @@ namespace {
         {
         }
         /**
-         * Setter for translations.
-         *
-         * @since 3.3
-         *
-         * @param Translations $translations A set of translations to search the metas translations in.
-         * @return void
-         */
-        public function set_translations($translations)
-        {
-        }
-        /**
          * Translates a term.
          *
          * @since 3.3
@@ -11388,38 +12102,16 @@ namespace {
         {
         }
         /**
-         * Translates term parent if there is one.
+         * Assigns the parents to terms creating during the import.
          *
          * @since 3.3
+         * @since 3.7 Renamed from `translate_parents`.
          *
          * @param int[]        $ids             Array of source term ids.
          * @param PLL_Language $target_language The target language.
          * @return void
          */
-        public function translate_parents(array $ids, \PLL_Language $target_language)
-        {
-        }
-        /**
-         * Filters the currently inserted term language
-         * to allow sharing the same slug or to suffix it.
-         *
-         * @since 3.3
-         *
-         * @param PLL_Language|null $language Already found language object, null in none was found.
-         * @param string            $taxonomy Currently inserted term taxonomy.
-         * @return PLL_Language|null Overridden language object.
-         */
-        public function set_language_for_term_slug($language, $taxonomy)
-        {
-        }
-        /**
-         * Filters the inserted term ID parent during translation.
-         *
-         * @since 3.3
-         *
-         * @return int Term parent ID.
-         */
-        public function get_inserted_term_parent()
+        public function assign_parents(array $ids, \PLL_Language $target_language)
         {
         }
     }
@@ -11446,11 +12138,18 @@ namespace {
         public function walk($callback);
     }
     /**
-     * Class PLL_Content_Walker_Blocks
+     * Class PLL_Content_Walker_Blocks.
+     * Walks a block composed content to apply a translation callback on every translatable parts.
      *
      * @since 3.3
      *
-     * Walk a block composed content to apply a translation callback on every translatable parts.
+     * @phpstan-type Block array{
+     *     blockName: string,
+     *     attrs: array,
+     *     innerBlocks: array[],
+     *     innerHTML: string,
+     *     innerContent: array
+     * }
      */
     class PLL_Translation_Walker_Blocks implements \PLL_Translation_Walker_Interface
     {
@@ -11917,9 +12616,6 @@ namespace {
         }
     }
     /**
-     * @package Polylang
-     */
-    /**
      * Manages filters and actions related to the classic editor
      *
      * @since 2.4
@@ -11931,7 +12627,7 @@ namespace {
          */
         public $model;
         /**
-         * @var PLL_Admin_Links|null
+         * @var PLL_Admin_Links
          */
         public $links;
         /**
@@ -12027,9 +12723,9 @@ namespace {
     /**
      * Manages filters and actions related to default terms.
      *
-     * @since 3.1
+     * @since 3.7
      */
-    class PLL_Admin_Default_Term
+    class PLL_Default_Term
     {
         /**
          * A reference to the PLL_Model instance.
@@ -12042,7 +12738,7 @@ namespace {
          *
          * @var PLL_Language|null
          */
-        protected $pref_lang;
+        protected $curlang;
         /**
          * Array of registered taxonomy names for which Polylang manages languages and translations.
          *
@@ -12070,7 +12766,7 @@ namespace {
         {
         }
         /**
-         * Filters the default term in note below the term list table and in settings->writing dropdown
+         * Filters the default term to return the one in the right language.
          *
          * @since 1.2
          *
@@ -12081,8 +12777,8 @@ namespace {
         {
         }
         /**
-         * Checks if the new default term is translated in all languages
-         * If not, create the translations
+         * Checks if the new default term is translated in all languages.
+         * If not, create the translations.
          *
          * @since 1.7
          *
@@ -12094,12 +12790,12 @@ namespace {
         {
         }
         /**
-         * Create a default term for a language
+         * Creates a default term for a language.
          *
          * @since 1.2
          *
-         * @param object|string|int $lang     language
-         * @param string            $taxonomy The current taxonomy
+         * @param PLL_Language|string|int $lang     Language.
+         * @param string                  $taxonomy The current taxonomy.
          * @return void
          */
         public function create_default_term($lang, $taxonomy)
@@ -12117,30 +12813,7 @@ namespace {
         {
         }
         /**
-         * Identify the default term in the terms list table to disable the language dropdown in js.
-         *
-         * @since 3.1
-         *
-         * @param  string $out     The output.
-         * @param  string $column  The custom column's name.
-         * @param  int    $term_id The term id.
-         * @return string          The HTML string.
-         */
-        public function term_column($out, $column, $term_id)
-        {
-        }
-        /**
-         * Returns the first language column in the posts, pages and media library tables
-         *
-         * @since 0.9
-         *
-         * @return string first language column name
-         */
-        protected function get_first_language_column()
-        {
-        }
-        /**
-         * Prevents deleting all the translations of the default term
+         * Prevents deleting all the translations of the default term.
          *
          * @since 2.1
          *
@@ -12154,11 +12827,11 @@ namespace {
         {
         }
         /**
-         * Check if the term is the default term.
+         * Checks if the term is the default term.
          *
          * @since 3.1
          *
-         * @param  int $term_id The term id.
+         * @param  int $term_id The term ID.
          * @return bool         True if the term is the default term, false otherwise.
          */
         public function is_default_term($term_id)
@@ -12173,6 +12846,40 @@ namespace {
          * @return void
          */
         public function update_default_term_language($slug)
+        {
+        }
+    }
+    /**
+     * @package Polylang
+     */
+    /**
+     * Manages filters and actions related to default terms.
+     *
+     * @since 3.1
+     * @since 3.7 Extends `PLL_Default_Term`, most of the code is moved to it.
+     */
+    class PLL_Admin_Default_Term extends \PLL_Default_Term
+    {
+        /**
+         * Setups filters and actions needed.
+         *
+         * @since 3.1
+         *
+         * @return void
+         */
+        public function add_hooks()
+        {
+        }
+        /**
+         * Identifies the default term in the terms list table to disable the language dropdown in JS.
+         *
+         * @since 3.7
+         *
+         * @param  string $out     The output.
+         * @param  int    $term_id The term id.
+         * @return string          The HTML string.
+         */
+        public function first_language_column($out, $term_id)
         {
         }
     }
@@ -12224,11 +12931,11 @@ namespace {
         {
         }
         /**
-         * Returns the first language column in the posts, pages and media library tables
+         * Returns the first language column in posts, pages, media, categories and tags tables.
          *
          * @since 0.9
          *
-         * @return string first language column name
+         * @return string first language column name.
          */
         protected function get_first_language_column()
         {
@@ -12350,7 +13057,7 @@ namespace {
          */
         public $model;
         /**
-         * @var PLL_Links|null
+         * @var PLL_Admin_Links
          */
         public $links;
         /**
@@ -12427,7 +13134,7 @@ namespace {
         {
         }
         /**
-         * Creates a media translation
+         * Maybe creates a media translation.
          *
          * @since 0.9
          *
@@ -12543,9 +13250,6 @@ namespace {
         }
     }
     /**
-     * @package Polylang
-     */
-    /**
      * Manages filters and actions related to terms on admin side
      *
      * @since 1.2
@@ -12557,19 +13261,19 @@ namespace {
          */
         public $model;
         /**
-         * @var PLL_Admin_Links|null
+         * @var PLL_Admin_Links
          */
         public $links;
         /**
          * Language selected in the admin language filter.
          *
-         * @var PLL_Language|null
+         * @var PLL_Language
          */
         public $filter_lang;
         /**
          * Preferred language to assign to the new terms.
          *
-         * @var PLL_Language|null
+         * @var PLL_Language
          */
         public $pref_lang;
         /**
@@ -13311,14 +14015,61 @@ namespace {
         public function edit_term_translation_link($term_id, $taxonomy, $post_type)
         {
         }
+        /**
+         * Returns some data (`from_post` and `new_lang`) from the current request.
+         *
+         * @since 3.7
+         *
+         * @param string $post_type A post type.
+         * @return array {
+         *     @type WP_Post      $from_post The source post.
+         *     @type PLL_Language $new_lang  The target language.
+         * }
+         *
+         * @phpstan-return array{}|array{from_post: WP_Post, new_lang: PLL_Language}|never
+         */
+        public function get_data_from_new_post_translation_request(string $post_type) : array
+        {
+        }
+        /**
+         * Returns some data (`from_post` and `new_lang`) from the current request.
+         *
+         * @since 3.7
+         *
+         * @return array {
+         *     @type WP_Post      $from_post The source media.
+         *     @type PLL_Language $new_lang  The target language.
+         * }
+         *
+         * @phpstan-return array{}|array{from_post: WP_Post, new_lang: PLL_Language}|never
+         */
+        public function get_data_from_new_media_translation_request() : array
+        {
+        }
     }
     /**
-     * @package Polylang
-     */
-    /**
-     * Setups the language and translations model based on WordPress taxonomies
+     * Setups the language and translations model based on WordPress taxonomies.
      *
      * @since 1.2
+     *
+     * @method bool               has_languages()                                     Checks if there are languages or not. See `Model\Languages::has()`.
+     * @method array              get_languages_list(array $args = array())           Returns the list of available languages. See `Model\Languages::get_list()`.
+     * @method bool               are_languages_ready()                               Tells if get_languages_list() can be used. See `Model\Languages::are_ready()`.
+     * @method void               set_languages_ready()                               Sets the internal property `$languages_ready` to `true`, telling that get_languages_list() can be used. See `Model\Languages::set_ready()`.
+     * @method PLL_Language|false get_language(mixed $value)                          Returns the language by its term_id, tl_term_id, slug or locale. See `Model\Languages::get()`.
+     * @method true|WP_Error      add_language(array $args)                           Adds a new language and creates a default category for this language. See `Model\Languages::add()`.
+     * @method bool               delete_language(int $lang_id)                       Deletes a language. See `Model\Languages::delete()`.
+     * @method true|WP_Error      update_language(array $args)                        Updates language properties. See `Model\Languages::update()`.
+     * @method PLL_Language|false get_default_language()                              Returns the default language. See `Model\Languages::get_default()`.
+     * @method void               update_default_lang(string $slug)                   Updates the default language. See `Model\Languages::update_default()`.
+     * @method void               maybe_create_language_terms()                       Maybe adds the missing language terms for 3rd party language taxonomies. See `Model\Languages::maybe_create_terms()`.
+     * @method string[]           get_translated_post_types(bool $filter = true)      Returns post types that need to be translated. See `Model\Post_Types::get_translated()`.
+     * @method bool               is_translated_post_type(string|string[] $post_type) Returns true if Polylang manages languages and translations for this post type. See `Model\Post_Types::is_translated()`.
+     * @method string[]           get_translated_taxonomies(bool $filter = true)      Returns taxonomies that need to be translated. See `Model\Taxonomies::get_translated()`.
+     * @method bool               is_translated_taxonomy(string|string[] $tax)        Returns true if Polylang manages languages and translations for this taxonomy. See `Model\Taxonomies::is_translated()`.
+     * @method string[]           get_filtered_taxonomies(bool $filter = true)        Return taxonomies that need to be filtered (post_format like). See `Model\Taxonomies::get_filtered()`.
+     * @method bool               is_filtered_taxonomy(string|string[] $tax)          Returns true if Polylang filters this taxonomy per language. See `Model\Taxonomies::is_filtered()`.
+     * @method string[]           get_filtered_taxonomies_query_vars()                Returns the query vars of all filtered taxonomies. See `Model\Taxonomies::get_filtered_query_vars()`.
      */
     class PLL_Model
     {
@@ -13331,7 +14082,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var array
+         * @var Options
          */
         public $options;
         /**
@@ -13355,62 +14106,46 @@ namespace {
          */
         public $term;
         /**
+         * Model for the languages.
+         *
+         * @var Model\Languages
+         */
+        public $languages;
+        /**
+         * Model for taxonomies translated by Polylang.
+         *
+         * @var Model\Post_Types
+         */
+        public $post_types;
+        /**
+         * Model for taxonomies filtered/translated by Polylang.
+         *
+         * @var Model\Taxonomies
+         */
+        public $taxonomies;
+        /**
          * Constructor.
          * Setups translated objects sub models.
          * Setups filters and actions.
          *
          * @since 1.2
+         * @since 3.7 Type of parameter `$options` changed from `array` to `Options`.
          *
-         * @param array $options Polylang options.
+         * @param Options $options Polylang options.
          */
-        public function __construct(&$options)
+        public function __construct(\WP_Syntex\Polylang\Options\Options &$options)
         {
         }
         /**
-         * Checks if there are languages or not.
+         * Backward compatibility for methods that have been moved to sub-models.
          *
-         * @since 3.3
+         * @since 3.7
          *
-         * @return bool True if there are, false otherwise.
+         * @param string $name      Name of the method being called.
+         * @param array  $arguments Enumerated array containing the parameters passed to the $name'ed method.
+         * @return mixed
          */
-        public function has_languages()
-        {
-        }
-        /**
-         * Returns the list of available languages.
-         * - Stores the list in a db transient (except flags), unless `PLL_CACHE_LANGUAGES` is set to false.
-         * - Caches the list (with flags) in a `PLL_Cache` object.
-         *
-         * @since 0.1
-         *
-         * @param array $args {
-         *   @type bool   $hide_empty   Hides languages with no posts if set to `true` (defaults to `false`).
-         *   @type bool   $hide_default Hides default language from the list (default to `false`).
-         *   @type string $fields       Returns only that field if set; {@see PLL_Language} for a list of fields.
-         * }
-         * @return array List of PLL_Language objects or PLL_Language object properties.
-         */
-        public function get_languages_list($args = array())
-        {
-        }
-        /**
-         * Tells if {@see PLL_Model::get_languages_list()} can be used.
-         *
-         * @since 3.4
-         *
-         * @return bool
-         */
-        public function are_languages_ready()
-        {
-        }
-        /**
-         * Sets the internal property `$languages_ready` to `true`, telling that {@see PLL_Model::get_languages_list()} can be used.
-         *
-         * @since 3.4
-         *
-         * @return void
-         */
-        public function set_languages_ready()
+        public function __call(string $name, array $arguments)
         {
         }
         /**
@@ -13424,7 +14159,7 @@ namespace {
          * @param string $taxonomy taxonomy name
          * @return void
          */
-        public function clean_languages_cache($term = 0, $taxonomy = \null)
+        public function clean_languages_cache($term = 0, $taxonomy = \null) : void
         {
         }
         /**
@@ -13439,31 +14174,6 @@ namespace {
         {
         }
         /**
-         * Returns the language by its term_id, tl_term_id, slug or locale.
-         *
-         * @since 0.1
-         * @since 3.4 Allow to get a language by `term_taxonomy_id`.
-         *
-         * @param mixed $value `term_id`, `term_taxonomy_id`, `slug`, `locale`, or `w3c` of the queried language.
-         *                     `term_id` and `term_taxonomy_id` can be fetched for any language taxonomy.
-         *                     /!\ For the `term_taxonomy_id`, prefix the ID by `tt:` (ex: `"tt:{$tt_id}"`),
-         *                     this is to prevent confusion between `term_id` and `term_taxonomy_id`.
-         * @return PLL_Language|false Language object, false if no language found.
-         */
-        public function get_language($value)
-        {
-        }
-        /**
-         * Returns the default language.
-         *
-         * @since 3.4
-         *
-         * @return PLL_Language|false Default language object, `false` if no language found.
-         */
-        public function get_default_language()
-        {
-        }
-        /**
          * Adds terms clauses to the term query to filter them by languages.
          *
          * @since 1.2
@@ -13473,88 +14183,6 @@ namespace {
          * @return string[]                   Modified list of clauses.
          */
         public function terms_clauses($clauses, $lang)
-        {
-        }
-        /**
-         * Returns post types that need to be translated.
-         * The post types list is cached for better better performance.
-         * The method waits for 'after_setup_theme' to apply the cache
-         * to allow themes adding the filter in functions.php.
-         *
-         * @since 1.2
-         *
-         * @param bool $filter True if we should return only valid registered post types.
-         * @return string[] Post type names for which Polylang manages languages and translations.
-         */
-        public function get_translated_post_types($filter = \true)
-        {
-        }
-        /**
-         * Returns true if Polylang manages languages and translations for this post type.
-         *
-         * @since 1.2
-         *
-         * @param string|string[] $post_type Post type name or array of post type names.
-         * @return bool
-         */
-        public function is_translated_post_type($post_type)
-        {
-        }
-        /**
-         * Returns taxonomies that need to be translated.
-         * The taxonomies list is cached for better better performance.
-         * The method waits for 'after_setup_theme' to apply the cache
-         * to allow themes adding the filter in functions.php.
-         *
-         * @since 1.2
-         *
-         * @param bool $filter True if we should return only valid registered taxonomies.
-         * @return string[] Array of registered taxonomy names for which Polylang manages languages and translations.
-         */
-        public function get_translated_taxonomies($filter = \true)
-        {
-        }
-        /**
-         * Returns true if Polylang manages languages and translations for this taxonomy.
-         *
-         * @since 1.2
-         *
-         * @param string|string[] $tax Taxonomy name or array of taxonomy names.
-         * @return bool
-         */
-        public function is_translated_taxonomy($tax)
-        {
-        }
-        /**
-         * Return taxonomies that need to be filtered (post_format like).
-         *
-         * @since 1.7
-         *
-         * @param bool $filter True if we should return only valid registered taxonomies.
-         * @return string[] Array of registered taxonomy names.
-         */
-        public function get_filtered_taxonomies($filter = \true)
-        {
-        }
-        /**
-         * Returns true if Polylang filters this taxonomy per language.
-         *
-         * @since 1.7
-         *
-         * @param string|string[] $tax Taxonomy name or array of taxonomy names.
-         * @return bool
-         */
-        public function is_filtered_taxonomy($tax)
-        {
-        }
-        /**
-         * Returns the query vars of all filtered taxonomies.
-         *
-         * @since 1.7
-         *
-         * @return string[]
-         */
-        public function get_filtered_taxonomies_query_vars()
         {
         }
         /**
@@ -13572,7 +14200,7 @@ namespace {
          *
          * @phpstan-return int<0, max>
          */
-        public function term_exists($term_name, $taxonomy, $parent, $language)
+        public function term_exists($term_name, $taxonomy, $parent, $language) : int
         {
         }
         /**
@@ -13587,7 +14215,7 @@ namespace {
          * @param int                 $parent   Optional parent term id.
          * @return int The `term_id` of the found term. 0 otherwise.
          */
-        public function term_exists_by_slug($slug, $language, $taxonomy = '', $parent = 0)
+        public function term_exists_by_slug($slug, $language, $taxonomy = '', $parent = 0) : int
         {
         }
         /**
@@ -13624,7 +14252,7 @@ namespace {
          * } $q
          * @phpstan-return int<0, max>
          */
-        public function count_posts($lang, $q = array())
+        public function count_posts($lang, $q = array()) : int
         {
         }
         /**
@@ -13634,7 +14262,7 @@ namespace {
          *
          * @return PLL_Links_Model
          */
-        public function get_links_model()
+        public function get_links_model() : \PLL_Links_Model
         {
         }
         /**
@@ -13671,7 +14299,7 @@ namespace {
          * @phpstan-param -1|positive-int $limit
          * @phpstan-return list<positive-int>
          */
-        public function get_posts_with_no_lang($post_types, $limit)
+        public function get_posts_with_no_lang($post_types, $limit) : array
         {
         }
         /**
@@ -13686,7 +14314,7 @@ namespace {
          * @phpstan-param -1|positive-int $limit
          * @phpstan-return list<positive-int>
          */
-        public function get_terms_with_no_lang($taxonomies, $limit)
+        public function get_terms_with_no_lang($taxonomies, $limit) : array
         {
         }
         /**
@@ -13701,78 +14329,7 @@ namespace {
          *                                 to an empty array (all types).
          * @return void
          */
-        public function set_language_in_mass($lang = \null, array $types = array())
-        {
-        }
-        /**
-         * Filters the ORDERBY clause of the languages query.
-         *
-         * This allows to order languages terms by `taxonomy` first then by `term_group` and `term_id`.
-         * Ordering terms by taxonomy allows not to mix terms between all language taxomonomies.
-         * Having the "language' taxonomy first is important for {@see PLL_Admin_Model:delete_language()}.
-         *
-         * @since 3.2.3
-         *
-         * @param  string   $orderby    `ORDERBY` clause of the terms query.
-         * @param  array    $args       An array of term query arguments.
-         * @param  string[] $taxonomies An array of taxonomy names.
-         * @return string
-         */
-        public function filter_language_terms_orderby($orderby, $args, $taxonomies)
-        {
-        }
-        /**
-         * Maybe adds the missing language terms for 3rd party language taxonomies.
-         *
-         * @since 3.4
-         *
-         * @return void
-         */
-        public function maybe_create_language_terms()
-        {
-        }
-        /**
-         * Updates or adds new terms for a secondary language taxonomy (aka not 'language').
-         *
-         * @since 3.4
-         *
-         * @param string            $slug       Language term slug (with or without the `pll_` prefix).
-         * @param string            $name       Language name (label).
-         * @param PLL_Language|null $language   Optional. A language object. Required to update the existing terms.
-         * @param string[]          $taxonomies Optional. List of language taxonomies to deal with. An empty value means
-         *                                      all of them. Defaults to all taxonomies.
-         * @return void
-         *
-         * @phpstan-param non-empty-string $slug
-         * @phpstan-param non-empty-string $name
-         * @phpstan-param array<non-empty-string> $taxonomies
-         */
-        protected function update_secondary_language_terms($slug, $name, ?\PLL_Language $language = \null, array $taxonomies = array())
-        {
-        }
-        /**
-         * Returns the list of available languages, based on the language taxonomy terms.
-         * Stores the list in a db transient and in a `PLL_Cache` object.
-         *
-         * @since 3.4
-         *
-         * @return PLL_Language[] An array of `PLL_Language` objects, array keys are the type.
-         *
-         * @phpstan-return list<PLL_Language>
-         */
-        protected function get_languages_from_taxonomies()
-        {
-        }
-        /**
-         * Returns the list of existing language terms.
-         * - Returns all terms, that are or not assigned to posts.
-         * - Terms are ordered by `term_group` and `term_id` (see `PLL_Model->filter_language_terms_orderby()`).
-         *
-         * @since 3.2.3
-         *
-         * @return WP_Term[]
-         */
-        protected function get_language_terms()
+        public function set_language_in_mass($lang = \null, array $types = array()) : void
         {
         }
     }
@@ -13786,121 +14343,7 @@ namespace {
      */
     class PLL_Admin_Model extends \PLL_Model
     {
-        /**
-         * Adds a new language
-         * and creates a default category for this language.
-         *
-         * @since 1.2
-         *
-         * @param array $args {
-         *   @type string $name           Language name (used only for display).
-         *   @type string $slug           Language code (ideally 2-letters ISO 639-1 language code).
-         *   @type string $locale         WordPress locale. If something wrong is used for the locale, the .mo files will
-         *                                not be loaded...
-         *   @type int    $rtl            1 if rtl language, 0 otherwise.
-         *   @type int    $term_group     Language order when displayed.
-         *   @type string $no_default_cat Optional, if set, no default category will be created for this language.
-         *   @type string $flag           Optional, country code, {@see settings/flags.php}.
-         * }
-         * @return WP_Error|true true if success / WP_Error if failed.
-         */
-        public function add_language($args)
-        {
-        }
-        /**
-         * Delete a language.
-         *
-         * @since 1.2
-         *
-         * @param int $lang_id Language term_id.
-         * @return bool
-         */
-        public function delete_language($lang_id)
-        {
-        }
-        /**
-         * Updates language properties.
-         *
-         * @since 1.2
-         *
-         * @param array $args {
-         *   @type int    $lang_id        Id of the language to modify.
-         *   @type string $name           Language name ( used only for display ).
-         *   @type string $slug           Language code ( ideally 2-letters ISO 639-1 language code ).
-         *   @type string $locale         WordPress locale. If something wrong is used for the locale, the .mo files will not be loaded...
-         *   @type int    $rtl            1 if rtl language, 0 otherwise.
-         *   @type int    $term_group     Language order when displayed.
-         *   @type string $flag           Optional, country code, @see flags.php.
-         * }
-         * @return WP_Error|true true if success / WP_Error if failed.
-         */
-        public function update_language($args)
-        {
-        }
-        /**
-         * Builds the language metas into an array and serializes it, to be stored in the term description.
-         *
-         * @since 3.4
-         *
-         * @param array $args {
-         *   @type string $name       Language name (used only for display).
-         *   @type string $slug       Language code (ideally 2-letters ISO 639-1 language code).
-         *   @type string $locale     WordPress locale. If something wrong is used for the locale, the .mo files will not be
-         *                            loaded...
-         *   @type int    $rtl        1 if rtl language, 0 otherwise.
-         *   @type int    $term_group Language order when displayed.
-         *   @type int    $lang_id    Optional, ID of the language to modify. An empty value means the language is being
-         *                            created.
-         *   @type string $flag       Optional, country code, {@see settings/flags.php}.
-         * }
-         * @return string The serialized description array updated.
-         */
-        protected function build_language_metas(array $args)
-        {
-        }
-        /**
-         * Validates data entered when creating or updating a language.
-         *
-         * @see PLL_Admin_Model::add_language().
-         *
-         * @since 0.4
-         *
-         * @param array             $args Parameters of {@see PLL_Admin_Model::add_language() or @see PLL_Admin_Model::update_language()}.
-         * @param PLL_Language|null $lang Optional the language currently updated, the language is created if not set.
-         * @return WP_Error
-         */
-        protected function validate_lang($args, $lang = \null)
-        {
-        }
-        /**
-         * Updates the translations when a language slug has been modified in settings
-         * or deletes them when a language is removed.
-         *
-         * @since 0.5
-         *
-         * @param string $old_slug The old language slug.
-         * @param string $new_slug Optional, the new language slug, if not set it means that the language has been deleted.
-         * @return void
-         */
-        public function update_translations($old_slug, $new_slug = '')
-        {
-        }
-        /**
-         * Updates the default language
-         * taking care to update the default category & the nav menu locations.
-         *
-         * @since 1.8
-         *
-         * @param string $slug New language slug.
-         * @return void
-         */
-        public function update_default_lang($slug)
-        {
-        }
     }
-    /**
-     * @package Polylang
-     */
     /**
      * Manages custom menus translations
      * Common to admin and frontend for the customizer
@@ -13912,7 +14355,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var array
+         * @var Options
          */
         public $options;
         /**
@@ -14080,18 +14523,18 @@ namespace {
         {
         }
         /**
-         * Assign menu languages and translations based on ( temporary ) locations
+         * Assigns menu languages and translations based on (temporary) locations.
          *
          * @since 1.8
          *
-         * @param array $locations nav menu locations
+         * @param array $locations Nav menu locations.
          * @return array
          */
         public function update_nav_menu_locations($locations)
         {
         }
         /**
-         * Assign menu languages and translations based on ( temporary ) locations.
+         * Assigns menu languages and translations based on (temporary) locations.
          *
          * @since 1.1
          *
@@ -14192,10 +14635,13 @@ namespace {
          *
          * @since 2.3.9
          *
-         * @param  string $notice The notice name.
+         * @param string $notice          The notice name.
+         * @param array  $allowed_screens The screens allowed to display the notice.
+         *                                If empty, default screens are used, i.e. dashboard, plugins, languages, strings and settings.
+         *
          * @return bool
          */
-        protected function can_display_notice($notice)
+        protected function can_display_notice(string $notice, array $allowed_screens = array())
         {
         }
         /**
@@ -14338,26 +14784,15 @@ namespace {
         {
         }
         /**
-         * Translates the page on front option.
+         * Translates the page on front or page for posts option.
          *
-         * @since 1.8
-         * @since 3.3 Was previously defined in PLL_Frontend_Static_Pages.
+         * @since 3.6 Replaces `translate_page_on_front()` and `translate_page_for_posts()` methods.
          *
-         * @param  int $page_id ID of the page on front.
+         * @param  int    $page_id ID of the page on front or page for posts.
+         * @param  string $option Option name: `page_on_front` or `page_for_posts`.
          * @return int
          */
-        public function translate_page_on_front($page_id)
-        {
-        }
-        /**
-         * Translates the page for posts option.
-         *
-         * @since 1.8
-         *
-         * @param  int $page_id ID of the page for posts.
-         * @return int
-         */
-        public function translate_page_for_posts($page_id)
+        public function translate_page_id($page_id, $option)
         {
         }
         /**
@@ -15733,7 +16168,7 @@ namespace {
          * @since 0.8
          *
          * @param int[] $posts List of sticky posts ids.
-         * @return int[] Modified list of sticky posts ids
+         * @return int[] Modified list of sticky posts ids.
          */
         public function option_sticky_posts($posts)
         {
@@ -16225,6 +16660,10 @@ namespace {
          */
         public $links;
         /**
+         * @var PLL_Default_Term|null
+         */
+        public $default_term;
+        /**
          * @var PLL_Frontend_Nav_Menu|null
          */
         public $nav_menu;
@@ -16325,6 +16764,500 @@ namespace {
          * @return void
          */
         public function remove_customize_admin_bar()
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang\Model {
+    /**
+     * Model for the languages.
+     *
+     * @since 3.7
+     */
+    class Languages
+    {
+        public const INNER_LOCALE_PATTERN = '[a-z]{2,3}(?:_[A-Z]{2})?(?:_[a-z0-9]+)?';
+        public const INNER_SLUG_PATTERN = '[a-z][a-z0-9_-]*';
+        public const LOCALE_PATTERN = '^' . self::INNER_LOCALE_PATTERN . '$';
+        public const SLUG_PATTERN = '^' . self::INNER_SLUG_PATTERN . '$';
+        public const TRANSIENT_NAME = 'pll_languages_list';
+        /**
+         * Constructor.
+         *
+         * @since 3.7
+         *
+         * @param Options                  $options              Polylang's options.
+         * @param PLL_Translatable_Objects $translatable_objects Translatable objects registry.
+         * @param PLL_Cache                $cache                Internal non persistent cache object.
+         *
+         * @phpstan-param PLL_Cache<mixed> $cache
+         */
+        public function __construct(\WP_Syntex\Polylang\Options\Options $options, \PLL_Translatable_Objects $translatable_objects, \PLL_Cache $cache)
+        {
+        }
+        /**
+         * Returns the language by its term_id, tl_term_id, slug or locale.
+         *
+         * @since 0.1
+         * @since 3.4 Allow to get a language by `term_taxonomy_id`.
+         * @since 3.7 Moved from `PLL_Model::get_language()` to `WP_Syntex\Polylang\Model\Languages::get()`.
+         *
+         * @param mixed $value `term_id`, `term_taxonomy_id`, `slug`, `locale`, or `w3c` of the queried language.
+         *                     `term_id` and `term_taxonomy_id` can be fetched for any language taxonomy.
+         *                     /!\ For the `term_taxonomy_id`, prefix the ID by `tt:` (ex: `"tt:{$tt_id}"`),
+         *                     this is to prevent confusion between `term_id` and `term_taxonomy_id`.
+         * @return PLL_Language|false Language object, false if no language found.
+         *
+         * @phpstan-param PLL_Language|WP_Term|int|string $value
+         */
+        public function get($value)
+        {
+        }
+        /**
+         * Adds a new language and creates a default category for this language.
+         *
+         * @since 1.2
+         * @since 3.7 Moved from `PLL_Admin_Model::add_language()` to `WP_Syntex\Polylang\Model\Languages::add()`.
+         *
+         * @param array $args {
+         *   Arguments used to create the language.
+         *
+         *   @type string $name           Language name (used only for display).
+         *   @type string $slug           Language code (ideally 2-letters ISO 639-1 language code).
+         *   @type string $locale         WordPress locale. If something wrong is used for the locale, the .mo files will
+         *                                not be loaded...
+         *   @type bool   $rtl            True if rtl language, false otherwise.
+         *   @type int    $term_group     Language order when displayed.
+         *   @type string $flag           Optional. Country code, {@see settings/flags.php}.
+         *   @type bool   $no_default_cat Optional. If set, no default category will be created for this language.
+         * }
+         * @return true|WP_Error True success, a `WP_Error` otherwise.
+         *
+         * @phpstan-param array{
+         *     name: string,
+         *     slug: string,
+         *     locale: string,
+         *     rtl: bool,
+         *     term_group: int|numeric-string,
+         *     flag?: string,
+         *     no_default_cat?: bool
+         * } $args
+         */
+        public function add($args)
+        {
+        }
+        /**
+         * Updates language properties.
+         *
+         * @since 1.2
+         * @since 3.7 Moved from `PLL_Admin_Model::update_language()` to `WP_Syntex\Polylang\Model\Languages::update()`.
+         *
+         * @param array $args {
+         *   Arguments used to modify the language.
+         *
+         *   @type int    $lang_id    ID of the language to modify.
+         *   @type string $name       Language name (used only for display).
+         *   @type string $slug       Language code (ideally 2-letters ISO 639-1 language code).
+         *   @type string $locale     WordPress locale. If something wrong is used for the locale, the .mo files will
+         *                            not be loaded...
+         *   @type bool   $rtl        True if rtl language, false otherwise.
+         *   @type int    $term_group Language order when displayed.
+         *   @type string $flag       Optional, country code, {@see settings/flags.php}.
+         * }
+         * @return true|WP_Error True success, a `WP_Error` otherwise.
+         *
+         * @phpstan-param array{
+         *     lang_id: int|numeric-string,
+         *     name: string,
+         *     slug: string,
+         *     locale: string,
+         *     rtl: bool,
+         *     term_group: int|numeric-string,
+         *     flag?: string
+         * } $args
+         */
+        public function update($args)
+        {
+        }
+        /**
+         * Deletes a language.
+         *
+         * @since 1.2
+         * @since 3.7 Moved from `PLL_Admin_Model::delete_language()` to `WP_Syntex\Polylang\Model\Languages::delete()`.
+         *
+         * @param int $lang_id Language term_id.
+         * @return bool
+         */
+        public function delete($lang_id) : bool
+        {
+        }
+        /**
+         * Checks if there are languages or not.
+         *
+         * @since 3.3
+         * @since 3.7 Moved from `PLL_Model::has_languages()` to `WP_Syntex\Polylang\Model\Languages::has()`.
+         *
+         * @return bool True if there are, false otherwise.
+         */
+        public function has() : bool
+        {
+        }
+        /**
+         * Returns the list of available languages.
+         * - Stores the list in a db transient (except flags), unless `PLL_CACHE_LANGUAGES` is set to false.
+         * - Caches the list (with flags) in a `PLL_Cache` object.
+         *
+         * @since 0.1
+         * @since 3.7 Moved from `PLL_Model::get_languages_list()` to `WP_Syntex\Polylang\Model\Languages::get_list()`.
+         *
+         * @param array $args {
+         *   @type bool   $hide_empty   Hides languages with no posts if set to `true` (defaults to `false`).
+         *   @type bool   $hide_default Hides default language from the list (default to `false`).
+         *   @type string $fields       Returns only that field if set; {@see PLL_Language} for a list of fields.
+         * }
+         * @return array List of PLL_Language objects or PLL_Language object properties.
+         */
+        public function get_list($args = array()) : array
+        {
+        }
+        /**
+         * Tells if {@see WP_Syntex\Polylang\Model\Languages::get_list()} can be used.
+         *
+         * @since 3.4
+         * @since 3.7 Moved from `PLL_Model::are_languages_ready()` to `WP_Syntex\Polylang\Model\Languages::are_ready()`.
+         *
+         * @return bool
+         */
+        public function are_ready() : bool
+        {
+        }
+        /**
+         * Sets the internal property `$languages_ready` to `true`, telling that {@see WP_Syntex\Polylang\Model\Languages::get_list()} can be used.
+         *
+         * @since 3.4
+         * @since 3.7 Moved from `PLL_Model::set_languages_ready()` to `WP_Syntex\Polylang\Model\Languages::set_ready()`.
+         *
+         * @return void
+         */
+        public function set_ready() : void
+        {
+        }
+        /**
+         * Returns the default language.
+         *
+         * @since 3.4
+         * @since 3.7 Moved from `PLL_Model::get_default_language()` to `WP_Syntex\Polylang\Model\Languages::get_default()`.
+         *
+         * @return PLL_Language|false Default language object, `false` if no language found.
+         */
+        public function get_default()
+        {
+        }
+        /**
+         * Updates the default language.
+         * Takes care to update default category, nav menu locations, and flushes cache and rewrite rules.
+         *
+         * @since 1.8
+         * @since 3.7 Moved from `PLL_Admin_Model::update_default_lang()` to `WP_Syntex\Polylang\Model\Languages::update_default()`.
+         *            Returns a `WP_Error` object.
+         *
+         * @param string $slug New language slug.
+         * @return WP_Error A `WP_Error` object containing possible errors during slug validation/sanitization.
+         */
+        public function update_default($slug) : \WP_Error
+        {
+        }
+        /**
+         * Maybe adds the missing language terms for 3rd party language taxonomies.
+         *
+         * @since 3.4
+         * @since 3.7 Moved from `PLL_Model::maybe_create_language_terms()` to `WP_Syntex\Polylang\Model\Languages::maybe_create_terms()`.
+         *
+         * @return void
+         */
+        public function maybe_create_terms() : void
+        {
+        }
+        /**
+         * Cleans language cache.
+         *
+         * @since 3.7
+         * @return void
+         */
+        public function clean_cache() : void
+        {
+        }
+        /**
+         * Builds the language metas into an array and serializes it, to be stored in the term description.
+         *
+         * @since 3.4
+         * @since 3.7 Moved from `PLL_Admin_Model::build_language_metas()` to `WP_Syntex\Polylang\Model\Languages::build_metas()`.
+         *
+         * @param array $args {
+         *   Arguments used to build the language metas.
+         *
+         *   @type string $name       Language name (used only for display).
+         *   @type string $slug       Language code (ideally 2-letters ISO 639-1 language code).
+         *   @type string $locale     WordPress locale. If something wrong is used for the locale, the .mo files will not
+         *                            be loaded...
+         *   @type bool   $rtl        True if rtl language, false otherwise.
+         *   @type int    $term_group Language order when displayed.
+         *   @type int    $lang_id    Optional, ID of the language to modify. An empty value means the language is being
+         *                            created.
+         *   @type string $flag       Optional, country code, {@see settings/flags.php}.
+         * }
+         * @return string The serialized description array updated.
+         *
+         * @phpstan-param array{
+         *     name: non-empty-string,
+         *     slug: non-empty-string,
+         *     locale: non-empty-string,
+         *     rtl: bool,
+         *     term_group: int|numeric-string,
+         *     lang_id?: int|numeric-string,
+         *     flag?: non-empty-string
+         * } $args
+         */
+        protected function build_metas(array $args) : string
+        {
+        }
+        /**
+         * Validates data entered when creating or updating a language.
+         *
+         * @since 0.4
+         * @since 3.7 Moved from `PLL_Admin_Model::validate_lang()` to `WP_Syntex\Polylang\Model\Languages::validate_lang()`.
+         *
+         * @param array             $args Parameters of {@see WP_Syntex\Polylang\Model\Languages::add() or @see WP_Syntex\Polylang\Model\Languages::update()}.
+         * @param PLL_Language|null $lang Optional the language currently updated, the language is created if not set.
+         * @return WP_Error
+         *
+         * @phpstan-param array{
+         *     locale: string,
+         *     slug: string,
+         *     name: string,
+         *     flag?: string
+         * } $args
+         */
+        protected function validate_lang($args, ?\PLL_Language $lang = null) : \WP_Error
+        {
+        }
+        /**
+         * Updates the translations when a language slug has been modified in settings or deletes them when a language is removed.
+         *
+         * @since 0.5
+         * @since 3.7 Moved from `PLL_Admin_Model::update_translations()` to `WP_Syntex\Polylang\Model\Languages::update_translations()`.
+         *            Visibility changed from public to protected.
+         *
+         * @param string $old_slug The old language slug.
+         * @param string $new_slug Optional, the new language slug, if not set it means that the language has been deleted.
+         * @return void
+         *
+         * @phpstan-param non-empty-string $old_slug
+         */
+        protected function update_translations($old_slug, $new_slug = '') : void
+        {
+        }
+        /**
+         * Updates or adds new terms for a secondary language taxonomy (aka not 'language').
+         *
+         * @since 3.4
+         * @since 3.7 Moved from `PLL_Model::update_secondary_language_terms()` to `WP_Syntex\Polylang\Model\Languages::update_secondary_language_terms()`.
+         *
+         * @param string            $slug       Language term slug (with or without the `pll_` prefix).
+         * @param string            $name       Language name (label).
+         * @param PLL_Language|null $language   Optional. A language object. Required to update the existing terms.
+         * @param string[]          $taxonomies Optional. List of language taxonomies to deal with. An empty value means
+         *                                      all of them. Defaults to all taxonomies.
+         * @return void
+         *
+         * @phpstan-param non-empty-string $slug
+         * @phpstan-param non-empty-string $name
+         * @phpstan-param array<non-empty-string> $taxonomies
+         */
+        protected function update_secondary_language_terms($slug, $name, ?\PLL_Language $language = null, array $taxonomies = array()) : void
+        {
+        }
+        /**
+         * Returns the list of available languages, based on the language taxonomy terms.
+         * Stores the list in a db transient and in a `PLL_Cache` object.
+         *
+         * @since 3.4
+         * @since 3.7 Moved from `PLL_Model::get_languages_from_taxonomies()` to `WP_Syntex\Polylang\Model\Languages::get_from_taxonomies()`.
+         *
+         * @return PLL_Language[] An array of `PLL_Language` objects, array keys are the type.
+         *
+         * @phpstan-return list<PLL_Language>
+         */
+        protected function get_from_taxonomies() : array
+        {
+        }
+        /**
+         * Returns the list of existing language terms.
+         * - Returns all terms, that are or not assigned to posts.
+         * - Terms are ordered by `term_group` and `term_id` (see `WP_Syntex\Polylang\Model\Languages::filter_terms_orderby()`).
+         *
+         * @since 3.2.3
+         * @since 3.7 Moved from `PLL_Model::get_language_terms()` to `WP_Syntex\Polylang\Model\Languages::get_terms()`.
+         *
+         * @return WP_Term[]
+         */
+        protected function get_terms() : array
+        {
+        }
+        /**
+         * Filters the ORDERBY clause of the languages query.
+         *
+         * This allows to order languages terms by `taxonomy` first then by `term_group` and `term_id`.
+         * Ordering terms by taxonomy allows not to mix terms between all language taxomonomies.
+         * Having the "language' taxonomy first is important for {@see PLL_Admin_Model:delete_language()}.
+         *
+         * @since 3.2.3
+         * @since 3.7 Moved from `PLL_Model::filter_language_terms_orderby()` to `WP_Syntex\Polylang\Model\Languages::filter_terms_orderby()`.
+         *            Visibility changed from `public` to `protected`.
+         *
+         * @param  string   $orderby    `ORDERBY` clause of the terms query.
+         * @param  array    $args       An array of term query arguments.
+         * @param  string[] $taxonomies An array of taxonomy names.
+         * @return string
+         */
+        protected function filter_terms_orderby($orderby, $args, $taxonomies)
+        {
+        }
+    }
+    /**
+     * Model for post types translated by Polylang.
+     *
+     * @since 3.7
+     */
+    class Post_Types
+    {
+        /**
+         * Translated post model.
+         *
+         * @var PLL_Translated_Post
+         */
+        public $translated_object;
+        /**
+         * Constructor.
+         *
+         * @since 3.7
+         *
+         * @param PLL_Translated_Post $translated_object Posts model.
+         */
+        public function __construct(\PLL_Translated_Post $translated_object)
+        {
+        }
+        /**
+         * Returns post types that need to be translated.
+         * The post types list is cached for better better performance.
+         * The method waits for 'after_setup_theme' to apply the cache
+         * to allow themes adding the filter in functions.php.
+         *
+         * @since 1.2
+         * @since 3.7 Moved from `PLL_Model::get_translated_post_types()` to `WP_Syntex\Polylang\Model\Taxonomies::get_translated()`.
+         *
+         * @param bool $filter True if we should return only valid registered post types.
+         * @return string[] Post type names for which Polylang manages languages and translations.
+         */
+        public function get_translated($filter = true) : array
+        {
+        }
+        /**
+         * Returns true if Polylang manages languages and translations for this post type.
+         *
+         * @since 1.2
+         * @since 3.7 Moved from `PLL_Model::is_translated_post_type()` to `WP_Syntex\Polylang\Model\Taxonomies::is_translated()`.
+         *
+         * @param string|string[] $post_type Post type name or array of post type names.
+         * @return bool
+         */
+        public function is_translated($post_type) : bool
+        {
+        }
+    }
+    /**
+     * Model for taxonomies filtered/translated by Polylang.
+     *
+     * @since 3.7
+     */
+    class Taxonomies
+    {
+        /**
+         * Translated term model.
+         *
+         * @var PLL_Translated_Term
+         */
+        public $translated_object;
+        /**
+         * Constructor.
+         *
+         * @since 3.7
+         *
+         * @param PLL_Translated_Term $translated_object Terms model.
+         */
+        public function __construct(\PLL_Translated_Term $translated_object)
+        {
+        }
+        /**
+         * Returns taxonomies that need to be translated.
+         * The taxonomies list is cached for better better performance.
+         * The method waits for 'after_setup_theme' to apply the cache
+         * to allow themes adding the filter in functions.php.
+         *
+         * @since 1.2
+         * @since 3.7 Moved from `PLL_Model::get_translated_taxonomies()` to `WP_Syntex\Polylang\Model\Taxonomies::get_translated()`.
+         *
+         * @param bool $filter True if we should return only valid registered taxonomies.
+         * @return string[] Array of registered taxonomy names for which Polylang manages languages and translations.
+         */
+        public function get_translated($filter = true) : array
+        {
+        }
+        /**
+         * Returns true if Polylang manages languages and translations for this taxonomy.
+         *
+         * @since 1.2
+         * @since 3.7 Moved from `PLL_Model::is_translated_taxonomy()` to `WP_Syntex\Polylang\Model\Taxonomies::is_translated()`.
+         *
+         * @param string|string[] $tax Taxonomy name or array of taxonomy names.
+         * @return bool
+         */
+        public function is_translated($tax) : bool
+        {
+        }
+        /**
+         * Return taxonomies that need to be filtered (post_format like).
+         *
+         * @since 1.7
+         * @since 3.7 Moved from `PLL_Model::get_filtered_taxonomies()` to `WP_Syntex\Polylang\Model\Taxonomies::get_filtered()`.
+         *
+         * @param bool $filter True if we should return only valid registered taxonomies.
+         * @return string[] Array of registered taxonomy names.
+         */
+        public function get_filtered($filter = true) : array
+        {
+        }
+        /**
+         * Returns true if Polylang filters this taxonomy per language.
+         *
+         * @since 1.7
+         * @since 3.7 Moved from `PLL_Model::is_filtered_taxonomy()` to `WP_Syntex\Polylang\Model\Taxonomies::is_filtered()`.
+         *
+         * @param string|string[] $tax Taxonomy name or array of taxonomy names.
+         * @return bool
+         */
+        public function is_filtered($tax) : bool
+        {
+        }
+        /**
+         * Returns the query vars of all filtered taxonomies.
+         *
+         * @since 1.7
+         * @since 3.7 Moved from `PLL_Model::get_filtered_taxonomies_query_vars()` to `WP_Syntex\Polylang\Model\Taxonomies::get_filtered_query_vars()`.
+         *
+         * @return string[]
+         */
+        public function get_filtered_query_vars() : array
         {
         }
     }
@@ -16529,7 +17462,7 @@ namespace WP_Syntex\Polylang\Options\Business {
          *
          * @return array Partial schema.
          *
-         * @phpstan-return array{type: 'string', pattern: '^[a-z_-]+$'}
+         * @phpstan-return array{type: 'string', pattern: Languages::SLUG_PATTERN}
          */
         protected function get_data_structure() : array
         {
@@ -16542,6 +17475,20 @@ namespace WP_Syntex\Polylang\Options\Business {
          * @return string
          */
         protected function get_description() : string
+        {
+        }
+        /**
+         * Sanitizes option's value.
+         * Can populate the `$errors` property with blocking and non-blocking errors: in case of non-blocking errors,
+         * the value is sanitized and can be stored.
+         *
+         * @since 3.7
+         *
+         * @param string  $value   Value to sanitize.
+         * @param Options $options All options.
+         * @return string|WP_Error The sanitized value. An instance of `WP_Error` in case of error.
+         */
+        protected function sanitize($value, \WP_Syntex\Polylang\Options\Options $options)
         {
         }
     }
@@ -16656,7 +17603,7 @@ namespace WP_Syntex\Polylang\Options\Business {
          *
          * @return array Partial schema.
          *
-         * @phpstan-return array{type: 'integer', minimum: 0, maximum: int<0, max>}
+         * @phpstan-return array{type: 'integer', minimum: 0, maximum: int<0, max>, readonly: true}
          */
         protected function get_data_structure() : array
         {
@@ -16708,7 +17655,7 @@ namespace WP_Syntex\Polylang\Options\Business {
          *
          * @return array Partial schema.
          *
-         * @phpstan-return array{type: 'integer', enum: list<0|1|2|3>}
+         * @phpstan-return array{type: 'integer', enum: list<0|1|2|3>|list<1|2|3>}
          */
         protected function get_data_structure() : array
         {
@@ -16886,24 +17833,6 @@ namespace WP_Syntex\Polylang\Options\Business {
          * @since 3.7
          *
          * @return array Partial schema.
-         *
-         * @phpstan-return array{
-         *     type: 'object',
-         *     patternProperties: array{
-         *         '^\w+$': array{
-         *             type: 'object',
-         *             context: list<'edit'>,
-         *             patternProperties: array{
-         *                 '^[a-z_-]+$': array{
-         *                     type: 'integer',
-         *                     minimum: 0
-         *                 }
-         *             },
-         *             additionalProperties: false
-         *         }
-         *     },
-         *     additionalProperties: false
-         * }
          */
         protected function get_data_structure() : array
         {
@@ -16962,11 +17891,53 @@ namespace WP_Syntex\Polylang\Options\Business {
         }
     }
     /**
+     * Class defining the "version" option.
+     *
+     * @since 3.7
+     */
+    class Version extends \WP_Syntex\Polylang\Options\Primitive\Abstract_String
+    {
+        /**
+         * Returns option key.
+         *
+         * @since 3.7
+         *
+         * @return string
+         *
+         * @phpstan-return 'version'
+         */
+        public static function key() : string
+        {
+        }
+        /**
+         * Returns the description used in the JSON schema.
+         *
+         * @since 3.7
+         *
+         * @return string
+         */
+        protected function get_description() : string
+        {
+        }
+        /**
+         * Returns the JSON schema part specific to this option.
+         *
+         * @since 3.7
+         *
+         * @return array Partial schema.
+         *
+         * @phpstan-return array{type: 'string', readonly: true, readonly: true}
+         */
+        protected function get_data_structure() : array
+        {
+        }
+    }
+    /**
      * Class defining the "previous version" option.
      *
      * @since 3.7
      */
-    class Previous_Version extends \WP_Syntex\Polylang\Options\Primitive\Abstract_String
+    class Previous_Version extends \WP_Syntex\Polylang\Options\Business\Version
     {
         /**
          * Returns option key.
@@ -17089,7 +18060,7 @@ namespace WP_Syntex\Polylang\Options\Business {
          *
          * @return array Partial schema.
          *
-         * @phpstan-return array{type: 'array', items: array{type: SchemaType, enum: non-empty-array<non-falsy-string>}}
+         * @phpstan-return array{type: 'array', items: array{type: SchemaType, enum: non-empty-list<non-falsy-string>}}
          */
         protected function get_data_structure() : array
         {
@@ -17147,36 +18118,6 @@ namespace WP_Syntex\Polylang\Options\Business {
         {
         }
     }
-    /**
-     * Class defining the "version" option.
-     *
-     * @since 3.7
-     */
-    class Version extends \WP_Syntex\Polylang\Options\Primitive\Abstract_String
-    {
-        /**
-         * Returns option key.
-         *
-         * @since 3.7
-         *
-         * @return string
-         *
-         * @phpstan-return 'version'
-         */
-        public static function key() : string
-        {
-        }
-        /**
-         * Returns the description used in the JSON schema.
-         *
-         * @since 3.7
-         *
-         * @return string
-         */
-        protected function get_description() : string
-        {
-        }
-    }
 }
 namespace WP_Syntex\Polylang\Options {
     /**
@@ -17189,9 +18130,10 @@ namespace WP_Syntex\Polylang\Options {
      *
      * @since 3.7
      *
-     * @implements \ArrayAccess<non-falsy-string, mixed>
+     * @implements ArrayAccess<non-falsy-string, mixed>
+     * @implements IteratorAggregate<non-empty-string, mixed>
      */
-    class Options implements \ArrayAccess
+    class Options implements \ArrayAccess, \IteratorAggregate
     {
         public const OPTION_NAME = 'polylang';
         /**
@@ -17312,11 +18254,12 @@ namespace WP_Syntex\Polylang\Options {
          * @param string $key The name of the option to retrieve.
          * @return mixed
          */
-        public function &get(string $key)
+        public function get(string $key)
         {
         }
         /**
          * Assigns a value to the specified option.
+         *
          * This doesn't allow to set an unknown option.
          * When doing multiple `set()`, options must be set in the right order: some options depend on other options' value.
          *
@@ -17362,7 +18305,7 @@ namespace WP_Syntex\Polylang\Options {
          * @return mixed
          */
         #[\ReturnTypeWillChange]
-        public function &offsetGet($offset)
+        public function offsetGet($offset)
         {
         }
         /**
@@ -17390,6 +18333,19 @@ namespace WP_Syntex\Polylang\Options {
          * @return void
          */
         public function offsetUnset($offset) : void
+        {
+        }
+        /**
+         * Returns all current site's option values.
+         * Required by interface `IteratorAggregate`.
+         *
+         * @since 3.7
+         *
+         * @return ArrayIterator
+         *
+         * @phpstan-return ArrayIterator<non-empty-string, mixed>
+         */
+        public function getIterator() : \ArrayIterator
         {
         }
     }
@@ -17760,9 +18716,10 @@ namespace {
          * Creates a media translation
          *
          * @since 1.8
+         * @since 3.7 Deprecated in favor of PLL_Translated_Post::create_media_translation().
          *
-         * @param int           $post_id Original attachment id.
-         * @param string|object $lang    New translation language.
+         * @param int                 $post_id Original attachment id.
+         * @param string|PLL_Language $lang    New translation language.
          * @return int Attachment id of the translated media.
          */
         public function create_media_translation($post_id, $lang)
@@ -17952,40 +18909,6 @@ namespace {
          * @return string Slug with a language suffix if found.
          */
         public function set_pre_term_slug($slug, $taxonomy)
-        {
-        }
-    }
-    /**
-     * Small set of tools to work with the database.
-     *
-     * @since 3.2
-     */
-    class PLL_Db_Tools
-    {
-        /**
-         * Changes an array of values into a comma separated list, ready to be used in a `IN ()` clause.
-         * Only string and integers and supported for now.
-         *
-         * @since 3.2
-         *
-         * @param (int|string)[] $values An array of values.
-         * @return string A comma separated list of values.
-         */
-        public static function prepare_values_list($values)
-        {
-        }
-        /**
-         * Wraps a value in escaped double quotes or casts as an integer.
-         * Only string and integers and supported for now.
-         *
-         * @since 3.2
-         *
-         * @global wpdb $wpdb
-         *
-         * @param int|string $value A value.
-         * @return int|string
-         */
-        public static function prepare_value($value)
         {
         }
     }
@@ -19735,7 +20658,10 @@ namespace {
      * @package Polylang
      */
     /**
-     * Manages strings translations storage
+     * Manages strings translations storage.
+     * A static cache is used internally to enhance performances,
+     * for it to work as expected, use `import_from_db` for the cache to be used
+     * and `export_to_db` for the cache to be cleared.
      *
      * @since 1.2
      * @since 2.1 Stores the strings in a post meta instead of post content to avoid unserialize issues (See #63)
@@ -19743,6 +20669,14 @@ namespace {
      */
     class PLL_MO extends \MO
     {
+        /**
+         * Constructor, initializes the cache if not already done.
+         *
+         * @since 3.7
+         */
+        public function __construct()
+        {
+        }
         /**
          * Writes the strings into a term meta.
          *
@@ -19775,6 +20709,18 @@ namespace {
          * @return void
          */
         public function delete_entry($string)
+        {
+        }
+        /**
+         * Translates a string or returns false if the translation is not found.
+         * Contrary to `self::translate()`, this method doesn't fallback to the source string but returns empty string instead.
+         *
+         * @since 3.7
+         *
+         * @param string $source The source string to translate.
+         * @return string The translated string or empty string if not found.
+         */
+        public function translate_if_any(string $source)
         {
         }
     }
@@ -19953,6 +20899,10 @@ namespace {
          *                              definition process runs.
          */
         public $curlang;
+        /**
+         * @var PLL_Default_Term|null
+         */
+        public $default_term;
         /**
          * @var PLL_Filters|null
          */
@@ -20218,20 +21168,20 @@ namespace {
     trait PLL_Translatable_Object_With_Types_Trait
     {
         /**
-         * Returns SQL query that fetches the IDs of the objects without language.
+         * Fetches the IDs of the objects without language.
          *
-         * @since 3.4
+         * @since 3.7
          *
          * @param int[] $language_ids List of language `term_taxonomy_id`.
          * @param int   $limit        Max number of objects to return. `-1` to return all of them.
          * @param array $args         An array of translated object types.
-         * @return string
+         * @return string[]
          *
          * @phpstan-param array<positive-int> $language_ids
          * @phpstan-param -1|positive-int $limit
          * @phpstan-param array<string> $args
          */
-        protected function get_objects_with_no_lang_sql(array $language_ids, $limit, array $args = array())
+        protected function get_raw_objects_with_no_lang(array $language_ids, $limit, array $args = array())
         {
         }
         /**
@@ -20262,9 +21212,23 @@ namespace {
     abstract class PLL_Translatable_Object
     {
         /**
-         * @var PLL_Model
+         * Model for the languages.
+         *
+         * @var Languages
          */
-        public $model;
+        protected $languages;
+        /**
+         * Polylang's options.
+         *
+         * @var Options
+         */
+        protected $options;
+        /**
+         * Internal non persistent cache object.
+         *
+         * @var PLL_Cache<mixed>
+         */
+        protected $cache;
         /**
          * List of taxonomies to cache.
          *
@@ -20313,9 +21277,9 @@ namespace {
          *
          * @since 3.4
          *
-         * @param PLL_Model $model Instance of `PLL_Model`, passed by reference.
+         * @param PLL_Model $model Instance of `PLL_Model`.
          */
-        public function __construct(\PLL_Model &$model)
+        public function __construct(\PLL_Model $model)
         {
         }
         /**
@@ -20454,16 +21418,23 @@ namespace {
         {
         }
         /**
-         * Returns object IDs without language given a specific SQL query.
+         * Returns object IDs without language.
          * Can be overridden by child classes in case queried object doesn't use
          * `wp_cache_set_last_changed()` or another cache system.
          *
          * @since 3.4
+         * @since 3.7 Changed all parameters.
          *
-         * @param string $sql A prepared SQL query for object IDs with no language.
+         * @param int[] $language_ids List of language `term_taxonomy_id`.
+         * @param int   $limit        Max number of objects to return. `-1` to return all of them.
+         * @param array $args         The object args.
          * @return string[] An array of numeric object IDs.
+         *
+         * @phpstan-param array<positive-int> $language_ids
+         * @phpstan-param -1|positive-int $limit
+         * @phpstan-param array<empty> $args
          */
-        protected function query_objects_with_no_lang($sql)
+        protected function query_objects_with_no_lang(array $language_ids, $limit, array $args = array())
         {
         }
         /**
@@ -20495,20 +21466,20 @@ namespace {
         {
         }
         /**
-         * Returns SQL query that fetches the IDs of the objects without language.
+         * Fetches the IDs of the objects without language.
          *
-         * @since 3.4
+         * @since 3.7
          *
          * @param int[] $language_ids List of language `term_taxonomy_id`.
          * @param int   $limit        Max number of objects to return. `-1` to return all of them.
          * @param array $args         The object args.
-         * @return string
+         * @return string[]
          *
          * @phpstan-param array<positive-int> $language_ids
          * @phpstan-param -1|positive-int $limit
          * @phpstan-param array<empty> $args
          */
-        protected function get_objects_with_no_lang_sql(array $language_ids, $limit, array $args = array())
+        protected function get_raw_objects_with_no_lang(array $language_ids, $limit, array $args = array())
         {
         }
         /**
@@ -20525,11 +21496,22 @@ namespace {
         {
         }
         /**
+         * Returns the description to use for the "language properties" in the REST API.
+         *
+         * @since 3.7
+         * @see WP_Syntex\Polylang\REST\V2\Languages::get_item_schema()
+         *
+         * @return string
+         */
+        public function get_rest_description() : string
+        {
+        }
+        /**
          * Returns database-related information that can be used in some of this class methods.
          * These are specific to the table containing the objects.
          *
          * @see PLL_Translatable_Object::join_clause()
-         * @see PLL_Translatable_Object::get_objects_with_no_lang_sql()
+         * @see PLL_Translatable_Object::get_raw_objects_with_no_lang()
          *
          * @since 3.4.3
          *
@@ -20811,7 +21793,7 @@ namespace {
          *
          * @param PLL_Model $model Instance of `PLL_Model`.
          */
-        public function __construct(\PLL_Model &$model)
+        public function __construct(\PLL_Model $model)
         {
         }
         /**
@@ -21061,7 +22043,7 @@ namespace {
          *
          * @param PLL_Model $model Instance of `PLL_Model`.
          */
-        public function __construct(\PLL_Model &$model)
+        public function __construct(\PLL_Model $model)
         {
         }
         /**
@@ -21073,6 +22055,17 @@ namespace {
          * @return void
          */
         protected function register_language_taxonomy() : void
+        {
+        }
+        /**
+         * Adds the language query var once the global `$wp` is available.
+         *
+         * @since 3.7
+         * @see WP_Taxonomy::add_rewrite_rules()
+         *
+         * @return void
+         */
+        public function add_language_taxonomy_query_var() : void
         {
         }
         /**
@@ -21166,6 +22159,19 @@ namespace {
         {
         }
         /**
+         * Creates a media translation
+         *
+         * @since 1.8
+         * @since 3.7 Moved from PLL_CRUD_Posts.
+         *
+         * @param int                 $post_id Original attachment id.
+         * @param string|PLL_Language $lang    New translation language.
+         * @return int Attachment id of the translated media.
+         */
+        public function create_media_translation($post_id, $lang)
+        {
+        }
+        /**
          * Returns a list of posts in a language ($lang) not translated in another language ($untranslated_in).
          *
          * @since 2.6
@@ -21180,11 +22186,22 @@ namespace {
         {
         }
         /**
+         * Returns the description to use for the "language properties" in the REST API.
+         *
+         * @since 3.7
+         * @see WP_Syntex\Polylang\REST\V2\Languages::get_item_schema()
+         *
+         * @return string
+         */
+        public function get_rest_description() : string
+        {
+        }
+        /**
          * Returns database-related information that can be used in some of this class methods.
          * These are specific to the table containing the objects.
          *
          * @see PLL_Translatable_Object::join_clause()
-         * @see PLL_Translatable_Object::get_objects_with_no_lang_sql()
+         * @see PLL_Translatable_Object::get_raw_objects_with_no_lang()
          *
          * @since 3.4.3
          *
@@ -21197,6 +22214,40 @@ namespace {
          * @phpstan-return DBInfoWithType
          */
         protected function get_db_infos()
+        {
+        }
+        /**
+         * Wraps `wp_insert_post` with language feature.
+         *
+         * @since 3.7
+         *
+         * @param array        $postarr {
+         *     Optional. An array of elements that make up a post to insert.
+         *     @See wp_insert_post() for accepted arguments.
+         *
+         *     @type string[] $translations The translation group to assign to the post with language slug as keys and post ID as values.
+         * }
+         * @param PLL_Language $language The post language object.
+         * @return int|WP_Error The post ID on success. The value `WP_Error` on failure.
+         */
+        public function insert(array $postarr, \PLL_Language $language)
+        {
+        }
+        /**
+         * Wraps `wp_update_post` with language feature.
+         *
+         * @since 3.7
+         *
+         * @param array $postarr {
+         *     Optional. An array of elements that make up a post to update.
+         *     @See wp_insert_post() for accepted arguments.
+         *
+         *     @type PLL_Language|string $lang         The post language object or slug.
+         *     @type string[]            $translations The translation group to assign to the post with language slug as keys and post ID as values.
+         * }
+         * @return int|WP_Error The post ID on success. The value `WP_Error` on failure.
+         */
+        public function update(array $postarr)
         {
         }
     }
@@ -21258,7 +22309,7 @@ namespace {
          *
          * @param PLL_Model $model Instance of `PLL_Model`.
          */
-        public function __construct(\PLL_Model &$model)
+        public function __construct(\PLL_Model $model)
         {
         }
         /**
@@ -21383,11 +22434,22 @@ namespace {
         {
         }
         /**
+         * Returns the description to use for the "language properties" in the REST API.
+         *
+         * @since 3.7
+         * @see WP_Syntex\Polylang\REST\V2\Languages::get_item_schema()
+         *
+         * @return string
+         */
+        public function get_rest_description() : string
+        {
+        }
+        /**
          * Returns database-related information that can be used in some of this class methods.
          * These are specific to the table containing the objects.
          *
          * @see PLL_Translatable_Object::join_clause()
-         * @see PLL_Translatable_Object::get_objects_with_no_lang_sql()
+         * @see PLL_Translatable_Object::get_raw_objects_with_no_lang()
          *
          * @since 3.4.3
          *
@@ -21400,6 +22462,57 @@ namespace {
          * @phpstan-return DBInfoWithType
          */
         protected function get_db_infos()
+        {
+        }
+        /**
+         * Wraps `wp_insert_term` with language feature.
+         *
+         * @since 3.7
+         *
+         * @param string       $term     The term name to add.
+         * @param string       $taxonomy The taxonomy to which to add the term.
+         * @param PLL_Language $language The term language.
+         * @param array        $args {
+         *     Optional. Array of arguments for inserting a term.
+         *
+         *     @type string   $alias_of     Slug of the term to make this term an alias of.
+         *                                  Default empty string. Accepts a term slug.
+         *     @type string   $description  The term description. Default empty string.
+         *     @type int      $parent       The id of the parent term. Default 0.
+         *     @type string   $slug         The term slug to use. Default empty string.
+         *     @type string[] $translations The translation group to assign to the term with language slug as keys and `term_id` as values.
+         * }
+         * @return array|WP_Error {
+         *     An array of the new term data, `WP_Error` otherwise.
+         *
+         *     @type int        $term_id          The new term ID.
+         *     @type int|string $term_taxonomy_id The new term taxonomy ID. Can be a numeric string.
+         * }
+         */
+        public function insert(string $term, string $taxonomy, \PLL_Language $language, $args = array())
+        {
+        }
+        /**
+         * Wraps `wp_update_term` with language feature.
+         *
+         * @since 3.7
+         *
+         * @param int   $term_id The ID of the term.
+         * @param array $args {
+         *     Optional. Array of arguments for updating a term.
+         *
+         *     @type string       $alias_of     Slug of the term to make this term an alias of.
+         *                                      Default empty string. Accepts a term slug.
+         *     @type string       $description  The term description. Default empty string.
+         *     @type int          $parent       The id of the parent term. Default 0.
+         *     @type string       $slug         The term slug to use. Default empty string.
+         *     @type PLL_Language $lang         The term language object.
+         *     @type string[]     $translations The translation group to assign to the term with language slug as keys and `term_id` as values.
+         * }
+         * @return array|WP_Error An array containing the `term_id` and `term_taxonomy_id`,
+         *                        WP_Error otherwise.
+         */
+        public function update(int $term_id, array $args = array())
         {
         }
     }
@@ -21857,7 +22970,7 @@ namespace {
      * Modified version with 'polylang' text domain and missing comments for translators.
      *
      * @author Easy Digital Downloads
-     * @version 1.9.1
+     * @version 1.9.4
      */
     class PLL_Plugin_Updater
     {
@@ -22043,9 +23156,6 @@ namespace {
         }
     }
     /**
-     * @package Polylang
-     */
-    /**
      * Manages Polylang upgrades
      *
      * @since 1.2
@@ -22165,6 +23275,18 @@ namespace {
         {
         }
         /**
+         * Upgrades if the previous version is < 3.7.
+         * Hides the "The language is set from content" option if it isn't the one selected.
+         * Cleans up strings translations so we don't store translations duplicated from the source.
+         *
+         * @since 3.7
+         *
+         * @return void
+         */
+        protected function upgrade_3_7()
+        {
+        }
+        /**
          * Moves strings translations from post meta to term meta _pll_strings_translations.
          *
          * @since 3.4
@@ -22185,6 +23307,398 @@ namespace {
         {
         }
     }
+}
+namespace WP_Syntex\Polylang\REST {
+    /**
+     * Sets all Polylang REST controllers up.
+     *
+     * @since 3.7
+     */
+    class API
+    {
+        /**
+         * REST languages.
+         *
+         * @var V1\Languages|null
+         */
+        public $languages;
+        /**
+         * REST settings.
+         *
+         * @var V1\Settings|null
+         */
+        public $settings;
+        /**
+         * Constructor.
+         *
+         * @since 3.7
+         *
+         * @param PLL_Model $model Polylang's model.
+         */
+        public function __construct(\PLL_Model $model)
+        {
+        }
+        /**
+         * Adds hooks and registers endpoints.
+         *
+         * @since 3.7
+         *
+         * @return void
+         */
+        public function init() : void
+        {
+        }
+    }
+    /**
+     * Abstract REST controller.
+     *
+     * @since 3.7
+     */
+    abstract class Abstract_Controller extends \WP_REST_Controller
+    {
+        /**
+         * Adds a status code to the given error and returns the error.
+         *
+         * @since 3.7
+         *
+         * @param WP_Error $error       A `WP_Error` object.
+         * @param int      $status_code Optional. A status code. Default is 400.
+         * @return WP_Error
+         */
+        protected function add_status_to_error(\WP_Error $error, int $status_code = 400) : \WP_Error
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang\REST\V1 {
+    /**
+     * Languages REST controller.
+     *
+     * @since 3.7
+     */
+    class Languages extends \WP_Syntex\Polylang\REST\Abstract_Controller
+    {
+        /**
+         * Constructor.
+         *
+         * @since 3.7
+         *
+         * @param PLL_Model $model Polylang's model.
+         */
+        public function __construct(\PLL_Model $model)
+        {
+        }
+        /**
+         * Registers the routes for languages.
+         *
+         * @since 3.7
+         *
+         * @return void
+         */
+        public function register_routes() : void
+        {
+        }
+        /**
+         * Retrieves all languages.
+         *
+         * @since 3.7
+         *
+         * @param WP_REST_Request $request Full details about the request.
+         * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+         *
+         * @phpstan-template T of array
+         * @phpstan-param WP_REST_Request<T> $request
+         */
+        public function get_items($request)
+        {
+        }
+        /**
+         * Creates one language from the collection.
+         *
+         * @since 3.7
+         *
+         * @param WP_REST_Request $request Full details about the request.
+         * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+         *
+         * @phpstan-template T of array
+         * @phpstan-param WP_REST_Request<T> $request
+         */
+        public function create_item($request)
+        {
+        }
+        /**
+         * Retrieves one language from the collection.
+         *
+         * @since 3.7
+         *
+         * @param WP_REST_Request $request Full details about the request.
+         * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+         *
+         * @phpstan-template T of array
+         * @phpstan-param WP_REST_Request<T> $request
+         */
+        public function get_item($request)
+        {
+        }
+        /**
+         * Updates one language from the collection.
+         *
+         * @since 3.7
+         *
+         * @param WP_REST_Request $request Full details about the request.
+         * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+         *
+         * @phpstan-template T of array
+         * @phpstan-param WP_REST_Request<T> $request
+         */
+        public function update_item($request)
+        {
+        }
+        /**
+         * Deletes one language from the collection.
+         *
+         * @since 3.7
+         *
+         * @param WP_REST_Request $request Full details about the request.
+         * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+         *
+         * @phpstan-template T of array
+         * @phpstan-param WP_REST_Request<T> $request
+         */
+        public function delete_item($request)
+        {
+        }
+        /**
+         * Checks if a given request has access to get the languages.
+         *
+         * @since 3.7
+         *
+         * @param WP_REST_Request $request Full details about the request.
+         * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
+         *
+         * @phpstan-template T of array
+         * @phpstan-param WP_REST_Request<T> $request
+         */
+        public function get_items_permissions_check($request)
+        {
+        }
+        /**
+         * Checks if a given request has access to create a language.
+         *
+         * @since 3.7
+         *
+         * @param WP_REST_Request $request Full details about the request.
+         * @return true|WP_Error True if the request has access to create languages, WP_Error object otherwise.
+         *
+         * @phpstan-template T of array
+         * @phpstan-param WP_REST_Request<T> $request
+         */
+        public function create_item_permissions_check($request)
+        {
+        }
+        /**
+         * Checks if a given request has access to get a specific language.
+         *
+         * @since 3.7
+         *
+         * @param WP_REST_Request $request Full details about the request.
+         * @return true|WP_Error True if the request has read access for the language, WP_Error object otherwise.
+         *
+         * @phpstan-template T of array
+         * @phpstan-param WP_REST_Request<T> $request
+         */
+        public function get_item_permissions_check($request)
+        {
+        }
+        /**
+         * Checks if a given request has access to update a specific language.
+         *
+         * @since 3.7
+         *
+         * @param WP_REST_Request $request Full details about the request.
+         * @return true|WP_Error True if the request has access to update the language, WP_Error object otherwise.
+         *
+         * @phpstan-template T of array
+         * @phpstan-param WP_REST_Request<T> $request
+         */
+        public function update_item_permissions_check($request)
+        {
+        }
+        /**
+         * Checks if a given request has access to delete a specific language.
+         *
+         * @since 3.7
+         *
+         * @param WP_REST_Request $request Full details about the request.
+         * @return true|WP_Error True if the request has access to delete the language, WP_Error object otherwise.
+         *
+         * @phpstan-template T of array
+         * @phpstan-param WP_REST_Request<T> $request
+         */
+        public function delete_item_permissions_check($request)
+        {
+        }
+        /**
+         * Prepares the language for the REST response.
+         *
+         * @since 3.7
+         *
+         * @param PLL_Language    $item    Language object.
+         * @param WP_REST_Request $request Request object.
+         * @return WP_REST_Response Response object.
+         *
+         * @phpstan-template T of array
+         * @phpstan-param WP_REST_Request<T> $request
+         */
+        public function prepare_item_for_response($item, $request)
+        {
+        }
+        /**
+         * Retrieves the language's schema, conforming to JSON Schema.
+         *
+         * @since 3.7
+         *
+         * @return array Item schema data.
+         */
+        public function get_item_schema() : array
+        {
+        }
+        /**
+         * Retrieves an array of endpoint arguments from the item schema for the controller.
+         * Ensures that the `no_default_cat` property is returned only for `CREATABLE` requests.
+         *
+         * @since 3.7
+         *
+         * @param string $method Optional. HTTP method of the request. Default WP_REST_Server::CREATABLE.
+         * @return array Endpoint arguments.
+         */
+        public function get_endpoint_args_for_item_schema($method = \WP_REST_Server::CREATABLE)
+        {
+        }
+        /**
+         * Prepares one language for create or update operation.
+         *
+         * @since 3.7
+         *
+         * @param WP_REST_Request $request Request object.
+         * @return object|WP_Error The prepared language, or WP_Error object on failure.
+         *
+         * @phpstan-template T of array
+         * @phpstan-param WP_REST_Request<T> $request
+         */
+        protected function prepare_item_for_database($request)
+        {
+        }
+        /**
+         * Tells if languages can be edited.
+         *
+         * @since 3.7
+         *
+         * @return bool
+         */
+        protected function check_update_permission() : bool
+        {
+        }
+    }
+    /**
+     * Settings REST controller.
+     *
+     * @since 3.7
+     */
+    class Settings extends \WP_Syntex\Polylang\REST\Abstract_Controller
+    {
+        /**
+         * Constructor.
+         *
+         * @since 3.7
+         *
+         * @param PLL_Model $model Polylang's model.
+         */
+        public function __construct(\PLL_Model $model)
+        {
+        }
+        /**
+         * Registers the routes for options.
+         *
+         * @since 3.7
+         *
+         * @return void
+         */
+        public function register_routes() : void
+        {
+        }
+        /**
+         * Retrieves all options.
+         *
+         * @since 3.7
+         *
+         * @param WP_REST_Request $request Full details about the request.
+         * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+         *
+         * @phpstan-template T of array
+         * @phpstan-param WP_REST_Request<T> $request
+         */
+        public function get_item($request)
+        {
+        }
+        /**
+         * Updates option(s).
+         * This allows to update one or several options.
+         *
+         * @since 3.7
+         *
+         * @param WP_REST_Request $request Full details about the request.
+         * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+         *
+         * @phpstan-template T of array
+         * @phpstan-param WP_REST_Request<T> $request
+         */
+        public function update_item($request)
+        {
+        }
+        /**
+         * Checks if a given request has access to update the options.
+         *
+         * @since 3.7
+         *
+         * @param WP_REST_Request $request Full details about the request.
+         * @return true|WP_Error True if the request has access to update the option, WP_Error object otherwise.
+         *
+         * @phpstan-template T of array
+         * @phpstan-param WP_REST_Request<T> $request
+         */
+        public function update_item_permissions_check($request)
+        {
+        }
+        /**
+         * Prepares the option value for the REST response.
+         *
+         * @since 3.7
+         *
+         * @param array           $item    Option values.
+         * @param WP_REST_Request $request Request object.
+         * @return WP_REST_Response Response object.
+         *
+         * @phpstan-template T of array
+         * @phpstan-param array<non-falsy-string, mixed> $item
+         * @phpstan-param WP_REST_Request<T> $request
+         */
+        public function prepare_item_for_response($item, $request)
+        {
+        }
+        /**
+         * Retrieves the options' schema, conforming to JSON Schema.
+         *
+         * @since 3.7
+         *
+         * @return array Item schema data.
+         */
+        public function get_item_schema() : array
+        {
+        }
+    }
+}
+namespace {
     /**
      * @package Polylang
      */
@@ -22826,20 +24340,20 @@ namespace {
         {
         }
         /**
-         * Translate post parent if exists when using "Add new" ( translation )
+         * Translates the post parent if it exists when using "Add new" (translation).
          *
          * @since 0.6
          *
-         * @param int   $post_parent Post parent ID
-         * @param int   $post_id     Post ID, unused
-         * @param array $postarr     Array of parsed post data
+         * @param int   $post_parent Post parent ID.
+         * @param int   $post_id     Post ID, unused.
+         * @param array $postarr     Array of parsed post data.
          * @return int
          */
         public function wp_insert_post_parent($post_parent, $post_id, $postarr)
         {
         }
         /**
-         * Copy menu order, comment, ping status and optionally the date when creating a new translation
+         * Copies menu order, comment, ping status and optionally the date when creating a new translation.
          *
          * @since 2.5
          *
@@ -22850,7 +24364,7 @@ namespace {
         {
         }
         /**
-         * Copy post metas, and taxonomies when using "Add new" ( translation )
+         * Copies post metas and taxonomies when using "Add new" (translation).
          *
          * @since 2.5
          * @since 3.1 Use of use_block_editor_for_post filter instead of rest_api_init which is triggered too early in WP 5.8.
@@ -22969,6 +24483,8 @@ namespace {
          * @since 1.0
          *
          * @return string[] Array synchronization options.
+         *
+         * @phpstan-return non-empty-array<non-falsy-string, string>
          */
         public static function list_metas_to_sync()
         {
@@ -23432,12 +24948,16 @@ namespace {
         /**
          * List of steps.
          *
-         * @var array $steps {
-         *     @type string   $name    I18n string which names the step.
-         *     @type callable $view    The callback function use to display the step content.
-         *     @type callable $handler The callback function use to process the step after it is submitted.
-         *     @type array    $scripts List of scripts handle needed by the step.
-         *     @type array    $styles  The list of styles handle needed by the step.
+         * @var array[] $steps {
+         *     @type array {
+         *         List of step properties.
+         *
+         *         @type string   $name    I18n string which names the step.
+         *         @type callable $view    The callback function use to display the step content.
+         *         @type callable $handler The callback function use to process the step after it is submitted.
+         *         @type array    $scripts List of scripts handle needed by the step.
+         *         @type array    $styles  The list of styles handle needed by the step.
+         *     }
          * }
          */
         protected $steps = array();
@@ -23446,7 +24966,7 @@ namespace {
          *
          * @var string|null
          */
-        protected $step;
+        protected $current_step;
         /**
          * List of WordPress CSS file handles.
          *
@@ -24051,7 +25571,7 @@ namespace {
          */
         public $api;
         /**
-         * Constructor
+         * Constructor.
          *
          * @since 1.0.2
          */
@@ -24071,7 +25591,7 @@ namespace {
         /**
          * Defines two WPML constants once the language has been defined
          * The compatibility with WPML is not perfect on admin side as the constants are defined
-         * in 'setup_theme' by Polylang ( based on user info ) and 'plugins_loaded' by WPML ( based on cookie )
+         * in 'setup_theme' by Polylang (based on user info) and 'plugins_loaded' by WPML (based on cookie).
          *
          * @since 0.9.5
          *
@@ -24125,7 +25645,7 @@ namespace {
          *
          * @param string $context The group in which the string is registered.
          * @param string $name    A unique name for the string.
-         * @return bool|string The registered string, false if none was found.
+         * @return string The registered string, empty if none was found.
          */
         public function get_string_by_context_and_name($context, $name)
         {
@@ -24411,7 +25931,7 @@ namespace {
         {
         }
         /**
-         * Merge two arrays recursively.
+         * Merges two arrays recursively.
          * Unlike `array_merge_recursive()`, this method doesn't change the type of the values.
          *
          * @since 3.6
@@ -24770,9 +26290,6 @@ namespace {
         }
     }
     /**
-     * @package Polylang
-     */
-    /**
      * A class for the Polylang settings pages, accessible from @see PLL().
      *
      * @since 1.2
@@ -24915,14 +26432,18 @@ namespace {
          *
          * @since 2.3
          *
-         * @return string[] {
-         *   @type string $code     ISO 639-1 language code.
-         *   @type string $locale   WordPress locale.
-         *   @type string $name     Native language name.
-         *   @type string $dir      Text direction: 'ltr' or 'rtl'.
-         *   @type string $flag     Flag code, generally the country code.
-         *   @type string $w3c      W3C locale.
-         *   @type string $facebook Facebook locale.
+         * @return string[][] {
+         *   An array of array of language properties.
+         *
+         *   @type string[] {
+         *      @type string $code     ISO 639-1 language code.
+         *      @type string $locale   WordPress locale.
+         *      @type string $name     Native language name.
+         *      @type string $dir      Text direction: 'ltr' or 'rtl'.
+         *      @type string $flag     Flag code, generally the country code.
+         *      @type string $w3c      W3C locale.
+         *      @type string $facebook Facebook locale.
+         *   }
          * }
          */
         public static function get_predefined_languages()
@@ -25282,11 +26803,11 @@ namespace {
          *
          * @since 2.6
          *
-         * @param PLL_MO[] $mos An array of PLL_MO objects.
-         * @param string   $s   Searched string.
+         * @param PLL_Language[] $languages An array of language objects.
+         * @param string         $s         Searched string.
          * @return string[] Found strings.
          */
-        protected function search_in_translations($mos, $s)
+        protected function search_in_translations($languages, $s)
         {
         }
         /**
@@ -25783,6 +27304,96 @@ namespace {
      * @return int Posts count.
      */
     function pll_count_posts($lang, $args = array())
+    {
+    }
+    /**
+     * Wraps `wp_insert_post` with language feature.
+     *
+     * @since 3.7
+     *
+     * @param array               $postarr {
+     *     An array of elements that make up a post to insert.
+     *     @See https://developer.wordpress.org/reference/functions/wp_insert_post/ wp_insert_post() for accepted arguments.
+     *
+     *     @type string[] $translations The translation group to assign to the post with language slug as keys and post ID as values.
+     * }
+     * @param PLL_Language|string $language The post language object or slug.
+     * @return int|WP_Error The post ID on success. The value `WP_Error` on failure.
+     */
+    function pll_insert_post(array $postarr, $language)
+    {
+    }
+    /**
+     * Wraps `wp_insert_term` with language feature.
+     *
+     * @since 3.7
+     *
+     * @param string              $term     The term name to add.
+     * @param string              $taxonomy The taxonomy to which to add the term.
+     * @param PLL_Language|string $language The term language object or slug.
+     * @param array               $args {
+     *     Optional. Array of arguments for inserting a term.
+     *
+     *     @type string   $alias_of     Slug of the term to make this term an alias of.
+     *                                  Default empty string. Accepts a term slug.
+     *     @type string   $description  The term description. Default empty string.
+     *     @type int      $parent       The id of the parent term. Default 0.
+     *     @type string   $slug         The term slug to use. Default empty string.
+     *     @type string[] $translations The translation group to assign to the term with language slug as keys and `term_id` as values.
+     * }
+     * @return array|WP_Error {
+     *     An array of the new term data, `WP_Error` otherwise.
+     *
+     *     @type int        $term_id          The new term ID.
+     *     @type int|string $term_taxonomy_id The new term taxonomy ID. Can be a numeric string.
+     * }
+     */
+    function pll_insert_term(string $term, string $taxonomy, $language, array $args = array())
+    {
+    }
+    /**
+     * Wraps `wp_update_post` with language feature.
+     *
+     * @since 3.7
+     *
+     * @param array $postarr {
+     *     Optional. An array of elements that make up a post to update.
+     *     @See https://developer.wordpress.org/reference/functions/wp_insert_post/ wp_insert_post() for accepted arguments.
+     *
+     *     @type PLL_Language|string $lang         The post language object or slug.
+     *     @type string[]            $translations The translation group to assign to the post with language slug as keys and post ID as values.
+     * }
+     * @return int|WP_Error The post ID on success. The value `WP_Error` on failure.
+     */
+    function pll_update_post(array $postarr)
+    {
+    }
+    /**
+     * Wraps `wp_update_term` with language feature.
+     *
+     * @since 3.7
+     *
+     * @param int   $term_id The ID of the term.
+     * @param array $args {
+     *     Optional. Array of arguments for updating a term.
+     *
+     *     @type string              $alias_of     Slug of the term to make this term an alias of.
+     *                                             Default empty string. Accepts a term slug.
+     *     @type string              $description  The term description. Default empty string.
+     *     @type int                 $parent       The id of the parent term. Default 0.
+     *     @type string              $slug         The term slug to use. Default empty string.
+     *     @type string              $name         The term name.
+     *     @type PLL_Language|string $lang         The term language object or slug.
+     *     @type string[]            $translations The translation group to assign to the term with language slug as keys and `term_id` as values.
+     * }
+     * @return array|WP_Error {
+     *     An array containing the `term_id` and `term_taxonomy_id`, `WP_Error` otherwise.
+     *
+     *     @type int        $term_id          The new term ID.
+     *     @type int|string $term_taxonomy_id The new term taxonomy ID. Can be a numeric string.
+     * }
+     */
+    function pll_update_term(int $term_id, array $args = array())
     {
     }
     /**

@@ -7,6 +7,7 @@ function sanitize_locale_name(){}
 return \StubsGenerator\Finder::create()
 	->in(
 		[
+			'polylang-pro/dependencies',
 			'polylang-pro/modules',
 			'polylang-pro/services',
 			'polylang-pro/vendor/wpsyntex/polylang/admin',

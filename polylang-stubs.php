@@ -183,6 +183,12 @@ namespace WP_Syntex\Polylang_Pro\Updater {
     class License
     {
         /**
+         * URL to Polylang's account page.
+         *
+         * @var string
+         */
+        public const ACCOUNT_URL = 'https://polylang.pro/my-account/';
+        /**
          * Sanitized plugin name.
          *
          * @var string
@@ -301,9 +307,6 @@ namespace WP_Syntex\Polylang_Pro\Updater {
 }
 namespace {
     /**
-     * @package Polylang
-     */
-    /**
      * Base class for all settings
      *
      * @since 1.8
@@ -313,7 +316,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var array
+         * @var Options
          */
         public $options;
         /**
@@ -388,8 +391,8 @@ namespace {
          *
          * @since 1.8
          *
-         * @param object $polylang The Polylang object.
-         * @param array  $args {
+         * @param PLL_Settings $polylang The Polylang object.
+         * @param array        $args {
          *   @type string $module        Unique module name.
          *   @type string $title         The title of the settings module.
          *   @type string $description   The description of the settings module.
@@ -408,7 +411,7 @@ namespace {
          *   active_option?: non-falsy-string
          * } $args
          */
-        public function __construct(&$polylang, $args)
+        public function __construct(\PLL_Settings &$polylang, $args)
         {
         }
         /**
@@ -824,7 +827,9 @@ namespace WP_Syntex\Polylang\Options {
      *
      * @phpstan-type SchemaType 'string'|'null'|'number'|'integer'|'boolean'|'array'|'object'
      * @phpstan-type Schema array{
-     *     type: SchemaType
+     *     type: SchemaType,
+     *     description: string,
+     *     default: mixed
      * }
      */
     abstract class Abstract_Option
@@ -874,7 +879,7 @@ namespace WP_Syntex\Polylang\Options {
          *
          * @return mixed
          */
-        public function &get()
+        public function get()
         {
         }
         /**
@@ -1053,6 +1058,8 @@ namespace WP_Syntex\Polylang_Pro\Options\Business {
      * Class defining machine translation services array option.
      *
      * @since 3.7
+     *
+     * @phpstan-import-type DeeplOptions from \WP_Syntex\Polylang_Pro\Modules\Machine_Translation\Services\Deepl
      */
     class Machine_Translation_Services extends \WP_Syntex\Polylang\Options\Abstract_Option
     {
@@ -1066,6 +1073,22 @@ namespace WP_Syntex\Polylang_Pro\Options\Business {
          * @phpstan-return 'machine_translation_services'
          */
         public static function key(): string
+        {
+        }
+        /**
+         * Sanitizes option's value.
+         * Can populate the `$errors` property with blocking and non-blocking errors: in case of non-blocking errors,
+         * the value is sanitized and can be stored.
+         *
+         * @since 3.8
+         *
+         * @param array   $value   Value to sanitize.
+         * @param Options $options All options.
+         * @return array|WP_Error The sanitized value. An instance of `WP_Error` in case of blocking error.
+         *
+         * @phpstan-return array{deepl: DeeplOptions}|WP_Error
+         */
+        protected function sanitize($value, \WP_Syntex\Polylang\Options\Options $options)
         {
         }
         /**
@@ -1201,7 +1224,6 @@ namespace WP_Syntex\Polylang\Options {
             // Internal.
             \WP_Syntex\Polylang\Options\Business\Default_Lang::class,
             \WP_Syntex\Polylang\Options\Business\Nav_Menus::class,
-            \WP_Syntex\Polylang\Options\Business\Language_Taxonomies::class,
             // Read only.
             \WP_Syntex\Polylang\Options\Business\First_Activation::class,
             \WP_Syntex\Polylang\Options\Business\Previous_Version::class,
@@ -1240,6 +1262,10 @@ namespace {
      */
     class PLL_Pro
     {
+        /**
+         * @var Updater|null
+         */
+        public $updater;
         /**
          * Constructor.
          * Manages the compatibility with some plugins.
@@ -1326,6 +1352,292 @@ namespace WP_Syntex\Polylang_Pro {
          * @return void
          */
         public function upgrade()
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang_Pro\Modules\Capabilities {
+    /**
+     * Class to orchestrate the capabilities mappers.
+     *
+     * @since 3.8
+     */
+    class Capabilities
+    {
+        /**
+         * Constructor.
+         *
+         * @since 3.8
+         *
+         * @param PLL_Model $model Model instance.
+         */
+        public function __construct(\PLL_Model $model)
+        {
+        }
+        /**
+         * Maps a capability to the primitive capabilities required of the given user.
+         *
+         * @since 3.8
+         *
+         * @param string[] $caps    Primitive capabilities required of the user.
+         * @param string   $cap     Capability being checked.
+         * @param int      $user_id The user ID.
+         * @param array    $args    Adds context to the capability check, typically
+         *                          starting with an object ID.
+         * @return string[] Updated primitive capabilities required of the user.
+         */
+        public function map($caps, $cap, $user_id, $args)
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang\Model {
+    /**
+     * Interface allowing to proxy the list of languages.
+     *
+     * @since 3.8
+     */
+    interface Languages_Proxy_Interface
+    {
+        /**
+         * Returns the proxy's key.
+         *
+         * @since 3.8
+         *
+         * @return string
+         *
+         * @phpstan-return non-falsy-string
+         */
+        public function key(): string;
+        /**
+         * Returns the list of available languages after passing it through this proxy.
+         *
+         * @since 3.8
+         *
+         * @param PLL_Language[] $languages List of languages to filter.
+         * @return PLL_Language[]
+         */
+        public function filter(array $languages): array;
+    }
+}
+namespace WP_Syntex\Polylang_Pro\Modules\Capabilities {
+    /**
+     * Class allowing to filter the list of languages, depending on the current user's capabilities.
+     *
+     * @since 3.8
+     */
+    class Languages_Proxy implements \WP_Syntex\Polylang\Model\Languages_Proxy_Interface
+    {
+        /**
+         * Returns the proxy's key.
+         *
+         * @since 3.8
+         *
+         * @return string
+         *
+         * @phpstan-return non-falsy-string
+         */
+        public function key(): string
+        {
+        }
+        /**
+         * Returns the list of available languages after passing it through this proxy.
+         *
+         * @since 3.8
+         *
+         * @param PLL_Language[] $languages List of languages to filter.
+         * @return PLL_Language[]
+         */
+        public function filter(array $languages): array
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang_Pro\Modules\Capabilities\Mapper {
+    /**
+     * Abstract class for capabilities mappers implementing the Chain of Responsibility pattern.
+     *
+     * @since 3.8
+     */
+    abstract class Abstract_Mapper
+    {
+        /**
+         * @var Abstract_Mapper|null
+         */
+        protected $next;
+        /**
+         * Maps a capability to the primitive capabilities required of the given user.
+         *
+         * @since 3.8
+         *
+         * @param string[] $caps    Primitive capabilities required of the user.
+         * @param string   $cap     Capability being checked.
+         * @param User     $user    The user object.
+         * @param array    $args    Adds context to the capability check, typically starting with an object ID.
+         * @return string[] Updated primitive capabilities required of the user.
+         */
+        public function map($caps, $cap, $user, $args): array
+        {
+        }
+        /**
+         * Sets the next mapper to be used.
+         *
+         * @since 3.8
+         *
+         * @param Abstract_Mapper $next_mapper The next mapper to be used.
+         * @return Abstract_Mapper The next mapper to be used.
+         */
+        public function set_next(\WP_Syntex\Polylang_Pro\Modules\Capabilities\Mapper\Abstract_Mapper $next_mapper): \WP_Syntex\Polylang_Pro\Modules\Capabilities\Mapper\Abstract_Mapper
+        {
+        }
+    }
+    /**
+     * Concrete implementation of the `Abstract_Mapper` class.
+     * It is used to break early the chain of mappers when a `do_not_allow` capability is present.
+     *
+     * @since 3.8
+     */
+    class Do_Not_Allow extends \WP_Syntex\Polylang_Pro\Modules\Capabilities\Mapper\Abstract_Mapper
+    {
+    }
+    /**
+     * Class to map edit and delete post type capabilities.
+     *
+     * @since 3.8
+     */
+    class Post extends \WP_Syntex\Polylang_Pro\Modules\Capabilities\Mapper\Abstract_Mapper
+    {
+        /**
+         * Constructor.
+         *
+         * @since 3.8
+         *
+         * @param PLL_Model $model Model instance.
+         */
+        public function __construct(\PLL_Model $model)
+        {
+        }
+        /**
+         * Maps a capability to the primitive capabilities required of the given user.
+         *
+         * @since 3.8
+         *
+         * @param string[] $caps    Primitive capabilities required of the user.
+         * @param string   $cap     Capability being checked.
+         * @param User     $user    The user object.
+         * @param array    $args    Adds context to the capability check, typically starting with an object ID.
+         * @return string[] Updated primitive capabilities required of the user.
+         */
+        public function map($caps, $cap, $user, $args): array
+        {
+        }
+    }
+    /**
+     * Class to map taxonomy capabilities.
+     *
+     * @since 3.8
+     */
+    class Term extends \WP_Syntex\Polylang_Pro\Modules\Capabilities\Mapper\Abstract_Mapper
+    {
+        /**
+         * Constructor.
+         *
+         * @since 3.8
+         *
+         * @param PLL_Model $model Model instance.
+         */
+        public function __construct(\PLL_Model $model)
+        {
+        }
+        /**
+         * Maps a capability to the primitive capabilities required of the given user.
+         *
+         * @since 3.8
+         *
+         * @param string[] $caps    Primitive capabilities required of the user.
+         * @param string   $cap     Capability being checked.
+         * @param User     $user    The user object.
+         * @param array    $args    Adds context to the capability check, typically starting with an object ID.
+         * @return string[] Updated primitive capabilities required of the user.
+         */
+        public function map($caps, $cap, $user, $args): array
+        {
+        }
+    }
+    /**
+     * Class to map translations manager capabilities (relative to "Translations" screen).
+     *
+     * @since 3.8
+     */
+    class Translations_Manager extends \WP_Syntex\Polylang_Pro\Modules\Capabilities\Mapper\Abstract_Mapper
+    {
+        /**
+         * Maps a capability to the primitive capabilities required of the given user.
+         *
+         * @since 3.8
+         *
+         * @param string[] $caps Primitive capabilities required of the user.
+         * @param string   $cap  Capability being checked.
+         * @param User     $user The user object.
+         * @param array    $args Adds context to the capability check, typically starting with an object ID.
+         * @return string[] Updated primitive capabilities required of the user.
+         */
+        public function map($caps, $cap, $user, $args): array
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang_Pro\Modules\Capabilities {
+    /**
+     * A class wrapping `WP_User` with translation management feature.
+     *
+     * @since 3.8
+     */
+    class User
+    {
+        /**
+         * Constructor.
+         *
+         * @since 3.8
+         *
+         * @param WP_User|null $user Optional. An instance of `WP_User`.
+         */
+        public function __construct(?\WP_User $user = null)
+        {
+        }
+        /**
+         * Tells if the user is a translator (has a translator capability).
+         * Note: returns `true` if the user has a capability for a language that doesn't exist anymore. This is intentional,
+         * to prevent the user to suddenly have the rights to translate in all languages while it wasn't allowed until then.
+         *
+         * @since 3.8
+         *
+         * @return bool
+         */
+        public function is_translator(): bool
+        {
+        }
+        /**
+         * Tells if the user can translate to the given language.
+         *
+         * @since 3.8
+         *
+         * @param PLL_Language $language A language object.
+         * @return bool
+         */
+        public function can_translate(\PLL_Language $language): bool
+        {
+        }
+        /**
+         * Tells if the user has the specified capability.
+         *
+         * @since 3.8
+         *
+         * @param string $capability Capability name.
+         * @param mixed  ...$args    Optional further parameters, typically starting with an object ID.
+         * @return bool
+         */
+        public function has_cap($capability, ...$args): bool
         {
         }
     }
@@ -1533,6 +1845,28 @@ namespace WP_Syntex\Polylang_Pro\Editors\Screens {
          * @param PLL_Base $polylang Polylang object.
          */
         public function __construct(\PLL_Base &$polylang)
+        {
+        }
+        /**
+         * Adds required hooks.
+         *
+         * @since 3.8
+         *
+         * @return static
+         */
+        public function init()
+        {
+        }
+        /**
+         * Adds the nonce field for the new post translation
+         * in the block editor plugin settings.
+         *
+         * @since 3.8
+         *
+         * @param array $settings The settings array.
+         * @return array The settings array.
+         */
+        public function add_new_post_translation_link($settings)
         {
         }
         /**
@@ -1745,27 +2079,34 @@ namespace WP_Syntex\Polylang_Pro\Modules\Machine_Translation\Clients {
     }
     /**
      * Class for DeepL machine translation client.
+     *
+     * @since 3.6
+     *
+     * @phpstan-import-type DeeplFormality from Service
      */
     class Deepl implements \WP_Syntex\Polylang_Pro\Modules\Machine_Translation\Clients\Client_Interface
     {
-        const ROUTE = 'https://api.deepl.com/v2/';
-        const ROUTE_FREE = 'https://api-free.deepl.com/v2/';
+        const ROUTE = 'https://api.deepl.com/';
+        const ROUTE_FREE = 'https://api-free.deepl.com/';
         /**
          * Constructor.
          *
          * @since 3.6
+         * @since 3.8 The option key `glossary_id` has been added.
          *
          * @param array $options {
          *    The service options.
          *
-         *    @type string $api_key   The API key.
-         *    @type string $formality Sets whether the translated text should lean towards formal or informal language.
-         *                            Possible values are `'default'`, `'prefer_more'` (formal if available), and `'prefer_less'` (informal if available).
+         *    @type string $api_key     The API key.
+         *    @type string $formality   Sets whether the translated text should lean towards formal or informal language.
+         *                              Possible values are `'default'`, `'prefer_more'` (formal if available), and `'prefer_less'` (informal if available).
+         *    @type string $glossary_id Optional. ID of the glossary to use. Default is an empty string
          * }
          *
          * @phpstan-param array{
          *    api_key: string,
-         *    formality: 'default'|'prefer_more'|'prefer_less'
+         *    formality?: DeeplFormality,
+         *    glossary_id?: string
          * } $options
          */
         public function __construct(array $options)
@@ -1828,9 +2169,22 @@ namespace WP_Syntex\Polylang_Pro\Modules\Machine_Translation\Clients {
         {
         }
         /**
+         * Returns the list of glossaries.
+         *
+         * @since 3.8
+         *
+         * @return array|WP_Error A `WP_Error` on error, or an array on success with glossary IDs as array keys and glossary names as array values.
+         *
+         * @phpstan-return array<non-falsy-string, non-empty-string>|WP_Error
+         */
+        public function get_glossaries()
+        {
+        }
+        /**
          * Returns the route to be used according to the DeepL plan.
          *
          * @since 3.6
+         * @since 3.8 The API version (`v2` or `v3`) must be prepended to the endpoint.
          *
          * @param string $endpoint The API endpoint.
          *
@@ -2459,6 +2813,51 @@ namespace WP_Syntex\Polylang_Pro\Modules\Machine_Translation\Posts {
         {
         }
     }
+}
+namespace {
+    /**
+     * @package Polylang-Pro
+     */
+    /**
+     * Template class holding logic for user button toggling in REST API.
+     *
+     * @since 3.8
+     */
+    abstract class PLL_Toggle_User_Button_REST
+    {
+        /**
+         * Constructor.
+         *
+         * @param PLL_Model            $model The model instance.
+         * @param PLL_Toggle_User_Meta $user_meta The user meta instance.
+         *
+         * @since 3.8
+         */
+        public function __construct(\PLL_Model $model, \PLL_Toggle_User_Meta $user_meta)
+        {
+        }
+        /**
+         * Returns the description of the schema for the current user meta.
+         *
+         * @since 3.8
+         *
+         * @return string The description of the schema.
+         */
+        abstract protected function get_schema_description(): string;
+        /**
+         * Register the REST field for the current user meta.
+         * Hooked on 'rest_api_init' to prevent load text domain notice.
+         *
+         * @since 3.8
+         *
+         * @return void
+         */
+        public function register_rest_field(): void
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang_Pro\Modules\Machine_Translation\Posts {
     /**
      * Adds a button in the languages metabox (block editor), allowing to create a new translation by using a machine
      * translation service.
@@ -2466,20 +2865,8 @@ namespace WP_Syntex\Polylang_Pro\Modules\Machine_Translation\Posts {
      *
      * @since 3.6
      */
-    class Button_REST
+    class Button_REST extends \PLL_Toggle_User_Button_REST
     {
-        /**
-         * Instance of the machine translation service.
-         *
-         * @var Service_Interface
-         */
-        protected $service;
-        /**
-         * Used to manage user meta.
-         *
-         * @var PLL_Toggle_User_Meta
-         */
-        protected $user_meta;
         /**
          * Constructor.
          *
@@ -2511,6 +2898,16 @@ namespace WP_Syntex\Polylang_Pro\Modules\Machine_Translation\Posts {
          * @return array Updated UI settings.
          */
         public function get_settings_errors($settings)
+        {
+        }
+        /**
+         * Returns the description of the schema for the current user meta.
+         *
+         * @since 3.8
+         *
+         * @return string The description of the schema.
+         */
+        protected function get_schema_description(): string
         {
         }
     }
@@ -2656,9 +3053,11 @@ namespace WP_Syntex\Polylang_Pro\Modules\Machine_Translation\Services {
      * Machine translation service: DeepL.
      *
      * @phpstan-import-type iconProperties from Service_Interface
+     * @phpstan-type DeeplFormality 'default'|'prefer_more'|'prefer_less'
      * @phpstan-type DeeplOptions array{
      *    api_key: string,
-     *    formality: 'default'|'prefer_more'|'prefer_less'
+     *    formality: DeeplFormality,
+     *    glossary_id: string
      * }
      *
      * @since 3.6
@@ -2874,6 +3273,14 @@ namespace WP_Syntex\Polylang_Pro\Modules\Machine_Translation\Settings {
          */
         const USAGE_ACTION = 'pll_deepl_get_usage';
         /**
+         * Name of the action to get the glossaries.
+         *
+         * @since 3.8
+         *
+         * @var string
+         */
+        const GLOSSARIES_ACTION = 'pll_deepl_get_glossaries';
+        /**
          * Constructor.
          *
          * @since 3.6
@@ -2912,6 +3319,18 @@ namespace WP_Syntex\Polylang_Pro\Modules\Machine_Translation\Settings {
          * @phpstan-return never
          */
         public function update_characters_consumption_view()
+        {
+        }
+        /**
+         * Displays the glossaries view.
+         *
+         * @since 3.8
+         *
+         * @return void
+         *
+         * @phpstan-return never
+         */
+        public function update_glossaries_view()
         {
         }
         /**
@@ -2997,9 +3416,11 @@ namespace {
          * @since 3.7 Moved from PLL_Export_Strings_Action.
          *
          * @param WP_Error $error An error object.
-         * @return never
+         * @return void
+         *
+         * @phpstan-return never
          */
-        private function display_errors(\WP_Error $error)
+        private function display_errors(\WP_Error $error): void
         {
         }
     }
@@ -3041,7 +3462,9 @@ namespace WP_Syntex\Polylang_Pro\Modules\Machine_Translation\Strings {
          *
          * @since 3.7
          *
-         * @return never
+         * @return void
+         *
+         * @phpstan-return never
          */
         public function validate_form()
         {
@@ -3302,9 +3725,6 @@ namespace WP_Syntex\Polylang_Pro\Widget_Blocks {
 }
 namespace {
     /**
-     * @package Polylang-Pro
-     */
-    /**
      * Manages the ability to enable or disable a language
      *
      * @since 1.9
@@ -3314,7 +3734,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var array
+         * @var Options
          */
         public $options;
         /**
@@ -3332,9 +3752,9 @@ namespace {
          *
          * @since 1.9
          *
-         * @param object $polylang Polylang object.
+         * @param PLL_Base $polylang Polylang object.
          */
-        public function __construct(&$polylang)
+        public function __construct(\PLL_Base &$polylang)
         {
         }
         /**
@@ -3391,8 +3811,10 @@ namespace {
          * @since 1.9
          *
          * @return void
+         *
+         * @phpstan-return never
          */
-        public function enable()
+        public function enable(): void
         {
         }
         /**
@@ -3401,8 +3823,10 @@ namespace {
          * @since 1.9
          *
          * @return void
+         *
+         * @phpstan-return never
          */
-        public function disable()
+        public function disable(): void
         {
         }
         /**
@@ -3520,16 +3944,6 @@ namespace {
          */
         abstract public function render($attributes, $content, $block);
         /**
-         * Returns the supported pieces of inherited context for the block, by default none are supported..
-         *
-         * @since 3.3
-         *
-         * @return array An array with context subject, default to empty.
-         */
-        protected function get_context()
-        {
-        }
-        /**
          * Registers the Polylang's block.
          *
          * @since 2.8
@@ -3572,41 +3986,15 @@ namespace {
         protected function set_attributes_for_block($attributes)
         {
         }
-    }
-    /**
-     * @package Polylang-Pro
-     */
-    /**
-     * Language switcher block.
-     *
-     * @since 2.8
-     * @since 3.2 Extends now the PLL_Abstract_Language_Switcher_Block abstract class.
-     */
-    class PLL_Language_Switcher_Block extends \PLL_Abstract_Language_Switcher_Block
-    {
         /**
-         * Returns the language switcher block name with the Polylang's namespace.
+         * Returns the path to the block JSON file directory.
+         * The directory name being used to register a block.
          *
-         * @since 3.2
+         * @since 3.8
          *
-         * @return string The block name.
+         * @return string The path to the block.
          */
-        protected function get_block_name()
-        {
-        }
-        /**
-         * Renders the `polylang/language-switcher` block on server.
-         *
-         * @since 2.8
-         * @since 3.2 Renamed according to its parent abstract class.
-         * @since 3.3 Accepts two new parameters, $content and $block.
-         *
-         * @param array    $attributes The block attributes.
-         * @param string   $content The saved content. Unused.
-         * @param WP_Block $block The parsed block. Unused.
-         * @return string Returns the language switcher.
-         */
-        public function render($attributes, $content, $block)
+        protected function get_path(): string
         {
         }
     }
@@ -3637,6 +4025,16 @@ namespace {
         {
         }
         /**
+         * Registers the editor style for the navigation language switcher block.
+         *
+         * @since 3.8
+         *
+         * @return void
+         */
+        public function register_editor_style(): void
+        {
+        }
+        /**
          * Returns the navigation language switcher block name with the Polylang's namespace.
          *
          * @since 3.2
@@ -3644,17 +4042,6 @@ namespace {
          * @return string The block name.
          */
         protected function get_block_name()
-        {
-        }
-        /**
-         * Returns the supported pieces of context for the 'polylang/navigation-language-switcher' block.
-         * This context will be inherited from the 'core/navigation' block.
-         *
-         * @since 3.3
-         *
-         * @return string[]
-         */
-        protected function get_context()
         {
         }
         /**
@@ -3706,6 +4093,43 @@ namespace {
          * @return string A formatted HTML string representing the core/navigation-link or core/navigation-submenu block.
          */
         public function render_custom_attributes($block_content, $block, $instance)
+        {
+        }
+    }
+    /**
+     * @package Polylang-Pro
+     */
+    /**
+     * Language switcher block.
+     *
+     * @since 2.8
+     * @since 3.2 Extends now the PLL_Abstract_Language_Switcher_Block abstract class.
+     */
+    class PLL_Language_Switcher_Block extends \PLL_Abstract_Language_Switcher_Block
+    {
+        /**
+         * Returns the language switcher block name with the Polylang's namespace.
+         *
+         * @since 3.2
+         *
+         * @return string The block name.
+         */
+        protected function get_block_name()
+        {
+        }
+        /**
+         * Renders the `polylang/language-switcher` block on server.
+         *
+         * @since 2.8
+         * @since 3.2 Renamed according to its parent abstract class.
+         * @since 3.3 Accepts two new parameters, $content and $block.
+         *
+         * @param array    $attributes The block attributes.
+         * @param string   $content The saved content. Unused.
+         * @param WP_Block $block The parsed block. Unused.
+         * @return string Returns the language switcher.
+         */
+        public function render($attributes, $content, $block)
         {
         }
     }
@@ -4024,9 +4448,6 @@ namespace {
         }
     }
     /**
-     * @package Polylang-Pro
-     */
-    /**
      * Class to manage duplication action.
      *
      * @since 3.6
@@ -4043,7 +4464,7 @@ namespace {
         /**
          * Reference to the plugin options.
          *
-         * @var array
+         * @var Options
          */
         protected $options;
         /**
@@ -4092,18 +4513,8 @@ namespace {
      *
      * @since 2.6
      */
-    class PLL_Duplicate_REST
+    class PLL_Duplicate_REST extends \PLL_Toggle_User_Button_REST
     {
-        /**
-         * @var PLL_Admin_Links
-         */
-        protected $links;
-        /**
-         * Used to manage user meta.
-         *
-         * @var PLL_Toggle_User_Meta
-         */
-        protected $user_meta;
         /**
          * Constructor
          *
@@ -4124,6 +4535,16 @@ namespace {
          * @return array
          */
         public function remove_template($editor_settings, $block_editor_context)
+        {
+        }
+        /**
+         * Returns the description of the schema for the current user meta.
+         *
+         * @since 3.8
+         *
+         * @return string The description of the schema.
+         */
+        protected function get_schema_description(): string
         {
         }
     }
@@ -4398,7 +4819,7 @@ namespace {
         /**
          * Plugin's options.
          *
-         * @var array
+         * @var Options
          */
         protected $options;
         /**
@@ -4784,7 +5205,7 @@ namespace {
         {
         }
         /**
-         * Removes the translated template post type from the post types handled in `PLL_REST_Post`.
+         * Removes the translated template post type from the post types handled in `Translated_Object\Post`.
          *
          * @since 3.2
          *
@@ -4948,6 +5369,8 @@ namespace {
          * @param WP_REST_Request $request  The current request.
          * @param bool            $creating True when creating a template part, false when updating.
          * @return void
+         *
+         * @phpstan-param WP_REST_Request<array> $request
          */
         public function translate_content($template, $request, $creating)
         {
@@ -5047,6 +5470,8 @@ namespace {
          * @param  WP_REST_Request $request  Request object.
          * @param  bool            $creating True when creating a post, false when updating.
          * @return void
+         *
+         * @phpstan-param WP_REST_Request<array> $request
          */
         public function maybe_duplicate_template($post, $request, $creating)
         {
@@ -5144,120 +5569,29 @@ namespace {
         {
         }
     }
-    /**
-     * @package Polylang-Pro
-     */
-    /**
-     * Abstract class to allow to filter posts, terms or comments in the REST API
-     *
-     * @since 2.6.9
-     */
-    abstract class PLL_REST_Filtered_Object
-    {
-        /**
-         * @var PLL_Model
-         */
-        public $model;
-        /**
-         * Object type, typically 'post' or 'term', defined by the child class
-         *
-         * @var string
-         */
-        protected $type;
-        /**
-         * Array of arrays with post types or taxonomies as keys and options as values
-         * See constructor
-         *
-         * @var array
-         */
-        protected $content_types;
-        /**
-         * REST request stored for internal usage.
-         *
-         * @var WP_REST_Request|null
-         */
-        protected $request;
-        /**
-         * Constructor
-         *
-         * @since 2.6.9
-         *
-         * @param PLL_REST_API $rest_api      Instance of PLL_REST_API.
-         * @param array        $content_types Array of arrays with content type as keys and options as values.
-         *                                    The possible options are:
-         *                                    filters:      whether to filter queries, defaults to true.
-         */
-        public function __construct(&$rest_api, $content_types)
-        {
-        }
-        /**
-         * Get the rest field type for a content type.
-         *
-         * @since 2.3.11
-         *
-         * @param string $type Post type or taxonomy name.
-         * @return string REST API field type.
-         */
-        protected function get_rest_field_type($type)
-        {
-        }
-        /**
-         * Stores the request to use, for example, parameters when filtering queries.
-         *
-         * @since 3.2
-         *
-         * @param mixed           $null    Not used, generally null.
-         * @param WP_REST_Request $request Request used to generate the response.
-         * @return mixed
-         */
-        public function save_request($null, $request)
-        {
-        }
-        /**
-         * Exposes the 'lang' param for posts and terms
-         *
-         * @since 2.2
-         *
-         * @param array $query_params JSON Schema-formatted collection parameters.
-         * @return array
-         */
-        public function collection_params($query_params)
-        {
-        }
-    }
-    /**
-     * @package Polylang-Pro
-     */
+}
+namespace WP_Syntex\Polylang_Pro\REST\Translatable {
     /**
      * Abstract class to expose posts (or terms) language and translations in the REST API
      *
      * @since 2.2
      */
-    abstract class PLL_REST_Translated_Object extends \PLL_REST_Filtered_Object
+    abstract class Abstract_Object
     {
         /**
-         * @var PLL_Admin_Links
+         * @var PLL_Admin_Links|null
          */
         public $links;
         /**
-         * How is named the object id, typically 'ID' for posts and 'term_id' for terms.
-         * Mainly used in the object to save it in the database.
-         * Must be defined by the child class.
-         *
-         * @since 3.2 Property renamed from id.
-         *
-         * @var string
+         * @var PLL_Model
          */
-        protected $setter_id_name;
+        public $model;
         /**
-         * How is named the object id in the returned array from the REST API, typically 'id' for posts and terms and 'wp_id' for template and template parts.
-         * Must be defined by the child class if different of the default 'id' value.
+         * REST request stored for internal usage.
          *
-         * @since 3.2
-         *
-         * @var string
+         * @var Request
          */
-        protected $getter_id_name = 'id';
+        protected $request;
         /**
          * Constructor
          *
@@ -5265,16 +5599,33 @@ namespace {
          * @since 2.2.1 $content_types is an array of arrays
          * @since 2.6   The first parameter is an instance of PLL_REST_API instead of PLL_Model
          *
-         * @param object $rest_api      Instance of PLL_REST_API.
-         * @param array  $content_types Array of arrays with post types or taxonomies as keys and options as values.
-         *                              The possible options are:
-         *                              filters:      whether to filter queries, defaults to true.
-         *                              lang:         whether to return the language in the response, defaults to true.
-         *                              translations: whether to return the translations in the response, defaults to true.
+         * @param PLL_REST_API $rest_api      Instance of PLL_REST_API.
+         * @param array        $content_types Array of arrays with post types or taxonomies as keys and options as values.
+         *                                    The possible options are:
+         *                                    filters:      whether to filter queries, defaults to true.
+         *                                    lang:         whether to return the language in the response, defaults to true.
+         *                                    translations: whether to return the translations in the response, defaults to true.
          */
-        public function __construct(&$rest_api, $content_types)
+        public function __construct(\PLL_REST_API $rest_api, array $content_types)
         {
         }
+        /**
+         * Returns the current object type, e.g. 'post' or 'term'.
+         *
+         * @since 3.8
+         *
+         * @return string
+         */
+        abstract protected function get_type(): string;
+        /**
+         * Returns the database identifier for the item.
+         *
+         * @since 3.8
+         *
+         * @param array|object $item Item array or object, usually a post or term.
+         * @return int The database identifier, 0 if not found.
+         */
+        abstract protected function get_db_id($item): int;
         /**
          * Returns the object language.
          *
@@ -5299,6 +5650,65 @@ namespace {
         {
         }
         /**
+         * Get the rest field type for a content type.
+         *
+         * Move to PLL_REST_Translated_Object
+         *
+         * @since 2.3.11
+         *
+         * @param string $type Post type or taxonomy name.
+         * @return string REST API field type.
+         */
+        protected function get_rest_field_type($type)
+        {
+        }
+        /**
+         * Returns the REST identifier for the item.
+         *
+         * @since 3.8
+         *
+         * @param array|object $item Item array or object, usually a post or term.
+         * @return int The REST identifier, 0 if not found.
+         */
+        protected function get_rest_id($item): int
+        {
+        }
+        /**
+         * Register the language REST field.
+         *
+         * @since 3.8
+         *
+         * @param string $type The type of the object.
+         * @return void
+         */
+        protected function register_rest_field(string $type): void
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang_Pro\REST\Translated {
+    /**
+     * Abstract class to expose posts (or terms) language and translations in the REST API
+     *
+     * @since 2.2
+     */
+    abstract class Abstract_Object extends \WP_Syntex\Polylang_Pro\REST\Translatable\Abstract_Object
+    {
+        /**
+         * @var PLL_Admin_Links|null
+         */
+        public $links;
+        /**
+         * @var PLL_Model
+         */
+        public $model;
+        /**
+         * REST request stored for internal usage.
+         *
+         * @var Request
+         */
+        protected $request;
+        /**
          * Returns the object translations.
          *
          * @since 2.2
@@ -5321,21 +5731,25 @@ namespace {
         public function save_translations($translations, $object)
         {
         }
+        /**
+         * Register the language REST field.
+         *
+         * @since 3.8
+         *
+         * @param string $type The type of the object.
+         * @return void
+         */
+        protected function register_rest_field(string $type): void
+        {
+        }
     }
     /**
-     * @package Polylang-Pro
-     */
-    /**
-     * Expose terms language and translations in the REST API
+     * Expose posts language and translations in the REST API
      *
-     * @since 2.2
+     * @since 3.8
      */
-    class PLL_REST_Post extends \PLL_REST_Translated_Object
+    class Post extends \WP_Syntex\Polylang_Pro\REST\Translated\Abstract_Object
     {
-        /**
-         * @var PLL_Filters_Sanitization
-         */
-        public $filters_sanitization;
         /**
          * Constructor
          *
@@ -5344,30 +5758,7 @@ namespace {
          * @param PLL_REST_API $rest_api      Instance of PLL_REST_API.
          * @param array        $content_types Array of arrays with post types as keys and options as values.
          */
-        public function __construct(&$rest_api, $content_types)
-        {
-        }
-        /**
-         * Filters the query per language according to the 'lang' parameter from the REST request.
-         *
-         * @since 2.6.9
-         *
-         * @param WP_Query $query WP_Query object.
-         * @return void
-         */
-        public function parse_query($query)
-        {
-        }
-        /**
-         * Tells whether or not the given query is filterable by language.
-         *
-         * @since 3.2
-         *
-         * @param WP_Query $query The query to check.
-         * @return bool True if filterable by language. False if the query is already filtered,
-         *                   no language has been passed in the request or the post type is not supported.
-         */
-        protected function can_filter_query($query)
+        public function __construct(\PLL_REST_API $rest_api, array $content_types)
         {
         }
         /**
@@ -5380,6 +5771,8 @@ namespace {
          * @param WP_Post          $post     Post object.
          * @param WP_REST_Request  $request  Request object.
          * @return WP_REST_Response
+         *
+         * @phpstan-param WP_REST_Request<array> $request
          */
         public function prepare_response($response, $post, $request)
         {
@@ -5393,37 +5786,10 @@ namespace {
          * @param WP_REST_Server  $server  Server instance.
          * @param WP_REST_Request $request Request used to generate the response.
          * @return mixed
+         *
+         * @phpstan-param WP_REST_Request<array> $request
          */
         public function save_language_and_translations($result, $server, $request)
-        {
-        }
-        /**
-         * Registers the `translations_table` REST field only for block editor requests.
-         *
-         * @since 3.4
-         *
-         * @param mixed           $result  Response to replace the requested version with.
-         * @param WP_REST_Server  $server  Server instance.
-         * @param WP_REST_Request $request Request used to generate the response.
-         * @return mixed
-         */
-        public function register_rest_translation_table_field($result, $server, $request)
-        {
-        }
-        /**
-         * Initialize sanitization filters with the correct language locale.
-         *
-         * @see WP_REST_Server::dispatch()
-         *
-         * @since 2.9
-         *
-         * @param mixed           $result  Response to replace the requested version with. Can be anything
-         *                                 a normal endpoint can return, or null to not hijack the request.
-         * @param WP_REST_Server  $server  Server instance.
-         * @param WP_REST_Request $request Request used to generate the response.
-         * @return mixed
-         */
-        public function set_filters_sanitization($result, $server, $request)
         {
         }
         /**
@@ -5434,89 +5800,42 @@ namespace {
          *
          * @param WP_REST_Request $request Request used to generate the response.
          * @return bool True if the request saves a post.
+         *
+         * @phpstan-param WP_REST_Request<array> $request
          */
         public function is_save_post_request($request)
         {
         }
         /**
-         * Returns the post translations table
+         * Returns the current object type, e.g. 'post'.
          *
-         * @since 2.6
+         * @since 3.8
          *
-         * @param array $object Post array.
-         * @return array
+         * @return string
          */
-        public function get_translations_table($object)
+        protected function get_type(): string
         {
         }
         /**
-         * Generates links, language information and translated posts for a given language into a translation table.
+         * Returns the database identifier for the item.
          *
-         * @since 3.2
+         * @since 3.8
          *
-         * @param int          $id       The id of the existing post to get data for the translations table element.
-         * @param int          $tr_id    The id of the translated post for the given language if exists.
-         * @param PLL_Language $language The given language object.
-         * @return array The translation data of the given language.
+         * @param array|object $item Item array or object, usually a post or term.
+         * @return int The database identifier, 0 if not found.
          */
-        public function get_translation_table_data($id, $tr_id, $language)
-        {
-        }
-        /**
-         * Returns the post id of the post that we come from to create a translation.
-         *
-         * @since 3.2
-         * @since 3.4.5 Returns the source post ID sooner for a REST request.
-         *
-         * @return int The post id of the original post.
-         */
-        public function get_from_post_id()
-        {
-        }
-        /**
-         * Assigns the language to the edited media.
-         *
-         * When a media is edited in the block image, a new media is created and we need to set the language from the original one.
-         *
-         * @see https://make.wordpress.org/core/2020/07/20/editing-images-in-the-block-editor/ the new WordPress 5.5 feature: Editing Images in the Block Editor.
-         *
-         * @since 2.8
-         *
-         * @param int $post_id Post id.
-         * @return void
-         */
-        public function set_media_language($post_id)
-        {
-        }
-        /**
-         * Returns edit post link for site editor.
-         *
-         * @since 3.4.5
-         *
-         * @param int $post_id ID of the post to get edit link from.
-         * @return string|null The edit post link for the given post. Null if none found.
-         */
-        protected function get_site_editor_edit_post_link($post_id)
-        {
-        }
-        /**
-         * Tells whether or not the given route is in an allowed namespace for the `translation_table` REST field.
-         *
-         * @since 3.5
-         *
-         * @param string $route The route to check.
-         * @return bool True if in an allowed namespace, false otherwise.
-         */
-        protected function is_allowed_namespace($route)
+        protected function get_db_id($item): int
         {
         }
     }
+}
+namespace {
     /**
      * Expose terms language and translations in the REST API for templates in particular by filtering the queries.
      *
      * @since 3.2
      */
-    class PLL_FSE_REST_Template extends \PLL_REST_Post
+    class PLL_FSE_REST_Template extends \WP_Syntex\Polylang_Pro\REST\Translated\Post
     {
         /**
          * The post type of the template.
@@ -5529,11 +5848,10 @@ namespace {
          *
          * @since 3.2
          *
-         * @param PLL_REST_API $rest_api      Instance of PLL_REST_API.
-         * @param string[]     $content_types Array with post types as keys and values.
+         * @param PLL_REST_API $rest_api Instance of PLL_REST_API.
          * @return void
          */
-        public function __construct(\PLL_REST_API &$rest_api, array $content_types)
+        public function __construct(\PLL_REST_API &$rest_api)
         {
         }
         /**
@@ -5544,20 +5862,6 @@ namespace {
          * @return self
          */
         public function init()
-        {
-        }
-        /**
-         * Overloads parent's method to add the delete link and default language into a translation table data for template post types.
-         * See PLL_REST_Post::generate_translation_data.
-         *
-         * @since 3.2
-         *
-         * @param int          $id       The id of the existing post to get data for the translations table element.
-         * @param int          $tr_id    The id of the translated post for the given language if exists.
-         * @param PLL_Language $language The given language object.
-         * @return array The translation data of the given language.
-         */
-        public function get_translation_table_data($id, $tr_id, $language)
         {
         }
         /**
@@ -5593,6 +5897,8 @@ namespace {
          *                                 endpoint can return, or null to not hijack the request.
          * @param WP_REST_Request $request Request used to generate the response.
          * @return mixed                   Unchanged value.
+         *
+         * @phpstan-param WP_REST_Request<array> $request
          */
         public function get_current_post_type_from_route($result, $request)
         {
@@ -5612,14 +5918,25 @@ namespace {
         {
         }
         /**
-         * Returns edit post link for site editor.
+         * Returns the REST identifier for the item.
          *
-         * @since 3.4.5
+         * @since 3.8
          *
-         * @param int $post_id ID of the post to get edit link from.
-         * @return string|null The edit post link for the given post. Null if none found.
+         * @param array|object $item Item array or object, usually a post or term.
+         * @return int The REST identifier, 0 if not found.
          */
-        protected function get_site_editor_edit_post_link($post_id)
+        protected function get_rest_id($item): int
+        {
+        }
+        /**
+         * Returns the database identifier for the item.
+         *
+         * @since 3.8
+         *
+         * @param array|object $item Item array or object, usually a post or term.
+         * @return int The database identifier, 0 if not found.
+         */
+        protected function get_db_id($item): int
         {
         }
     }
@@ -6198,9 +6515,6 @@ namespace {
         abstract protected function get_extension(): string;
     }
     /**
-     * @package Polylang-Pro
-     */
-    /**
      * A class that handles the export action of string translations.
      *
      * @since 3.6
@@ -6220,6 +6534,12 @@ namespace {
          * @var string
          */
         const NONCE_NAME = '_pll_translate_nonce';
+        /**
+         * Used to set export action value.
+         *
+         * @var string
+         */
+        const ACTION_VALUE = 'export-translations';
         /**
          * Constructor.
          *
@@ -6242,9 +6562,11 @@ namespace {
          *
          * @since 3.6
          *
-         * @return never
+         * @return void
+         *
+         * @phpstan-return never
          */
-        public function export_action()
+        public function export_action(): void
         {
         }
         /**
@@ -6256,7 +6578,7 @@ namespace {
          * @param string         $file_type        File type.
          * @param string         $group            Optional. Allows to export string translations from the given group only.
          *                                         Use an empty string to export all strings. Default is an empty string.
-         * @return WP_Error|never
+         * @return WP_Error
          */
         public function export(array $target_languages, string $file_type, string $group = ''): \WP_Error
         {
@@ -6496,9 +6818,6 @@ namespace {
         }
     }
     /**
-     * @package Polylang-Pro
-     */
-    /**
      * A class that handle the import action.
      *
      * @since 2.7
@@ -6519,6 +6838,12 @@ namespace {
          * @var string
          */
         const NONCE_NAME = '_pll_import_nonce';
+        /**
+         * Used to set import action value.
+         *
+         * @var string
+         */
+        const ACTION_VALUE = 'import-translations';
         /**
          * PLL_Import_Action constructor.
          *
@@ -6548,8 +6873,10 @@ namespace {
          * @since 3.6
          *
          * @return void
+         *
+         * @phpstan-return never
          */
-        public function import_action()
+        public function import_action(): void
         {
         }
         /**
@@ -6727,6 +7054,12 @@ namespace {
          * @var int[]
          */
         protected $post_ids = array();
+        /**
+         * Service to manage user capabilities, espcecially 'unfiltered_html'.
+         *
+         * @var PLL_Manage_User_Capabilities
+         */
+        protected $user_capabilities_manager;
         /**
          * Constructor.
          *
@@ -8412,9 +8745,6 @@ namespace {
         }
     }
     /**
-     * @package Polylang-Pro
-     */
-    /**
      * Advanced media functionalities
      *
      * @since 1.9
@@ -8424,7 +8754,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var array
+         * @var Options
          */
         public $options;
         /**
@@ -8432,14 +8762,14 @@ namespace {
          */
         public $model;
         /**
-         * Constructor: setups filters and actions
+         * Constructor: setups filters and actions.
          *
          * @since 1.9
          * @since 2.7 Now registers an option for the Translate bulk action.
          *
-         * @param PLL_Admin $polylang Polylang object.
+         * @param PLL_Base $polylang Polylang object.
          */
-        public function __construct(&$polylang)
+        public function __construct(\PLL_Base &$polylang)
         {
         }
         /**
@@ -8569,97 +8899,62 @@ namespace {
         {
         }
     }
+}
+namespace WP_Syntex\Polylang_Pro\REST\Filtered {
     /**
-     * @package Polylang-Pro
-     */
-    /**
-     * Setup the REST API endpoints and filters.
+     * Abstract class to allow to filter posts, terms or comments in the REST API.
      *
-     * @since 2.2
+     * @since 2.6.9
+     * @since 3.8 Renamed from PLL_REST_Filtered_Object.
      */
-    class PLL_REST_API
+    abstract class Abstract_Object
     {
-        /**
-         * @var PLL_REST_Post
-         */
-        public $post;
-        /**
-         * @var PLL_REST_Term
-         */
-        public $term;
-        /**
-         * @var PLL_FSE_REST_Template|null
-         */
-        public $template;
-        /**
-         * @var PLL_REST_Comment
-         */
-        public $comment;
-        /**
-         * @var PLL_Admin_Links
-         */
-        public $links;
         /**
          * @var PLL_Model
          */
         public $model;
         /**
-         * List of translatable post types.
+         * Array of content types to filter by language.
          *
          * @var array
          */
-        protected $post_types;
+        protected $content_types;
         /**
-         * Constructor.
+         * REST request stored for internal usage.
+         *
+         * @var Request
+         */
+        protected $request;
+        /**
+         * Constructor
+         *
+         * @since 2.6.9
+         *
+         * @param PLL_REST_API $rest_api      Instance of PLL_REST_API.
+         * @param array        $content_types Array of content types to filter by language.
+         */
+        public function __construct(\PLL_REST_API $rest_api, array $content_types)
+        {
+        }
+        /**
+         * Exposes the 'lang' param for posts and terms
          *
          * @since 2.2
          *
-         * @param object $polylang Instance of `PLL_REST_Request`.
-         */
-        public function __construct(&$polylang)
-        {
-        }
-        /**
-         * Inits filters and new endpoints.
-         *
-         * @since 2.2
-         *
-         * @return void
-         */
-        public function init()
-        {
-        }
-        /**
-         * Retrieves the query params for the untranslated posts collection.
-         *
-         * @since 2.6.0
-         *
-         * @return array Collection parameters.
-         */
-        public function get_untranslated_posts_collection_params()
-        {
-        }
-        /**
-         * Returns a list of posts not translated in a language.
-         *
-         * @since 2.6.0
-         *
-         * @param WP_REST_Request $request REST API request.
+         * @param array $query_params JSON Schema-formatted collection parameters.
          * @return array
          */
-        public function get_untranslated_posts(\WP_REST_Request $request)
+        public function collection_params($query_params)
         {
         }
     }
     /**
-     * @package Polylang-Pro
-     */
-    /**
      * Filters comments in the REST API.
      *
      * @since 2.6.9
+     * @since 3.8 Renamed from PLL_REST_Comment.
      */
-    class PLL_REST_Comment extends \PLL_REST_Filtered_Object
+    class Comment extends \WP_Syntex\Polylang_Pro\REST\Filtered\Abstract_Object
     {
         /**
          * Constructor.
@@ -8668,7 +8963,7 @@ namespace {
          *
          * @param PLL_REST_API $rest_api Instance of PLL_REST_API.
          */
-        public function __construct(&$rest_api)
+        public function __construct(\PLL_REST_API $rest_api)
         {
         }
         /**
@@ -8684,14 +8979,109 @@ namespace {
         }
     }
     /**
-     * @package Polylang-Pro
+     * Filters posts by language in the REST API.
+     *
+     * @since 3.8
      */
+    class Post extends \WP_Syntex\Polylang_Pro\REST\Filtered\Abstract_Object
+    {
+        /**
+         * Constructor.
+         *
+         * @since 3.8
+         *
+         * @param PLL_REST_API $rest_api      Instance of PLL_REST_API.
+         * @param array        $content_types Array of post types to filter.
+         */
+        public function __construct(\PLL_REST_API $rest_api, array $content_types)
+        {
+        }
+        /**
+         * Filters the query per language according to the 'lang' parameter from the REST request.
+         *
+         * @since 2.6.9
+         * @since 3.8 Moved from PLL_REST_Post.
+         *
+         * @param WP_Query $query WP_Query object.
+         * @return void
+         */
+        public function parse_query($query)
+        {
+        }
+    }
+    /**
+     * Filters terms by language in the REST API.
+     *
+     * @since 3.8
+     */
+    class Term extends \WP_Syntex\Polylang_Pro\REST\Filtered\Abstract_Object
+    {
+        /**
+         * Constructor.
+         *
+         * @since 3.8
+         *
+         * @param PLL_REST_API $rest_api      Instance of PLL_REST_API.
+         * @param array        $content_types Array of taxonomies to filter.
+         */
+        public function __construct(\PLL_REST_API $rest_api, array $content_types)
+        {
+        }
+        /**
+         * Filters the query per language according to the 'lang' parameter.
+         *
+         * @since 2.6.9
+         * @since 3.8 Moved from PLL_REST_Term.
+         *
+         * @param array $args WP_Term_Query arguments.
+         * @return array
+         */
+        public function get_terms_args($args)
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang_Pro\REST\Translated {
+    /**
+     * Expose attachments language and translations in the REST API
+     *
+     * @since 3.8
+     */
+    class Attachment extends \WP_Syntex\Polylang_Pro\REST\Translated\Post
+    {
+        /**
+         * Constructor
+         *
+         * @since 2.2
+         *
+         * @param PLL_REST_API $rest_api Instance of PLL_REST_API.
+         */
+        public function __construct(\PLL_REST_API $rest_api)
+        {
+        }
+        /**
+         * Assigns the language to the edited media.
+         *
+         * When a media is edited in the block image, a new media is created and we need to set the language from the original one.
+         *
+         * @see https://make.wordpress.org/core/2020/07/20/editing-images-in-the-block-editor/ the new WordPress 5.5 feature: Editing Images in the Block Editor.
+         *
+         * @since 2.8
+         * @since 3.8 Moved from PLL_REST_Post.
+         *
+         * @param int $post_id Post id.
+         * @return void
+         */
+        public function set_media_language($post_id)
+        {
+        }
+    }
     /**
      * Expose terms language and translations in the REST API.
      *
-     * @since 2.2
+     * @since 3.8
      */
-    class PLL_REST_Term extends \PLL_REST_Translated_Object
+    class Term extends \WP_Syntex\Polylang_Pro\REST\Translated\Abstract_Object
     {
         /**
          * Constructor.
@@ -8701,29 +9091,7 @@ namespace {
          * @param PLL_REST_API $rest_api      Instance of PLL_REST_API.
          * @param array        $content_types Array of arrays with taxonomies as keys and options as values.
          */
-        public function __construct(&$rest_api, $content_types)
-        {
-        }
-        /**
-         * Filters the query per language according to the 'lang' parameter.
-         *
-         * @since 2.6.9
-         *
-         * @param array $args WP_Term_Query arguments.
-         * @return array
-         */
-        public function get_terms_args($args)
-        {
-        }
-        /**
-         * Get the rest field type for a content type.
-         *
-         * @since 2.3.11
-         *
-         * @param string $type Taxonomy name.
-         * @return string REST API field type.
-         */
-        protected function get_rest_field_type($type)
+        public function __construct(\PLL_REST_API $rest_api, array $content_types)
         {
         }
         /**
@@ -8737,6 +9105,306 @@ namespace {
          * @return string
          */
         public function pre_term_slug($slug, $taxonomy)
+        {
+        }
+        /**
+         * Returns the current object type, e.g. 'term'.
+         *
+         * @since 3.8
+         *
+         * @return string
+         */
+        protected function get_type(): string
+        {
+        }
+        /**
+         * Returns the database identifier for the item.
+         *
+         * @since 3.8
+         *
+         * @param array|object $item Item array or object, usually a post or term.
+         * @return int The database identifier, 0 if not found.
+         */
+        protected function get_db_id($item): int
+        {
+        }
+        /**
+         * Get the rest field type for a content type.
+         *
+         * @since 2.3.11
+         *
+         * @param string $type Taxonomy name.
+         * @return string REST API field type.
+         */
+        protected function get_rest_field_type($type)
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang_Pro\REST\V1 {
+    /**
+     * Translation feature for the REST API.
+     * Only supports post duplication for now.
+     *
+     * @since 3.8
+     */
+    class Translation extends \WP_REST_Controller
+    {
+        /**
+         * Constructor.
+         *
+         * @since 3.8
+         *
+         * @param PLL_Base $polylang Polylang's base object.
+         */
+        public function __construct(\PLL_Base $polylang)
+        {
+        }
+        /**
+         * Registers the route.
+         *
+         * @since 3.8
+         *
+         * @return void
+         */
+        public function register_routes()
+        {
+        }
+        /**
+         * Duplicates a post.
+         *
+         * @since 3.8
+         *
+         * @param WP_REST_Request $request Full details about the request.
+         * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+         *
+         * @phpstan-template T of array
+         * @phpstan-param WP_REST_Request<T> $request
+         */
+        public function create_item($request)
+        {
+        }
+        /**
+         * Checks if a user has permission to duplicate a post.
+         *
+         * @since 3.8
+         *
+         * @param WP_REST_Request $request Full details about the request.
+         * @return bool True if the current user has permission, false otherwise.
+         *
+         * @phpstan-template T of array
+         * @phpstan-param WP_REST_Request<T> $request
+         */
+        public function create_item_permissions_check($request)
+        {
+        }
+        /**
+         * Retrieves an array of endpoint arguments from the item schema for the controller.
+         *
+         * @since 3.8
+         *
+         * @param string $method The request method.
+         * @return array Endpoint arguments.
+         */
+        public function get_endpoint_args_for_item_schema($method = \WP_REST_Server::CREATABLE)
+        {
+        }
+        /**
+         * Retrieves the item schema for the controller.
+         *
+         * @since 3.8
+         *
+         * @return array Item schema.
+         */
+        public function get_item_schema(): array
+        {
+        }
+        /**
+         * Prepares an item for the response.
+         *
+         * @since 3.8
+         *
+         * @param WP_Post         $item The item to prepare.
+         * @param WP_REST_Request $request The request object.
+         * @return WP_REST_Response|WP_Error The prepared item.
+         *
+         * @phpstan-template T of array
+         * @phpstan-param WP_REST_Request<T> $request
+         */
+        public function prepare_item_for_response($item, $request)
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang\REST {
+    /**
+     * Abstract REST controller.
+     *
+     * @since 3.7
+     */
+    abstract class Abstract_Controller extends \WP_REST_Controller
+    {
+        /**
+         * Adds a status code to the given error and returns the error.
+         *
+         * @since 3.7
+         *
+         * @param WP_Error $error       A `WP_Error` object.
+         * @param int      $status_code Optional. A status code. Default is 400.
+         * @return WP_Error
+         */
+        protected function add_status_to_error(\WP_Error $error, int $status_code = 400): \WP_Error
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang_Pro\REST\V1 {
+    /**
+     * Class for the untranslated posts REST API endpoint.
+     *
+     * @since 3.8
+     */
+    class Untranslated_Posts extends \WP_Syntex\Polylang\REST\Abstract_Controller
+    {
+        /**
+         * @var array
+         */
+        protected $schema;
+        /**
+         * Constructor.
+         *
+         * @since 3.8
+         *
+         * @param PLL_Model $model The model.
+         * @param array     $post_types The post types.
+         */
+        public function __construct(\PLL_Model $model, array $post_types)
+        {
+        }
+        /**
+         * Registers the routes for languages.
+         *
+         * @since 3.8
+         *
+         * @return void
+         */
+        public function register_routes(): void
+        {
+        }
+        /**
+         * Retrieves the parameters defined for the untranslated posts REST API endpoint.
+         *
+         * @since 2.6.0
+         * @since 3.8 Moved from PLL_REST_API and renamed.
+         *
+         * @return array REST API endpoint parameters.
+         */
+        public function get_collection_params()
+        {
+        }
+        /**
+         * Returns the schema for the public endpoint.
+         *
+         * @since 3.8
+         *
+         * @return array The schema.
+         */
+        public function get_public_schema(): array
+        {
+        }
+        /**
+         * Returns a list of posts not translated in a language.
+         *
+         * @since 2.6.0
+         * @since 3.8 Moved from PLL_REST_API.
+         *
+         * @param WP_REST_Request $request REST API request.
+         * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+         *
+         * @phpstan-param WP_REST_Request<array> $request
+         */
+        public function get_items($request)
+        {
+        }
+        /**
+         * Checks if a given request has access to read untranslated posts.
+         *
+         * @since 3.8
+         *
+         * @param WP_REST_Request $request Full details about the request.
+         * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
+         *
+         * @phpstan-param WP_REST_Request<array> $request
+         */
+        public function get_items_permissions_check($request)
+        {
+        }
+    }
+}
+namespace {
+    /**
+     * Setup the REST API endpoints and filters.
+     *
+     * @since 2.2
+     */
+    class PLL_REST_API
+    {
+        /**
+         * @var Translated_Post
+         */
+        public $post;
+        /**
+         * @var Translated_Term
+         */
+        public $term;
+        /**
+         * @var Translated_Attachment
+         */
+        public $attachment;
+        /**
+         * @var PLL_FSE_REST_Template|null
+         */
+        public $template;
+        /**
+         * @var Filtered_Comment
+         */
+        public $filtered_comment;
+        /**
+         * @var Filtered_Post
+         */
+        public $filtered_post;
+        /**
+         * @var Filtered_Term
+         */
+        public $filtered_term;
+        /**
+         * @var Untranslated_Posts
+         */
+        public $untranslated_posts;
+        /**
+         * @var Translation
+         */
+        public $translation;
+        /**
+         * @var PLL_Admin_Links|null
+         */
+        public $links;
+        /**
+         * @var PLL_Model
+         */
+        public $model;
+        /**
+         * @var Request
+         */
+        public $request;
+        /**
+         * Constructor.
+         *
+         * @since 2.2
+         *
+         * @param PLL_Base $polylang Instance of `PLL_Base`.
+         */
+        public function __construct(&$polylang)
         {
         }
     }
@@ -8839,9 +9507,6 @@ namespace {
         }
     }
     /**
-     * @package Polylang-Pro
-     */
-    /**
      * Base class to manage shared slugs for posts
      *
      * @since 1.9
@@ -8851,7 +9516,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var array
+         * @var Options
          */
         public $options;
         /**
@@ -8873,9 +9538,9 @@ namespace {
          *
          * @since 1.9
          *
-         * @param object $polylang Polylang object.
+         * @param PLL_Base $polylang Polylang object.
          */
-        public function __construct(&$polylang)
+        public function __construct(\PLL_Base &$polylang)
         {
         }
         /**
@@ -8980,9 +9645,6 @@ namespace {
         }
     }
     /**
-     * @package Polylang-Pro
-     */
-    /**
      * Base class for managing shared slugs for taxonomy terms
      *
      * @since 1.9
@@ -8992,7 +9654,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var array
+         * @var Options
          */
         public $options;
         /**
@@ -9013,13 +9675,13 @@ namespace {
          */
         const TERM_SLUG_SEPARATOR = '___';
         /**
-         * Constructor
+         * Constructor.
          *
          * @since 1.9
          *
          * @param PLL_Base $polylang Polylang object.
          */
-        public function __construct(&$polylang)
+        public function __construct(\PLL_Base &$polylang)
         {
         }
         /**
@@ -9186,9 +9848,6 @@ namespace {
         }
     }
     /**
-     * @package Polylang-Pro
-     */
-    /**
      * Model for synchronizing posts
      *
      * @since 2.6
@@ -9198,7 +9857,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var array
+         * @var Options
          */
         public $options;
         /**
@@ -9242,9 +9901,9 @@ namespace {
          *
          * @since 2.6
          *
-         * @param object $polylang Polylang object.
+         * @param PLL_Base $polylang Polylang object.
          */
-        public function __construct(&$polylang)
+        public function __construct(\PLL_Base &$polylang)
         {
         }
         /**
@@ -9450,20 +10109,6 @@ namespace {
          * @return void
          */
         public function after_insert_post($post)
-        {
-        }
-        /**
-         * Add information to the translations_table field
-         * to check if the user can synchronize the current post.
-         *
-         * @since 2.6
-         *
-         * @param array        $data     Translations table row data.
-         * @param int          $post_id  Post to synchronize.
-         * @param PLL_Language $language Language to synchronize.
-         * @return array
-         */
-        public function translations_table($data, $post_id, $language)
         {
         }
     }
@@ -9813,7 +10458,7 @@ namespace {
          *
          * @since 3.7
          *
-         * @param string|int   $id              Numeric value of the source object ID.
+         * @param mixed        $id              Numeric value of the source object ID.
          * @param string       $type            Object type (`post`, `term`, `attachment` or `wp_block`).
          * @param PLL_Language $target_language Target language.
          * @param WP_Post|null $target_post     Main target post object. Default to `null`, meaning not saved yet or not applicable.
@@ -10203,6 +10848,7 @@ namespace {
      */
     class PLL_Translate_Slugs_Model
     {
+        const TRANSIENT_NAME = 'pll_translated_slugs';
         /**
          * @var PLL_Model
          */
@@ -10298,6 +10944,16 @@ namespace {
          * @return void
          */
         public function prepare_rewrite_rules()
+        {
+        }
+        /**
+         * Deletes the transient from the options table since WordPress does not do it when using object cache.
+         *
+         * @since 3.8
+         *
+         * @return void
+         */
+        public function delete_transient_from_options_table(): void
         {
         }
         /**
@@ -10513,9 +11169,6 @@ namespace {
         }
     }
     /**
-     * @package Polylang-Pro
-     */
-    /**
      * An abstract class to handle cross domain data and single sign on
      * Inspired by https://github.com/humanmade/Mercator/
      *
@@ -10526,7 +11179,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var array
+         * @var Options
          */
         public $options;
         /**
@@ -10542,9 +11195,9 @@ namespace {
          *
          * @since 2.0
          *
-         * @param object $polylang Polylang object.
+         * @param PLL_Frontend $polylang Polylang object.
          */
-        public function __construct(&$polylang)
+        public function __construct(\PLL_Frontend &$polylang)
         {
         }
         /**
@@ -10915,6 +11568,268 @@ namespace {
         {
         }
     }
+}
+namespace WP_Syntex\Polylang_Pro\Services\Encoding {
+    /**
+     * Allows to decode and encode data in a particular format.
+     *
+     * @since 3.8
+     */
+    interface Data_Encoder_Interface
+    {
+        /**
+         * Decodes the given data.
+         *
+         * @since 3.8
+         *
+         * @param string $data Data.
+         * @return mixed|WP_Error Decoded data. A `WP_Error` object upon decoding failure.
+         */
+        public function decode(string $data);
+        /**
+         * Encodes the given data.
+         *
+         * @since 3.8
+         *
+         * @param mixed $data Data.
+         * @return string|WP_Error Encoded data. A `WP_Error` object upon encoding failure.
+         */
+        public function encode($data);
+    }
+    /**
+     * Allows to decode and encode data in base64 format.
+     *
+     * @since 3.8
+     */
+    class Base64_Encoding implements \WP_Syntex\Polylang_Pro\Services\Encoding\Data_Encoder_Interface
+    {
+        /**
+         * Name of the format.
+         *
+         * @since 3.8
+         */
+        public const NAME = 'base64';
+        /**
+         * Decodes the given base64 data.
+         *
+         * @since 3.8
+         *
+         * @param string $data Data.
+         * @return mixed|WP_Error Decoded data. A `WP_Error` object upon decoding failure.
+         */
+        public function decode(string $data)
+        {
+        }
+        /**
+         * Encodes the given data to base64.
+         *
+         * @since 3.8
+         *
+         * @param mixed $data Data.
+         * @return string|WP_Error Encoded data. A `WP_Error` object upon decoding failure.
+         */
+        public function encode($data)
+        {
+        }
+    }
+    /**
+     * Allows to decode and encode data in multiple formats.
+     *
+     * @since 3.6
+     * @since 3.8 Renamed and namespaced.
+     *            New formats `base64` and `urlencode`.
+     *            Handle multiple formats at once.
+     *
+     * @phpstan-type Formats ''|'base64'|'json'|'serialize'|'urlencode'
+     */
+    class Data_Encoding
+    {
+        /**
+         * Constructor.
+         *
+         * @since 3.6
+         * @since 3.8 Parameter `$format` is renamed into `$formats` and allows a commat-separated list of formats.
+         *
+         * @param string $formats Comma-separated list of encoding formats. Possible values are:
+         *    - `base64`.
+         *    - `json`.
+         *    - `serialize`.
+         *    - `urlencode`.
+         *    An empty string will fall back to `serialize`. Default is `serialize`.
+         */
+        public function __construct(string $formats = 'serialize')
+        {
+        }
+        /**
+         * Tells if the given format is `serialize` (only), which is what WP uses by default for the metas.
+         *
+         * @since 3.8
+         *
+         * @param string $format Encoding format(s).
+         * @return bool
+         */
+        public static function is_serialize(string $format): bool
+        {
+        }
+        /**
+         * Decodes the given data.
+         * Returns a `WP_Error` object upon decoding failure.
+         *
+         * @since 3.6
+         *
+         * @param mixed $data Data.
+         * @return mixed|WP_Error Decoded data. A `WP_Error` object upon decoding failure.
+         */
+        public function decode($data)
+        {
+        }
+        /**
+         * Decodes the given data.
+         * The data is passed by reference and the method returns a `WP_Error` object upon decoding failure.
+         *
+         * @since 3.6
+         *
+         * @param mixed $data Data, passed by reference.
+         * @return WP_Error
+         */
+        public function decode_reference(&$data): \WP_Error
+        {
+        }
+        /**
+         * Encodes the given data.
+         * Returns a `WP_Error` object upon encoding failure.
+         *
+         * @since 3.6
+         *
+         * @param mixed $data Data.
+         * @return mixed Decoded data. A `WP_Error` object upon encoding failure.
+         */
+        public function encode($data)
+        {
+        }
+        /**
+         * Encodes the given data.
+         * The data is passed by reference and the method returns a `WP_Error` object upon encoding failure.
+         *
+         * @since 3.6
+         *
+         * @param mixed $data Data, passed by reference.
+         * @return WP_Error
+         */
+        public function encode_reference(&$data): \WP_Error
+        {
+        }
+    }
+    /**
+     * Allows to decode and encode data in JSON format.
+     *
+     * @since 3.8
+     */
+    class Json_Encoding implements \WP_Syntex\Polylang_Pro\Services\Encoding\Data_Encoder_Interface
+    {
+        /**
+         * Name of the format.
+         *
+         * @since 3.8
+         */
+        public const NAME = 'json';
+        /**
+         * Decodes the given JSON data.
+         *
+         * @since 3.8
+         *
+         * @param string $data Data.
+         * @return mixed|WP_Error Decoded data. A `WP_Error` object upon decoding failure.
+         */
+        public function decode(string $data)
+        {
+        }
+        /**
+         * Encodes the given data to JSON.
+         *
+         * @since 3.8
+         *
+         * @param mixed $data Data.
+         * @return string|WP_Error Encoded data. A `WP_Error` object upon decoding failure.
+         */
+        public function encode($data)
+        {
+        }
+    }
+    /**
+     * Allows to unserialize and serialize data.
+     *
+     * @since 3.8
+     */
+    class Serialize_Encoding implements \WP_Syntex\Polylang_Pro\Services\Encoding\Data_Encoder_Interface
+    {
+        /**
+         * Name of the format.
+         *
+         * @since 3.8
+         */
+        public const NAME = 'serialize';
+        /**
+         * Unserializes the given serialized data.
+         *
+         * @since 3.8
+         *
+         * @param string $data Data.
+         * @return mixed|WP_Error Decoded data. A `WP_Error` object upon decoding failure.
+         */
+        public function decode(string $data)
+        {
+        }
+        /**
+         * Serializes the given data.
+         *
+         * @since 3.8
+         *
+         * @param mixed $data Data.
+         * @return string|WP_Error Encoded data. A `WP_Error` object upon decoding failure.
+         */
+        public function encode($data)
+        {
+        }
+    }
+    /**
+     * Allows to unserialize and serialize data.
+     *
+     * @since 3.8
+     */
+    class Url_Encoding implements \WP_Syntex\Polylang_Pro\Services\Encoding\Data_Encoder_Interface
+    {
+        /**
+         * Name of the format.
+         *
+         * @since 3.8
+         */
+        public const NAME = 'urlencode';
+        /**
+         * URL-decodes the given data.
+         *
+         * @since 3.8
+         *
+         * @param string $data Data.
+         * @return mixed|WP_Error Decoded data. A `WP_Error` object upon decoding failure.
+         */
+        public function decode(string $data)
+        {
+        }
+        /**
+         * URL-encodes the given data.
+         *
+         * @since 3.8
+         *
+         * @param mixed $data Data.
+         * @return string|WP_Error Encoded data. A `WP_Error` object upon decoding failure.
+         */
+        public function encode($data)
+        {
+        }
+    }
+}
+namespace {
     /**
      * @package Polylang-Pro
      */
@@ -11367,91 +12282,6 @@ namespace {
      * @package Polylang-Pro
      */
     /**
-     * Allows to decode and encode data in a given format.
-     *
-     * @since 3.6
-     *
-     * @phpstan-type Formats ''|'serialize'|'json'
-     */
-    class PLL_Data_Encoding
-    {
-        /**
-         * Constructor.
-         *
-         * @since 3.6
-         *
-         * @param string $format Encoding format. Possible values are:
-         *    - An empty string: to (un)serialize.
-         *    - `serialize`.
-         *    - `json`.
-         *    Default is an empty string.
-         */
-        public function __construct(string $format = '')
-        {
-        }
-        /**
-         * Tells if the current format is `serialize`, which is what WP uses by default for the metas.
-         *
-         * @since 3.6
-         *
-         * @return bool
-         */
-        public function use_serialize(): bool
-        {
-        }
-        /**
-         * Decodes the given data.
-         * Returns a `WP_Error` object upon decoding failure.
-         *
-         * @since 3.6
-         *
-         * @param mixed $data Data.
-         * @return mixed|WP_Error Decoded data. A `WP_Error` object upon decoding failure.
-         */
-        public function decode($data)
-        {
-        }
-        /**
-         * Decodes the given data.
-         * The data is passed by reference and the method returns a `WP_Error` object upon decoding failure.
-         *
-         * @since 3.6
-         *
-         * @param mixed $data Data, passed by reference.
-         * @return WP_Error
-         */
-        public function decode_reference(&$data): \WP_Error
-        {
-        }
-        /**
-         * Encodes the given data.
-         * Returns a `WP_Error` object upon encoding failure.
-         *
-         * @since 3.6
-         *
-         * @param mixed $data Data.
-         * @return mixed Decoded data. A `WP_Error` object upon encoding failure.
-         */
-        public function encode($data)
-        {
-        }
-        /**
-         * Encodes the given data.
-         * The data is passed by reference and the method returns a `WP_Error` object upon encoding failure.
-         *
-         * @since 3.6
-         *
-         * @param mixed $data Data, passed by reference.
-         * @return WP_Error
-         */
-        public function encode_reference(&$data): \WP_Error
-        {
-        }
-    }
-    /**
-     * @package Polylang-Pro
-     */
-    /**
      * Provides a few tools to manipulate content by using `DOMDocument`.
      *
      * @since 3.3
@@ -11571,6 +12401,8 @@ namespace {
          * Note: DOMDocument automatically wraps the loaded nodes in a <body> element.
          *
          * @return DOMNodeList
+         *
+         * @phpstan-return DOMNodeList<DOMNode>
          */
         public function get_first_level_html_nodes()
         {
@@ -11608,6 +12440,8 @@ namespace {
      *
      * @since 3.1
      * @since 3.6 Renamed from `PLL_Import_Xliff_Iterator` to `PLL_DOM_Nodes_Iterator`.
+     *
+     * @implements RecursiveIterator<string, DOMNode>
      */
     class PLL_DOM_Nodes_Iterator implements \RecursiveIterator
     {
@@ -11617,6 +12451,8 @@ namespace {
          * @since 3.1
          *
          * @param DOMNodeList $nodes Nodes.
+         *
+         * @phpstan-param DOMNodeList<DOMNode> $nodes
          */
         public function __construct(\DOMNodeList $nodes)
         {
@@ -11691,7 +12527,7 @@ namespace {
          *
          * @since 3.1
          *
-         * @return RecursiveIterator|null Returns an iterator for the current entry if it exists, or null otherwise.
+         * @return self|null Returns an iterator for the current entry if it exists, or null otherwise.
          */
         #[\ReturnTypeWillChange]
         public function getChildren()
@@ -11893,9 +12729,6 @@ namespace {
         }
     }
     /**
-     * @package Polylang-Pro
-     */
-    /**
      * Abstract class to manage the export of metas.
      *
      * @since 3.3
@@ -11972,8 +12805,8 @@ namespace {
          * @param string          $parent_key_string A string containing parent keys separated with pipes. Each pipe in key
          *                                           should be escaped to avoid conflicts.
          * @param int             $index             Index of the current meta value. Useful when a meta has several values.
-         * @param array|string    $source_metas      The source post metas.
-         * @param array|string    $tr_metas          The translated post metas.
+         * @param mixed           $source_metas      The source post metas.
+         * @param mixed           $tr_metas          The translated post metas.
          * @param int             $object_id         ID of the object the meta belongs to.
          * @param PLL_Export_Data $export            Export object.
          * @param string          $encoding          Encoding format for the field group.
@@ -12430,6 +13263,8 @@ namespace {
      *
      * @phpstan-type XpathParsingRules array<string, array<string>>
      * @phpstan-type AttributesParsingRules array<non-falsy-string, array<non-empty-string, array|true>>
+     * @phpstan-type AttributesEncodingsParsingRules array<string, array<string, non-falsy-string>>
+     * @phpstan-import-type Block from PLL_Translation_Walker_Blocks
      */
     class PLL_Translation_Block_Parsing_Rules
     {
@@ -12492,6 +13327,20 @@ namespace {
          * @phpstan-return array<non-empty-string, array|true>
          */
         public function get_attributes_to_translate($block)
+        {
+        }
+        /**
+         * Returns the attribute encoding formats for the given block.
+         *
+         * @since 3.8
+         *
+         * @param array $block An associative array mimicking a WP_Block_Parser_Block object.
+         * @return string[] List of attribute encoding formats.
+         *
+         * @phpstan-param Block $block
+         * @phpstan-return array<string, non-falsy-string>
+         */
+        public function get_attribute_encodings($block): array
         {
         }
     }
@@ -12753,12 +13602,6 @@ namespace {
          * @var PLL_Sync_Post_Model
          */
         protected $sync_post_model;
-        /**
-         * Service to manage user capabilities, espcecially 'unfiltered_html'.
-         *
-         * @var PLL_Manage_User_Capabilities
-         */
-        protected $user_capabilities_manager;
         /**
          * Used to sync the post content.
          *
@@ -13142,9 +13985,6 @@ namespace {
         }
     }
     /**
-     * @package Polylang
-     */
-    /**
      * Base class for both admin and frontend
      *
      * @since 1.2
@@ -13153,9 +13993,17 @@ namespace {
     abstract class PLL_Base
     {
         /**
+         * Capabilities.
+         *
+         * @since 3.8
+         *
+         * @var Capabilities
+         */
+        public $capabilities;
+        /**
          * Stores the plugin options.
          *
-         * @var array
+         * @var Options
          */
         public $options;
         /**
@@ -13181,13 +14029,17 @@ namespace {
          */
         public $terms;
         /**
+         * @var Request
+         */
+        public $request;
+        /**
          * Constructor.
          *
          * @since 1.2
          *
          * @param PLL_Links_Model $links_model Links Model.
          */
-        public function __construct(&$links_model)
+        public function __construct(\PLL_Links_Model &$links_model)
         {
         }
         /**
@@ -13337,13 +14189,13 @@ namespace {
         {
         }
         /**
-         * Adds the link to the languages panel in the WordPress admin menu
+         * Adds links to Polylang's admin panels to the WordPress admin menu.
          *
          * @since 0.1
          *
          * @return void
          */
-        public function add_menus()
+        public function add_menus(): void
         {
         }
         /**
@@ -13419,7 +14271,7 @@ namespace {
         {
         }
         /**
-         * Defines the backend language and the admin language filter based on user preferences
+         * Defines the backend language and the admin language filter based on user preferences.
          *
          * @since 1.2.3
          *
@@ -13465,6 +14317,29 @@ namespace {
          * @return void
          */
         public function remove_customize_submenu()
+        {
+        }
+        /**
+         * Tells if the Polylang's admin bar menu should be hidden for the current page.
+         * Conventionally, it should be hidden on edition pages.
+         *
+         * @since 3.8
+         *
+         * @return bool
+         */
+        public function should_hide_admin_bar_menu(): bool
+        {
+        }
+        /**
+         * Returns the list of sub-menu items.
+         *
+         * @since 3.8
+         *
+         * @return string[] List of sub-menu items with page slugs as array keys, and sub-menu titles as array values.
+         *
+         * @phpstan-return array<non-empty-string, string>
+         */
+        protected function get_menu_items(): array
         {
         }
     }
@@ -14432,9 +15307,6 @@ namespace {
         }
     }
     /**
-     * @package Polylang
-     */
-    /**
      * Setup filters common to admin and frontend
      *
      * @since 1.4
@@ -14444,7 +15316,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var array
+         * @var Options
          */
         public $options;
         /**
@@ -14468,9 +15340,9 @@ namespace {
          *
          * @since 1.4
          *
-         * @param object $polylang The Polylang object.
+         * @param PLL_Base $polylang The Polylang object.
          */
-        public function __construct(&$polylang)
+        public function __construct(\PLL_Base &$polylang)
         {
         }
         /**
@@ -14753,9 +15625,6 @@ namespace {
         }
     }
     /**
-     * @package Polylang
-     */
-    /**
      * Manages links related functions
      *
      * @since 1.2
@@ -14765,7 +15634,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var array
+         * @var Options
          */
         public $options;
         /**
@@ -14789,9 +15658,9 @@ namespace {
          *
          * @since 1.2
          *
-         * @param object $polylang The Polylang object.
+         * @param PLL_Base $polylang The Polylang object.
          */
-        public function __construct(&$polylang)
+        public function __construct(\PLL_Base &$polylang)
         {
         }
         /**
@@ -14923,8 +15792,8 @@ namespace {
          * Returns some data (`from_post` and `new_lang`) from the current request.
          *
          * @since 3.7
+         * @since 3.8 Removed parameter.
          *
-         * @param string $post_type A post type.
          * @return array {
          *     @type WP_Post      $from_post The source post.
          *     @type PLL_Language $new_lang  The target language.
@@ -14932,7 +15801,7 @@ namespace {
          *
          * @phpstan-return array{}|array{from_post: WP_Post, new_lang: PLL_Language}|never
          */
-        public function get_data_from_new_post_translation_request(string $post_type): array
+        public function get_data_from_new_post_translation_request(): array
         {
         }
         /**
@@ -15037,7 +15906,7 @@ namespace {
          *
          * @param Options $options Polylang options.
          */
-        public function __construct(\WP_Syntex\Polylang\Options\Options &$options)
+        public function __construct(\WP_Syntex\Polylang\Options\Options $options)
         {
         }
         /**
@@ -15081,12 +15950,13 @@ namespace {
          * Adds terms clauses to the term query to filter them by languages.
          *
          * @since 1.2
+         * @since 3.8 Accepts an object or an array of objects for the second param.
          *
-         * @param string[]           $clauses The list of sql clauses in terms query.
-         * @param PLL_Language|false $lang    PLL_Language object.
-         * @return string[]                   Modified list of clauses.
+         * @param string[]                    $clauses   The list of sql clauses in terms query.
+         * @param PLL_Language[]|PLL_Language $languages `PLL_Language` object or array of `PLL_Language` objects.
+         * @return string[] Modified list of clauses.
          */
-        public function terms_clauses($clauses, $lang)
+        public function terms_clauses($clauses, $languages)
         {
         }
         /**
@@ -15283,9 +16153,9 @@ namespace {
          *
          * @since 1.7.7
          *
-         * @param object $polylang The Polylang object.
+         * @param PLL_Base $polylang The Polylang object.
          */
-        public function __construct(&$polylang)
+        public function __construct(\PLL_Base &$polylang)
         {
         }
         /**
@@ -15472,9 +16342,6 @@ namespace {
         }
     }
     /**
-     * @package Polylang
-     */
-    /**
      * A class to manage admin notices
      * displayed only to admin, based on 'manage_options' capability
      * and only on dashboard, plugins and Polylang admin pages
@@ -15487,7 +16354,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var array
+         * @var Options
          */
         protected $options;
         /**
@@ -15496,9 +16363,9 @@ namespace {
          *
          * @since 2.3.9
          *
-         * @param object $polylang The Polylang object.
+         * @param PLL_Admin_Base $polylang The Polylang object.
          */
-        public function __construct($polylang)
+        public function __construct(\PLL_Admin_Base $polylang)
         {
         }
         /**
@@ -16142,9 +17009,6 @@ namespace {
         }
     }
     /**
-     * @package Polylang
-     */
-    /**
      * Manages canonical redirect on frontend.
      *
      * @since 3.3
@@ -16154,7 +17018,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var array
+         * @var Options
          */
         protected $options;
         /**
@@ -16170,7 +17034,7 @@ namespace {
         /**
          * Current language.
          *
-         * @var PLL_Language
+         * @var PLL_Language|null
          */
         protected $curlang;
         /**
@@ -16178,9 +17042,9 @@ namespace {
          *
          * @since 3.3
          *
-         * @param object $polylang Main Polylang object.
+         * @param PLL_Frontend $polylang Main Polylang object.
          */
-        public function __construct(&$polylang)
+        public function __construct(\PLL_Frontend &$polylang)
         {
         }
         /**
@@ -16237,9 +17101,6 @@ namespace {
         }
     }
     /**
-     * @package Polylang
-     */
-    /**
      * Base class to choose the language
      *
      * @since 1.2
@@ -16249,7 +17110,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var array
+         * @var Options
          */
         public $options;
         /**
@@ -16273,9 +17134,9 @@ namespace {
          *
          * @since 1.2
          *
-         * @param object $polylang The Polylang object.
+         * @param PLL_Frontend $polylang The Polylang object.
          */
-        public function __construct(&$polylang)
+        public function __construct(\PLL_Frontend &$polylang)
         {
         }
         /**
@@ -16510,7 +17371,7 @@ namespace {
         {
         }
         /**
-         * Finds the language according to information found in the url
+         * Finds the language according to information found in the url.
          *
          * @since 1.2
          *
@@ -16693,9 +17554,6 @@ namespace {
         }
     }
     /**
-     * @package Polylang
-     */
-    /**
      * Manages links filters needed on both frontend and admin
      *
      * @since 1.8
@@ -16705,7 +17563,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var array
+         * @var Options
          */
         public $options;
         /**
@@ -16733,9 +17591,9 @@ namespace {
          *
          * @since 1.8
          *
-         * @param object $polylang The Polylang object.
+         * @param PLL_Base $polylang The Polylang object.
          */
-        public function __construct(&$polylang)
+        public function __construct(\PLL_Base &$polylang)
         {
         }
         /**
@@ -17369,9 +18227,6 @@ namespace {
         }
     }
     /**
-     * @package Polylang
-     */
-    /**
      * Manages the static front page and the page for posts on frontend
      *
      * @since 1.8
@@ -17391,7 +18246,7 @@ namespace {
         /**
          * Stores plugin's options.
          *
-         * @var array
+         * @var Options
          */
         protected $options;
         /**
@@ -17399,9 +18254,9 @@ namespace {
          *
          * @since 1.8
          *
-         * @param object $polylang The Polylang object.
+         * @param PLL_Frontend $polylang The Polylang object.
          */
-        public function __construct(&$polylang)
+        public function __construct(\PLL_Frontend &$polylang)
         {
         }
         /**
@@ -17634,6 +18489,21 @@ namespace {
         {
         }
         /**
+         * Prevents unnecessary queries to the database by transforming
+         * a language query by `slug` to a language query by `term_taxonomy_id`.
+         *
+         * These extra queries occur when the language slug is displayed in the current's page URL, because WP wants a list
+         * of `term_taxonomy_id`.
+         *
+         * @since 3.8
+         *
+         * @param WP_Query $query WP_Query object.
+         * @return void
+         */
+        public function transform_query($query): void
+        {
+        }
+        /**
          * Modifies some query vars to "hide" that the language is a taxonomy and avoid conflicts.
          *
          * @since 1.2
@@ -17679,6 +18549,100 @@ namespace {
          * @return void
          */
         public function remove_customize_admin_bar()
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang\Capabilities {
+    /**
+     * A class allowing to map Polylang's custom user capabilities to WP's native ones.
+     *
+     * @since 3.8
+     */
+    class Capabilities
+    {
+        /**
+         * Constructor.
+         *
+         * @since 3.8
+         */
+        public function __construct()
+        {
+        }
+        /**
+         * Filters user capabilities to handle PLL's custom capabilities.
+         *
+         * @since 3.8
+         *
+         * @param string[] $caps Primitive capabilities required by the user.
+         * @param string   $cap  Capability being checked.
+         * @return string[]
+         */
+        public function map_custom_caps($caps, $cap)
+        {
+        }
+    }
+    /**
+     * A class wrapping `WP_User` with translation management feature.
+     *
+     * @since 3.8
+     */
+    class User
+    {
+        /**
+         * Constructor.
+         *
+         * @since 3.8
+         *
+         * @param WP_User|null $user Optional. An instance of `WP_User`.
+         */
+        public function __construct(?\WP_User $user = null)
+        {
+        }
+        /**
+         * Tells if the user is a translator (has a translator capability).
+         * Note: returns `true` if the user has a capability for a language that doesn't exist anymore. This is intentional,
+         * to prevent the user to suddenly have the rights to translate in all languages while it wasn't allowed until then.
+         *
+         * @since 3.8
+         *
+         * @return bool
+         */
+        public function is_translator(): bool
+        {
+        }
+        /**
+         * Tells if the user can translate to the given language.
+         *
+         * @since 3.8
+         *
+         * @param PLL_Language $language A language object.
+         * @return bool
+         */
+        public function can_translate(\PLL_Language $language): bool
+        {
+        }
+        /**
+         * Tells if the user has the specified capability.
+         *
+         * @since 3.8
+         *
+         * @param string $capability Capability name.
+         * @param mixed  ...$args    Optional further parameters, typically starting with an object ID.
+         * @return bool
+         */
+        public function has_cap($capability, ...$args): bool
+        {
+        }
+        /**
+         * Returns the preferred language of the user.
+         *
+         * @since 3.8
+         *
+         * @param PLL_Model $model The model instance.
+         * @return PLL_Language|null
+         */
+        public function get_preferred_language(\PLL_Model $model): ?\PLL_Language
         {
         }
     }
@@ -17737,24 +18701,28 @@ namespace WP_Syntex\Polylang\Model {
          * @param array $args {
          *   Arguments used to create the language.
          *
-         *   @type string $name           Language name (used only for display).
-         *   @type string $slug           Language code (ideally 2-letters ISO 639-1 language code).
          *   @type string $locale         WordPress locale. If something wrong is used for the locale, the .mo files will
          *                                not be loaded...
-         *   @type bool   $rtl            True if rtl language, false otherwise.
-         *   @type int    $term_group     Language order when displayed.
+         *   @type string $name           Optional. Language name (used only for display). Default to the language name from {@see settings/languages.php}.
+         *   @type string $slug           Optional. Language code (ideally 2-letters ISO 639-1 language code). Default to the language code from {@see settings/languages.php}.
+         *   @type bool   $rtl            Optional. True if rtl language, false otherwise. Default is false.
+         *   @type bool   $is_rtl         Optional. True if rtl language, false otherwise. Will be converted to rtl. Default is false.
+         *   @type int    $term_group     Optional. Language order when displayed. Default is 0.
          *   @type string $flag           Optional. Country code, {@see settings/flags.php}.
-         *   @type bool   $no_default_cat Optional. If set, no default category will be created for this language.
+         *   @type string $flag_code      Optional. Country code, {@see settings/flags.php}. Will be converted to flag.
+         *   @type bool   $no_default_cat Optional. If set, no default category will be created for this language. Default is false.
          * }
          * @return true|WP_Error True success, a `WP_Error` otherwise.
          *
          * @phpstan-param array{
-         *     name: string,
-         *     slug: string,
-         *     locale: string,
-         *     rtl: bool,
-         *     term_group: int|numeric-string,
+         *     name?: string,
+         *     slug?: string,
+         *     locale?: string,
+         *     rtl?: bool,
+         *     is_rtl?: bool,
+         *     term_group?: int|numeric-string,
          *     flag?: string,
+         *     flag_code?: string,
          *     no_default_cat?: bool
          * } $args
          */
@@ -17771,24 +18739,28 @@ namespace WP_Syntex\Polylang\Model {
          *   Arguments used to modify the language.
          *
          *   @type int    $lang_id    ID of the language to modify.
-         *   @type string $name       Language name (used only for display).
-         *   @type string $slug       Language code (ideally 2-letters ISO 639-1 language code).
-         *   @type string $locale     WordPress locale. If something wrong is used for the locale, the .mo files will
+         *   @type string $name       Optional. Language name (used only for display).
+         *   @type string $slug       Optional. Language code (ideally 2-letters ISO 639-1 language code).
+         *   @type string $locale     Optional. WordPress locale. If something wrong is used for the locale, the .mo files will
          *                            not be loaded...
-         *   @type bool   $rtl        True if rtl language, false otherwise.
-         *   @type int    $term_group Language order when displayed.
+         *   @type bool   $rtl        Optional. True if rtl language, false otherwise.
+         *   @type bool   $is_rtl     Optional. True if rtl language, false otherwise. Will be converted to rtl.
+         *   @type int    $term_group Optional. Language order when displayed.
          *   @type string $flag       Optional, country code, {@see settings/flags.php}.
+         *   @type string $flag_code  Optional. Country code, {@see settings/flags.php}. Will be converted to flag.
          * }
          * @return true|WP_Error True success, a `WP_Error` otherwise.
          *
          * @phpstan-param array{
          *     lang_id: int|numeric-string,
-         *     name: string,
-         *     slug: string,
-         *     locale: string,
-         *     rtl: bool,
-         *     term_group: int|numeric-string,
-         *     flag?: string
+         *     name?: string,
+         *     slug?: string,
+         *     locale?: string,
+         *     rtl?: bool,
+         *     is_rtl?: bool,
+         *     term_group?: int|numeric-string,
+         *     flag?: string,
+         *     flag_code?: string
          * } $args
          */
         public function update($args)
@@ -17903,6 +18875,52 @@ namespace WP_Syntex\Polylang\Model {
         {
         }
         /**
+         * Deletes the transient from the options table since WordPress does not do it when using object cache.
+         *
+         * @since 3.8
+         *
+         * @return void
+         */
+        public function delete_transient_from_options_table(): void
+        {
+        }
+        /**
+         * Applies arguments that change the type of the elements of the given list of languages.
+         *
+         * @since 3.8
+         *
+         * @param PLL_Language[] $languages The list of language objects.
+         * @param array          $args {
+         *   @type string $fields Optional. Returns only that field if set; {@see PLL_Language} for a list of fields.
+         * }
+         * @return array List of `PLL_Language` objects or `PLL_Language` object properties.
+         */
+        public function maybe_convert_list(array $languages, array $args): array
+        {
+        }
+        /**
+         * Registers languages proxies.
+         *
+         * @since 3.8
+         *
+         * @param Languages_Proxy_Interface $proxy Proxy instance.
+         * @return self
+         */
+        public function register_proxy(\WP_Syntex\Polylang\Model\Languages_Proxy_Interface $proxy): self
+        {
+        }
+        /**
+         * Stacks a proxy that will filter the list of languages.
+         *
+         * @since 3.8
+         *
+         * @param string $key Proxy's key.
+         * @return Languages_Proxies
+         */
+        public function filter(string $key): \WP_Syntex\Polylang\Model\Languages_Proxies
+        {
+        }
+        /**
          * Builds the language metas into an array and serializes it, to be stored in the term description.
          *
          * @since 3.4
@@ -17947,9 +18965,9 @@ namespace WP_Syntex\Polylang\Model {
          * @return WP_Error
          *
          * @phpstan-param array{
-         *     locale: string,
-         *     slug: string,
-         *     name: string,
+         *     locale?: string,
+         *     slug?: string,
+         *     name?: string,
          *     flag?: string
          * } $args
          */
@@ -17963,13 +18981,15 @@ namespace WP_Syntex\Polylang\Model {
          * @since 3.7 Moved from `PLL_Admin_Model::update_translations()` to `WP_Syntex\Polylang\Model\Languages::update_translations()`.
          *            Visibility changed from public to protected.
          *
+         * @global $wpdb wpdb global instance.
+         *
          * @param string $old_slug The old language slug.
          * @param string $new_slug Optional, the new language slug, if not set it means that the language has been deleted.
-         * @return void
+         * @return WP_Error
          *
          * @phpstan-param non-empty-string $old_slug
          */
-        protected function update_translations($old_slug, $new_slug = ''): void
+        protected function update_translations($old_slug, $new_slug = ''): \WP_Error
         {
         }
         /**
@@ -17983,13 +19003,13 @@ namespace WP_Syntex\Polylang\Model {
          * @param PLL_Language|null $language   Optional. A language object. Required to update the existing terms.
          * @param string[]          $taxonomies Optional. List of language taxonomies to deal with. An empty value means
          *                                      all of them. Defaults to all taxonomies.
-         * @return void
+         * @return WP_Error
          *
          * @phpstan-param non-empty-string $slug
          * @phpstan-param non-empty-string $name
          * @phpstan-param array<non-empty-string> $taxonomies
          */
-        protected function update_secondary_language_terms($slug, $name, ?\PLL_Language $language = null, array $taxonomies = array()): void
+        protected function update_secondary_language_terms($slug, $name, ?\PLL_Language $language = null, array $taxonomies = array()): \WP_Error
         {
         }
         /**
@@ -18036,6 +19056,56 @@ namespace WP_Syntex\Polylang\Model {
          * @return string
          */
         protected function filter_terms_orderby($orderby, $args, $taxonomies)
+        {
+        }
+    }
+    /**
+     * Class allowing to chain language proxies.
+     *
+     * @since 3.8
+     */
+    class Languages_Proxies
+    {
+        /**
+         * @var Languages
+         */
+        protected $languages;
+        /**
+         * @var string[]
+         */
+        protected $stack = array();
+        /**
+         * Constructor.
+         *
+         * @since 3.8
+         *
+         * @param Languages $languages Languages' model.
+         * @param array     $proxies   List of registered proxies.
+         * @param string    $parent    Key of the first item of the proxies stack to traverse.
+         */
+        public function __construct(\WP_Syntex\Polylang\Model\Languages $languages, array $proxies, string $parent)
+        {
+        }
+        /**
+         * Returns the list of available languages after passing it through proxies.
+         *
+         * @since 3.8
+         *
+         * @param array $args Optional arguments to pass to `Languages::get_list()`.
+         * @return array List of `PLL_Language` objects or `PLL_Language` object properties.
+         */
+        public function get_list(array $args = array()): array
+        {
+        }
+        /**
+         * Stacks a proxy that will filter the list of languages.
+         *
+         * @since 3.8
+         *
+         * @param string $key Proxy's key.
+         * @return Languages_Proxies
+         */
+        public function filter(string $key): \WP_Syntex\Polylang\Model\Languages_Proxies
         {
         }
     }
@@ -18644,48 +19714,6 @@ namespace WP_Syntex\Polylang\Options\Business {
         }
     }
     /**
-     * Class defining post types list option.
-     *
-     * @since 3.7
-     */
-    class Language_Taxonomies extends \WP_Syntex\Polylang\Options\Business\Abstract_Object_Types
-    {
-        /**
-         * Returns option key.
-         *
-         * @since 3.7
-         *
-         * @return string
-         *
-         * @phpstan-return 'language_taxonomies'
-         */
-        public static function key(): string
-        {
-        }
-        /**
-         * Returns language taxonomies, except the ones for posts and taxonomies.
-         *
-         * @since 3.7
-         *
-         * @return string[] Object type names list.
-         *
-         * @phpstan-return array<non-falsy-string>
-         */
-        protected function get_object_types(): array
-        {
-        }
-        /**
-         * Returns the description used in the JSON schema.
-         *
-         * @since 3.7
-         *
-         * @return string
-         */
-        protected function get_description(): string
-        {
-        }
-    }
-    /**
      * Class defining the "Translate media" boolean option.
      *
      * @since 3.7
@@ -19073,6 +20101,16 @@ namespace WP_Syntex\Polylang\Options {
      *
      * @implements ArrayAccess<non-falsy-string, mixed>
      * @implements IteratorAggregate<non-empty-string, mixed>
+     *
+     * @phpstan-import-type Schema from Abstract_Option as OptionSchema
+     * @phpstan-type Schema array{
+     *     '$schema': non-falsy-string,
+     *     title: non-falsy-string,
+     *     description: string,
+     *     type: 'object',
+     *     properties: array<non-falsy-string, OptionSchema>,
+     *     additionalProperties: false
+     * }
      */
     class Options implements \ArrayAccess, \IteratorAggregate
     {
@@ -19169,6 +20207,8 @@ namespace WP_Syntex\Polylang\Options {
          * @since 3.7
          *
          * @return array The schema.
+         *
+         * @phpstan-return Schema
          */
         public function get_schema(): array
         {
@@ -19534,9 +20574,6 @@ namespace {
         }
     }
     /**
-     * @package Polylang
-     */
-    /**
      * Adds actions and filters related to languages when creating, updating or deleting posts.
      * Actions and filters triggered when reading posts are handled separately.
      *
@@ -19563,7 +20600,7 @@ namespace {
         /**
          * Reference to the Polylang options array.
          *
-         * @var array
+         * @var Options
          */
         protected $options;
         /**
@@ -19571,9 +20608,9 @@ namespace {
          *
          * @since 2.4
          *
-         * @param object $polylang The Polylang object.
+         * @param PLL_Base $polylang The Polylang object.
          */
-        public function __construct(&$polylang)
+        public function __construct(\PLL_Base &$polylang)
         {
         }
         /**
@@ -19676,10 +20713,19 @@ namespace {
         public function force_tags_translation($post_id, $post_after, $post_before)
         {
         }
+        /**
+         * Returns the language to set for a post creation.
+         *
+         * @since 3.8
+         *
+         * @param User $user    The user object.
+         * @param int  $post_id The post ID for which to set the language. Default `0`.
+         * @return PLL_Language The language context.
+         */
+        public function get_language_from_context(\WP_Syntex\Polylang\Capabilities\User $user, int $post_id = 0): \PLL_Language
+        {
+        }
     }
-    /**
-     * @package Polylang
-     */
     /**
      * Adds actions and filters related to languages when creating, reading, updating or deleting posts
      * Acts both on frontend and backend
@@ -19713,7 +20759,7 @@ namespace {
         /**
          * Reference to the Polylang options array.
          *
-         * @var array
+         * @var Options
          */
         protected $options;
         /**
@@ -19721,9 +20767,9 @@ namespace {
          *
          * @since 2.4
          *
-         * @param object $polylang The Polylang object.
+         * @param PLL_Base $polylang The Polylang object.
          */
-        public function __construct(&$polylang)
+        public function __construct(\PLL_Base &$polylang)
         {
         }
         /**
@@ -19753,28 +20799,27 @@ namespace {
         {
         }
         /**
-         * Get the language(s) to filter WP_Term_Query.
+         * Returns the languages to filter `WP_Term_Query`.
          *
-         * @since 1.7.6
+         * @since 3.8
          *
          * @param string[] $taxonomies Queried taxonomies.
          * @param array    $args       WP_Term_Query arguments.
-         * @return PLL_Language|string|false The language(s) to use in the filter, false otherwise.
+         * @return PLL_Language[] The languages to filter `WP_Term_Query`.
          */
-        protected function get_queried_language($taxonomies, $args)
+        protected function get_queried_languages($taxonomies, $args): array
         {
         }
         /**
-         * Adds language dependent cache domain when querying terms.
-         * Useful as the 'lang' parameter is not included in cache key by WordPress.
+         * Adjusts query language for `_get_term_hierarchy()` and `WP_Query`.
          *
          * @since 1.3
+         * @since 3.8 Renamed from `get_terms_args()`.
          *
-         * @param array    $args       WP_Term_Query arguments.
-         * @param string[] $taxonomies Queried taxonomies.
+         * @param array $args WP_Term_Query arguments.
          * @return array Modified arguments.
          */
-        public function get_terms_args($args, $taxonomies)
+        public function adjust_query_lang($args)
         {
         }
         /**
@@ -19847,6 +20892,19 @@ namespace {
          * @return string Slug with a language suffix if found.
          */
         public function set_pre_term_slug($slug, $taxonomy)
+        {
+        }
+        /**
+         * Returns the language to set for a post creation.
+         *
+         * @since 3.8
+         *
+         * @param User   $user     The user object.
+         * @param int    $term_id  The term ID for which to set the language. Default `0`.
+         * @param string $taxonomy The taxonomy for which to set the language. Default `''`.
+         * @return PLL_Language The language context.
+         */
+        public function get_language_from_context(\WP_Syntex\Polylang\Capabilities\User $user, int $term_id = 0, string $taxonomy = ''): \PLL_Language
         {
         }
     }
@@ -20175,9 +21233,6 @@ namespace {
         }
     }
     /**
-     * @package Polylang
-     */
-    /**
      * PLL_Language factory.
      *
      * @since 3.4
@@ -20190,11 +21245,12 @@ namespace {
          * Constructor.
          *
          * @since 3.4
+         * @since 3.7 The `$options` parameter is an instance of `Options`.
          *
-         * @param array $options Array of Poylang's options passed by reference.
+         * @param Options $options Poylang's options.
          * @return void
          */
-        public function __construct(&$options)
+        public function __construct(\WP_Syntex\Polylang\Options\Options $options)
         {
         }
         /**
@@ -20703,6 +21759,14 @@ namespace {
     class PLL_License
     {
         /**
+         * URL to Polylang's account page.
+         *
+         * @since 3.7.4
+         *
+         * @var string
+         */
+        public const ACCOUNT_URL = 'https://polylang.pro/my-account/';
+        /**
          * Sanitized plugin name.
          *
          * @var string
@@ -20769,7 +21833,10 @@ namespace {
          * @param string $license_key Activation key.
          * @return PLL_License Updated PLL_License object.
          */
-        public function activate_license($license_key)
+        public function activate_license(
+            #[\SensitiveParameter]
+            string $license_key
+        ): self
         {
         }
         /**
@@ -20804,9 +21871,6 @@ namespace {
         }
     }
     /**
-     * @package Polylang
-     */
-    /**
      * Links model abstract class.
      *
      * @since 1.5
@@ -20822,7 +21886,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var array
+         * @var Options
          */
         public $options;
         /**
@@ -20848,7 +21912,7 @@ namespace {
          *
          * @param PLL_Model $model PLL_Model instance.
          */
-        public function __construct(&$model)
+        public function __construct(\PLL_Model &$model)
         {
         }
         /**
@@ -21821,6 +22885,32 @@ namespace {
         protected function maybe_set_language_for_or_relation()
         {
         }
+        /**
+         * Transforms a language query by `slug` to a language query by `term_taxonomy_id`.
+         *
+         * Example:
+         * From: array(
+         *     'taxonomy'         => 'language',
+         *     'terms'            => array( 'en' ),
+         *     'field'            => 'slug',
+         *     'operator'         => 'IN',
+         *     'include_children' => 1,
+         * )
+         * To: array(
+         *     'taxonomy'         => 'language',
+         *     'terms'            => array( 238 ),
+         *     'field'            => 'term_taxonomy_id',
+         *     'operator'         => 'IN',
+         *     'include_children' => 1,
+         * )
+         *
+         * @since 3.8
+         *
+         * @return void
+         */
+        public function transform_query(): void
+        {
+        }
     }
     /**
      * @package Polylang
@@ -21866,6 +22956,10 @@ namespace {
          */
         public $filters_widgets_options;
         /**
+         * @var PLL_Filters_Sanitization|null
+         */
+        public $filters_sanitization;
+        /**
          * Constructor.
          *
          * @since 3.4
@@ -21898,6 +22992,20 @@ namespace {
          * @phpstan-param WP_REST_Request<array{lang?: string}> $request
          */
         public function set_language($result, $server, $request)
+        {
+        }
+        /**
+         * Initialize sanitization filters with the correct language locale.
+         *
+         * @see WP_REST_Server::dispatch()
+         *
+         * @since 2.9
+         * @since 3.8 Moved from Polylang Pro and hooked on 'rest_request_before_callbacks' instead of 'rest_pre_dispatch'.
+         *
+         * @param WP_REST_Response|WP_HTTP_Response|WP_Error|mixed $response Result to send to the client.
+         * @return WP_REST_Response|WP_HTTP_Response|WP_Error|mixed
+         */
+        public function set_filters_sanitization($response)
         {
         }
     }
@@ -22092,8 +23200,6 @@ namespace {
          *
          * @param string|string[] $object_type Object type name or array of object type names.
          * @return bool
-         *
-         * @phpstan-param non-empty-string|non-empty-string[] $object_type
          */
         public function is_translated_object_type($object_type);
     }
@@ -22129,8 +23235,6 @@ namespace {
          *
          * @param string|string[] $object_type Object type (taxonomy name) name or array of object type names.
          * @return bool
-         *
-         * @phpstan-param non-empty-string|non-empty-string[] $object_type
          */
         public function is_translated_object_type($object_type)
         {
@@ -22334,8 +23438,6 @@ namespace {
          *
          * @param PLL_Language|PLL_Language[]|string|string[] $lang A `PLL_Language` object, or a comma separated list of language slugs, or an array of language slugs or objects.
          * @return string The WHERE clause.
-         *
-         * @phpstan-param PLL_Language|PLL_Language[]|non-empty-string|non-empty-string[] $lang
          */
         public function where_clause($lang)
         {
@@ -22923,9 +24025,17 @@ namespace {
          * Creates translations groups in mass.
          *
          * @since 1.6.3
-         * @since 3.4 Moved from PLL_Admin_Model class.
+         * @since 3.4 Moved from PLL_Admin_Model class. The `$type` parameter is removed.
+         * @since 3.8 The name of the translation terms can be customized.
          *
-         * @param int[][] $translations Array of translations arrays.
+         * @param int[][] $translations Array of translations arrays. The keys of the first level array can be used to
+         *                              customize the name of the translation terms. Example:
+         *                              array(
+         *                                  'pll_term_name_1' => array(
+         *                                      'lang_slug_1' => {object ID},
+         *                                      'lang_slug_2' => {object ID},
+         *                                  )
+         *                              )
          * @return void
          *
          * @phpstan-param array<array<string,int>> $translations
@@ -23052,8 +24162,6 @@ namespace {
          *
          * @param string|string[] $object_type Object type (post type) name or array of object type names.
          * @return bool
-         *
-         * @phpstan-param non-empty-string|non-empty-string[] $object_type
          */
         public function is_translated_object_type($object_type)
         {
@@ -23065,8 +24173,6 @@ namespace {
          *
          * @param string $post_type Post type name.
          * @return void
-         *
-         * @phpstan-param non-empty-string $post_type
          */
         public function registered_post_type($post_type)
         {
@@ -23327,7 +24433,6 @@ namespace {
          * @return WP_Term[]|int[] Unmodified $terms.
          *
          * @phpstan-param array<WP_Term|positive-int> $terms
-         * @phpstan-param array<non-empty-string> $taxonomies
          * @phpstan-return array<WP_Term|positive-int>
          */
         public function _prime_terms_cache($terms, $taxonomies)
@@ -23754,161 +24859,186 @@ namespace {
     }
     /**
      * @package Polylang
+     *
+     * /!\ THE CONSTANTS `POLYLANG_BASENAME` AND `POLYLANG_VERSION` MUST BE DEFINED.
      */
     /**
-     * A generic activation / de-activation class compatible with multisite
+     * A generic (de)activation class compatible with multisite.
      *
-     * @since 1.7
+     * @since 3.8
      */
-    class PLL_Install_Base
+    abstract class PLL_Abstract_Activable
     {
         /**
-         * The plugin basename.
-         *
-         * @var string
-         */
-        protected $plugin_basename;
-        /**
-         * Constructor
-         *
-         * @since 1.7
-         *
-         * @param string $plugin_basename Plugin basename
-         */
-        public function __construct($plugin_basename)
-        {
-        }
-        /**
-         * Allows to detect plugin deactivation
-         *
-         * @since 1.7
-         *
-         * @return bool true if the plugin is currently being deactivated
-         */
-        public function is_deactivation()
-        {
-        }
-        /**
-         * Activation or deactivation for all blogs.
+         * (De)Activation for all blogs.
          *
          * @since 1.2
+         * @since 3.8 Moved from the class `PLL_Install_Base`.
+         *            Visibility changed from `protected`.
+         *            Made it `static`.
+         *            Removed first parameter `$what`.
          *
-         * @param string $what        Either 'activate' or 'deactivate'.
-         * @param bool   $networkwide Whether the plugin is (de)activated for all sites in the network or just the current site.
+         * @param bool $networkwide Whether the plugin is (de)activated for all sites in the network or just the current site.
          * @return void
          */
-        protected function do_for_all_blogs($what, $networkwide)
+        public static function do_for_all_blogs($networkwide): void
         {
         }
         /**
-         * Plugin activation for multisite.
+         * Returns the plugin's basename.
          *
-         * @since 1.7
+         * @since 3.8
          *
-         * @param bool $networkwide Whether the plugin is activated for all sites in the network or just the current site.
-         * @return void
+         * @return string
          */
-        public function activate($networkwide)
+        public static function get_plugin_basename(): string
         {
         }
         /**
-         * Plugin activation
+         * Returns the plugin's version.
+         *
+         * @since 3.8
+         *
+         * @return string
+         */
+        public static function get_plugin_version(): string
+        {
+        }
+        /**
+         * The process to run on plugin (de)activation.
          *
          * @since 0.5
+         * @since 3.8 Moved from the class `PLL_Install_Base`.
+         *            Renamed from `_activate()`/`_deactivate()`.
+         *            Made it `static` and `abstract`.
          *
          * @return void
          */
-        protected function _activate()
-        {
-        }
+        abstract protected static function process(): void;
+    }
+    /**
+     * @package Polylang
+     *
+     * /!\ THE CONSTANTS `POLYLANG_BASENAME` AND `POLYLANG_VERSION` MUST BE DEFINED.
+     */
+    /**
+     * A generic activation class compatible with multisite.
+     *
+     * @since 3.8
+     */
+    abstract class PLL_Abstract_Activate extends \PLL_Abstract_Activable
+    {
         /**
-         * Plugin deactivation for multisite.
+         * Adds the required hooks.
          *
-         * @since 0.1
+         * @since 3.8
          *
-         * @param bool $networkwide Whether the plugin is deactivated for all sites in the network or just the current site.
          * @return void
          */
-        public function deactivate($networkwide)
+        public static function add_hooks(): void
         {
         }
         /**
-         * Plugin deactivation
-         *
-         * @since 0.5
-         *
-         * @return void
-         */
-        protected function _deactivate()
-        {
-        }
-        /**
-         * Site creation on multisite ( to set default options )
+         * Site creation on multisite (to set default options).
          *
          * @since 2.6.8
+         * @since 3.8 Moved from the class `PLL_Install_Base`.
          *
          * @param WP_Site $new_site New site object.
          * @return void
          */
-        public function new_site($new_site)
+        public static function new_site($new_site): void
         {
         }
     }
     /**
-     * Polylang activation / de-activation class
+     * @package Polylang
      *
-     * @since 1.7
+     * /!\ THE CONSTANTS `POLYLANG_BASENAME` AND `POLYLANG_VERSION` MUST BE DEFINED.
      */
-    class PLL_Install extends \PLL_Install_Base
+    /**
+     * A generic deactivation class compatible with multisite.
+     *
+     * @since 3.8
+     */
+    abstract class PLL_Abstract_Deactivate extends \PLL_Abstract_Activable
     {
         /**
-         * Checks min PHP and WP version, displays a notice if a requirement is not met.
+         * Adds the required hooks.
          *
-         * @since 2.6.7
-         *
-         * @return bool
-         */
-        public function can_activate()
-        {
-        }
-        /**
-         * Displays a notice if PHP min version is not met.
-         *
-         * @since 2.6.7
+         * @since 3.8
          *
          * @return void
          */
-        public function php_version_notice()
+        public static function add_hooks(): void
         {
         }
         /**
-         * Displays a notice if WP min version is not met.
+         * Detects plugin deactivation.
          *
-         * @since 2.6.7
+         * @since 1.7
+         * @since 3.8 Moved from the class `PLL_Install_Base`.
+         *
+         * @return bool True if the plugin is currently being deactivated.
+         */
+        public static function is_deactivation(): bool
+        {
+        }
+    }
+    /**
+     * Activation class compatible with multisite.
+     *
+     * @since 3.8
+     */
+    class PLL_Activate extends \PLL_Abstract_Activate
+    {
+        /**
+         * Adds the required hooks.
+         *
+         * @since 3.8
          *
          * @return void
          */
-        public function wp_version_notice()
+        public static function add_hooks(): void
         {
         }
         /**
-         * Plugin activation
+         * The process to run on plugin activation.
          *
          * @since 0.5
+         * @since 3.8 Moved from the class `PLL_Install`.
+         *            Renamed from `_activate()`.
+         *            Made it `static`.
          *
          * @return void
          */
-        protected function _activate()
+        protected static function process(): void
         {
         }
+    }
+    /**
+     * @package Polylang
+     *
+     * /!\ THE CONSTANTS `POLYLANG_BASENAME` AND `POLYLANG_VERSION` MUST BE DEFINED.
+     */
+    /**
+     * Deactivation class compatible with multisite.
+     *
+     * @since 3.8
+     */
+    class PLL_Deactivate extends \PLL_Abstract_Deactivate
+    {
         /**
-         * Plugin deactivation
+         * The process to run on plugin deactivation.
          *
          * @since 0.5
+         * @since 3.8 Moved from the class `PLL_Install`.
+         *            Renamed from `_deactivate()`.
+         *            Made it `static`.
          *
          * @return void
          */
-        protected function _deactivate()
+        protected static function process(): void
         {
         }
     }
@@ -24115,17 +25245,18 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var array
+         * @var Options
          */
         public $options;
         /**
          * Constructor
          *
          * @since 1.2
+         * @since 3.7 The `$options` parameter is an instance of `Options`.
          *
-         * @param array $options Polylang options
+         * @param Options $options Polylang options.
          */
-        public function __construct(&$options)
+        public function __construct(\WP_Syntex\Polylang\Options\Options $options)
         {
         }
         /**
@@ -24161,7 +25292,7 @@ namespace {
         {
         }
         /**
-         * Displays a notice when ugrading from a too old version
+         * Displays a notice when upgrading from a too old version
          *
          * @since 1.0
          *
@@ -24237,6 +25368,17 @@ namespace {
         {
         }
         /**
+         * Upgrades if the previous version is < 3.8.
+         * Migrates language taxonomies from `polylang` option to `pll_language_taxonomies` option.
+         *
+         * @since 3.8
+         *
+         * @return void
+         */
+        protected function upgrade_3_8()
+        {
+        }
+        /**
          * Moves strings translations from post meta to term meta _pll_strings_translations.
          *
          * @since 3.4
@@ -24254,6 +25396,87 @@ namespace {
          * @return void
          */
         protected function migrate_locale_fallback_to_language_description()
+        {
+        }
+    }
+    /**
+     * @package Polylang
+     *
+     * /!\ THE CODE IN THIS FILE MUST BE COMPATIBLE WITH PHP 5.6.
+     *
+     * /!\ THE CONSTANTS `POLYLANG`, `PLL_MIN_PHP_VERSION`, AND `PLL_MIN_WP_VERSION` MUST BE DEFINED.
+     */
+    /**
+     * Class tat can tell if Polylang can be activated.
+     *
+     * @since 3.8
+     */
+    class PLL_Usable
+    {
+        /**
+         * Checks min PHP and WP version, displays a notice if a requirement is not met.
+         *
+         * @since 2.6.7
+         * @since 3.8 Moved from the class `PLL_Install`.
+         *            Made it `static`.
+         *
+         * @return bool
+         */
+        public static function can_activate()
+        {
+        }
+        /**
+         * Displays a notice if PHP min version is not met.
+         *
+         * @since 2.6.7
+         * @since 3.8 Moved from the class `PLL_Install`.
+         *            Made it `static`.
+         *
+         * @return void
+         */
+        public static function php_version_notice()
+        {
+        }
+        /**
+         * Displays a notice if WP min version is not met.
+         *
+         * @since 2.6.7
+         * @since 3.8 Moved from the class `PLL_Install`.
+         *            Made it `static`.
+         *
+         * @return void
+         */
+        public static function wp_version_notice()
+        {
+        }
+        /**
+         * Returns the minimal php version required to run the plugin.
+         *
+         * @since 3.8
+         *
+         * @return string
+         */
+        public static function get_min_php_version()
+        {
+        }
+        /**
+         * Returns the minimal WP version required to run the plugin.
+         *
+         * @since 3.8
+         *
+         * @return string
+         */
+        public static function get_min_wp_version()
+        {
+        }
+        /**
+         * Returns the plugin's name.
+         *
+         * @since 3.8
+         *
+         * @return string
+         */
+        public static function get_plugin_name()
         {
         }
     }
@@ -24300,22 +25523,84 @@ namespace WP_Syntex\Polylang\REST {
         }
     }
     /**
-     * Abstract REST controller.
+     * Class that mediates the current request.
      *
-     * @since 3.7
+     * @since 3.8
      */
-    abstract class Abstract_Controller extends \WP_REST_Controller
+    class Request
     {
         /**
-         * Adds a status code to the given error and returns the error.
+         * Constructor.
          *
-         * @since 3.7
+         * @since 3.8
          *
-         * @param WP_Error $error       A `WP_Error` object.
-         * @param int      $status_code Optional. A status code. Default is 400.
-         * @return WP_Error
+         * @param PLL_Model $model Instance of PLL_Model.
          */
-        protected function add_status_to_error(\WP_Error $error, int $status_code = 400): \WP_Error
+        public function __construct(\PLL_Model $model)
+        {
+        }
+        /**
+         * Returns a parameter from the current request if defined.
+         *
+         * @since 3.8
+         *
+         * @param string $param Parameter name.
+         * @return mixed|null Parameter value or null if not defined.
+         */
+        public function get_param(string $param)
+        {
+        }
+        /**
+         * Returns the language of the current request.
+         *
+         * @since 3.8
+         *
+         * @return PLL_Language|null Language of the current request, or null if no request is set or the language is not found.
+         */
+        public function get_language(): ?\PLL_Language
+        {
+        }
+        /**
+         * Returns the ID of the current requested object if defined.
+         *
+         * @since 3.8
+         *
+         * @return int|null ID of the current requested object, or null if no request is set or the ID is not defined.
+         */
+        public function get_id(): ?int
+        {
+        }
+        /**
+         * Returns the attributes of the current request.
+         *
+         * @since 3.8
+         *
+         * @return array|null Attributes of the current request, or null if no request is set.
+         */
+        public function get_attributes(): ?array
+        {
+        }
+        /**
+         * Tells if the current request is a "read only" request, i.e. not `POST`, `PUT`, `PATCH`, `DELETE`.
+         *
+         * @since 3.8
+         *
+         * @return bool
+         */
+        public function is_read_only(): bool
+        {
+        }
+        /**
+         * Returns the object type of the current request.
+         *
+         * @since 3.8
+         *
+         * @return string|null Object type of the current request, or null if not defined.
+         *                     Returned values are 'post' and 'term'.
+         *
+         * @phpstan-return 'post'|'term'|null
+         */
+        public function get_object_type(): ?string
         {
         }
     }
@@ -24523,20 +25808,6 @@ namespace WP_Syntex\Polylang\REST\V1 {
          * @return array Endpoint arguments.
          */
         public function get_endpoint_args_for_item_schema($method = \WP_REST_Server::CREATABLE)
-        {
-        }
-        /**
-         * Prepares one language for create or update operation.
-         *
-         * @since 3.7
-         *
-         * @param WP_REST_Request $request Request object.
-         * @return object|WP_Error The prepared language, or WP_Error object on failure.
-         *
-         * @phpstan-template T of array
-         * @phpstan-param WP_REST_Request<T> $request
-         */
-        protected function prepare_item_for_database($request)
         {
         }
         /**
@@ -25061,9 +26332,6 @@ namespace {
         }
     }
     /**
-     * @package Polylang
-     */
-    /**
      * Handles the core sitemaps for sites using a single domain.
      *
      * @since 2.8
@@ -25081,7 +26349,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var array
+         * @var Options
          */
         protected $options;
         /**
@@ -25089,9 +26357,9 @@ namespace {
          *
          * @since 2.8
          *
-         * @param object $polylang Main Polylang object.
+         * @param PLL_Base $polylang Main Polylang object.
          */
-        public function __construct(&$polylang)
+        public function __construct(\PLL_Base &$polylang)
         {
         }
         /**
@@ -25141,9 +26409,6 @@ namespace {
         }
     }
     /**
-     * @package Polylang
-     */
-    /**
      * Manages copy and synchronization of terms and post metas on front
      *
      * @since 2.4
@@ -25165,7 +26430,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var array
+         * @var Options
          */
         protected $options;
         /**
@@ -25177,9 +26442,9 @@ namespace {
          *
          * @since 1.2
          *
-         * @param object $polylang The Polylang object.
+         * @param PLL_Base $polylang The Polylang object.
          */
-        public function __construct(&$polylang)
+        public function __construct(\PLL_Base &$polylang)
         {
         }
         /**
@@ -25293,13 +26558,12 @@ namespace {
          * Translates the post parent if it exists when using "Add new" (translation).
          *
          * @since 0.6
+         * @since 3.8 Removed second and third parameters.
          *
-         * @param int   $post_parent Post parent ID.
-         * @param int   $post_id     Post ID, unused.
-         * @param array $postarr     Array of parsed post data.
+         * @param int $post_parent Post parent ID.
          * @return int
          */
-        public function wp_insert_post_parent($post_parent, $post_id, $postarr)
+        public function wp_insert_post_parent($post_parent)
         {
         }
         /**
@@ -25663,9 +26927,6 @@ namespace {
         }
     }
     /**
-     * @package Polylang
-     */
-    /**
      * A class to manage copy and synchronization of post metas.
      *
      * @since 2.3
@@ -25675,7 +26936,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var array
+         * @var Options
          */
         public $options;
         /**
@@ -25683,9 +26944,9 @@ namespace {
          *
          * @since 2.3
          *
-         * @param object $polylang The Polylang object.
+         * @param PLL_Base $polylang The Polylang object.
          */
-        public function __construct(&$polylang)
+        public function __construct(\PLL_Base &$polylang)
         {
         }
         /**
@@ -25717,9 +26978,6 @@ namespace {
         }
     }
     /**
-     * @package Polylang
-     */
-    /**
      * A class to manage the synchronization of taxonomy terms across posts translations
      *
      * @since 2.3
@@ -25729,7 +26987,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var array
+         * @var Options
          */
         protected $options;
         /**
@@ -25741,9 +26999,9 @@ namespace {
          *
          * @since 2.3
          *
-         * @param object $polylang The Polylang object.
+         * @param PLL_Base $polylang The Polylang object.
          */
-        public function __construct(&$polylang)
+        public function __construct(\PLL_Base &$polylang)
         {
         }
         /**
@@ -25886,13 +27144,13 @@ namespace {
         /**
          * Reference to the model object
          *
-         * @var PLL_Admin_Model
+         * @var PLL_Model
          */
         protected $model;
         /**
          * Reference to the Polylang options array.
          *
-         * @var array
+         * @var Options
          */
         protected $options;
         /**
@@ -25926,10 +27184,10 @@ namespace {
         /**
          * Constructor
          *
-         * @param object $polylang Reference to Polylang global object.
+         * @param PLL_Admin_Base $polylang Reference to Polylang global object.
          * @since 2.7
          */
-        public function __construct(&$polylang)
+        public function __construct(\PLL_Admin_Base &$polylang)
         {
         }
         /**
@@ -26615,9 +27873,12 @@ namespace {
      *     non-falsy-string,
      *     array{
      *         action: string,
-     *         encoding: 'json'|''
+     *         encoding: string
      *     }
      * >
+     * @phpstan-type BlockXPath    array<non-falsy-string, list<non-empty-string>>
+     * @phpstan-type BlockKey      array<non-falsy-string, array<array|true>>
+     * @phpstan-type BlockEncoding array<non-falsy-string, array<string, non-falsy-string>>
      */
     class PLL_WPML_Config
     {
@@ -26647,8 +27908,9 @@ namespace {
          * @var array
          *
          * @phpstan-var array{
-         *     xpath?: array<non-empty-string, list<non-empty-string>>,
-         *     key?: array<non-empty-string, array<array|true>>
+         *     xpath?: BlockXPath,
+         *     key?: BlockKey,
+         *     encoding?: BlockEncoding
          * }|null
          */
         protected $parsing_rules = \null;
@@ -26828,25 +28090,39 @@ namespace {
          * @param string[][] $parsing_rules Rules as Xpath expressions to evaluate in the blocks content.
          * @return string[][] Rules completed with ones from wpml-config file.
          *
-         * @phpstan-param array<string,array<string>> $parsing_rules
-         * @phpstan-return array<string,array<string>>
+         * @phpstan-param BlockXPath $parsing_rules
+         * @phpstan-return BlockXPath
          */
         public function translate_blocks($parsing_rules)
         {
         }
         /**
-         * Translation management for blocks attributes.
+         * Translation management for block attributes.
          *
          * @since 3.3
-         * @since 3.6 Format changed from `array<string>` to `array<non-empty-string, array|true>`.
+         * @since 3.6 Format changed from `array<string>` to `array<non-falsy-string, array<array|true>>`.
          *
          * @param array $parsing_rules Rules for blocks attributes to translate.
          * @return array Rules completed with ones from wpml-config file.
          *
-         * @phpstan-param array<non-empty-string, array|true> $parsing_rules
-         * @phpstan-return array<non-empty-string, array|true>
+         * @phpstan-param BlockKey $parsing_rules
+         * @phpstan-return BlockKey
          */
         public function translate_blocks_attributes($parsing_rules)
+        {
+        }
+        /**
+         * Encoding management for block attributes.
+         *
+         * @since 3.8
+         *
+         * @param string[][] $keys An array containing attribute names to encode/decode and their format(s), by block name.
+         * @return string[][]
+         *
+         * @phpstan-param BlockEncoding $keys
+         * @phpstan-return BlockEncoding
+         */
+        public function decode_blocks_attributes($keys)
         {
         }
         /**
@@ -26857,9 +28133,13 @@ namespace {
          * @param string $rule_tag Tag name to extract.
          * @return string[][] The rules.
          *
-         * @phpstan-param 'xpath'|'key' $rule_tag
+         * @phpstan-param 'xpath'|'key'|'encoding' $rule_tag
          * @phpstan-return (
-         *     $rule_tag is 'xpath' ? array<non-empty-string, list<non-empty-string>> : array<non-empty-string, array<array|true>>
+         *     $rule_tag is 'xpath' ? BlockXPath :
+         *         ( $rule_tag is 'key' ? BlockKey :
+         *             BlockEncoding
+         *         )
+         *     )
          * )
          */
         protected function get_blocks_parsing_rules($rule_tag)
@@ -26870,11 +28150,12 @@ namespace {
          *
          * @since 3.3
          *
-         * @return string[][][] Rules completed with ones from wpml-config file.
+         * @return array Rules completed with ones from wpml-config file.
          *
          * @phpstan-return array{
-         *     xpath?: array<non-empty-string, list<non-empty-string>>,
-         *     key?: array<non-empty-string, array<array|true>>
+         *     xpath?: BlockXPath,
+         *     key?: BlockKey,
+         *     encoding?: BlockEncoding
          * }
          */
         protected function extract_blocks_parsing_rules()
@@ -26944,9 +28225,9 @@ namespace {
          *
          * @since 1.8
          *
-         * @param object $polylang polylang object
+         * @param PLL_Settings $polylang polylang object
          */
-        public function __construct(&$polylang)
+        public function __construct(\PLL_Settings &$polylang)
         {
         }
         /**
@@ -27247,10 +28528,6 @@ namespace {
     class PLL_Settings extends \PLL_Admin_Base
     {
         /**
-         * @var PLL_Admin_Model
-         */
-        public $model;
-        /**
          * Name of the active module.
          *
          * @var string|null
@@ -27332,8 +28609,11 @@ namespace {
          *
          * @param string $action The action name.
          * @return void
+         *
+         * @phpstan-param non-empty-string $action
+         * @phpstan-return never
          */
-        public function handle_actions($action)
+        public function handle_actions(string $action): void
         {
         }
         /**
@@ -27373,8 +28653,10 @@ namespace {
          *
          * @param array $args query arguments to add to the url
          * @return void
+         *
+         * @phpstan-return never
          */
-        public static function redirect($args = array())
+        public static function redirect(array $args = array()): void
         {
         }
         /**
@@ -27821,6 +29103,8 @@ namespace {
          * @since 1.9
          *
          * @return void
+         *
+         * @phpstan-return never
          */
         public function save_translations()
         {
@@ -28359,6 +29643,58 @@ namespace {
     {
     }
     /**
+     * @package Polylang
+     *
+     * The aim of these functions is to be stubed in unit tests.
+     *
+     * /!\ THE CODE IN THIS FILE MUST BE COMPATIBLE WITH PHP 5.6.
+     */
+    /**
+     * Tells if a constant is defined.
+     *
+     * @since 3.5
+     *
+     * @param string $constant_name Name of the constant.
+     * @return bool True if the constant is defined, false otherwise.
+     *
+     * @phpstan-param non-falsy-string $constant_name
+     */
+    function pll_has_constant($constant_name)
+    {
+    }
+    /**
+     * Returns the value of a constant if it is defined.
+     *
+     * @since 3.5
+     *
+     * @param string $constant_name Name of the constant.
+     * @param mixed  $default       Optional. Value to return if the constant is not defined. Defaults to `null`.
+     * @return mixed The value of the constant.
+     *
+     * @phpstan-template D of int|float|string|bool|array|null
+     * @phpstan-param non-falsy-string $constant_name
+     * @phpstan-param D $default
+     * @phpstan-return D
+     */
+    function pll_get_constant($constant_name, $default = \null)
+    {
+    }
+    /**
+     * Defines a constant if it is not already defined.
+     *
+     * @since 3.5
+     *
+     * @param string $constant_name Name of the constant.
+     * @param mixed  $value         Value to set.
+     * @return bool True on success, false on failure or already defined.
+     *
+     * @phpstan-param non-falsy-string $constant_name
+     * @phpstan-param int|float|string|bool|array|null $value
+     */
+    function pll_set_constant($constant_name, $value)
+    {
+    }
+    /**
      * Retrieves a page given its path.
      *
      * @since 2.8.3
@@ -28400,49 +29736,6 @@ namespace {
      * @return bool True to use the block editor plugin.
      */
     function pll_use_block_editor_plugin()
-    {
-    }
-    /**
-     * Tells if a constant is defined.
-     *
-     * @since 3.5
-     *
-     * @param string $constant_name Name of the constant.
-     * @return bool True if the constant is defined, false otherwise.
-     *
-     * @phpstan-param non-falsy-string $constant_name
-     */
-    function pll_has_constant(string $constant_name): bool
-    {
-    }
-    /**
-     * Returns the value of a constant if it is defined.
-     *
-     * @since 3.5
-     *
-     * @param string $constant_name Name of the constant.
-     * @param mixed  $default       Optional. Value to return if the constant is not defined. Defaults to `null`.
-     * @return mixed The value of the constant.
-     *
-     * @phpstan-param non-falsy-string $constant_name
-     * @phpstan-param int|float|string|bool|array|null $default
-     */
-    function pll_get_constant(string $constant_name, $default = \null)
-    {
-    }
-    /**
-     * Defines a constant if it is not already defined.
-     *
-     * @since 3.5
-     *
-     * @param string $constant_name Name of the constant.
-     * @param mixed  $value         Value to set.
-     * @return bool True on success, false on failure or already defined.
-     *
-     * @phpstan-param non-falsy-string $constant_name
-     * @phpstan-param int|float|string|bool|array|null $value
-     */
-    function pll_set_constant(string $constant_name, $value): bool
     {
     }
     /**

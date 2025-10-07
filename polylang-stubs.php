@@ -307,6 +307,9 @@ namespace WP_Syntex\Polylang_Pro\Updater {
 }
 namespace {
     /**
+     * @package Polylang
+     */
+    /**
      * Base class for all settings
      *
      * @since 1.8
@@ -316,7 +319,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var Options
+         * @var \WP_Syntex\Polylang\Options\Options
          */
         public $options;
         /**
@@ -14003,7 +14006,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var Options
+         * @var \WP_Syntex\Polylang\Options\Options
          */
         public $options;
         /**
@@ -15307,6 +15310,9 @@ namespace {
         }
     }
     /**
+     * @package Polylang
+     */
+    /**
      * Setup filters common to admin and frontend
      *
      * @since 1.4
@@ -15316,7 +15322,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var Options
+         * @var \WP_Syntex\Polylang\Options\Options
          */
         public $options;
         /**
@@ -15625,6 +15631,9 @@ namespace {
         }
     }
     /**
+     * @package Polylang
+     */
+    /**
      * Manages links related functions
      *
      * @since 1.2
@@ -15634,7 +15643,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var Options
+         * @var \WP_Syntex\Polylang\Options\Options
          */
         public $options;
         /**
@@ -16119,6 +16128,9 @@ namespace {
     {
     }
     /**
+     * @package Polylang
+     */
+    /**
      * Manages custom menus translations
      * Common to admin and frontend for the customizer
      *
@@ -16129,7 +16141,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var Options
+         * @var \WP_Syntex\Polylang\Options\Options
          */
         public $options;
         /**
@@ -16342,6 +16354,9 @@ namespace {
         }
     }
     /**
+     * @package Polylang
+     */
+    /**
      * A class to manage admin notices
      * displayed only to admin, based on 'manage_options' capability
      * and only on dashboard, plugins and Polylang admin pages
@@ -16354,7 +16369,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var Options
+         * @var \WP_Syntex\Polylang\Options\Options
          */
         protected $options;
         /**
@@ -17009,6 +17024,9 @@ namespace {
         }
     }
     /**
+     * @package Polylang
+     */
+    /**
      * Manages canonical redirect on frontend.
      *
      * @since 3.3
@@ -17018,7 +17036,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var Options
+         * @var \WP_Syntex\Polylang\Options\Options
          */
         protected $options;
         /**
@@ -17101,6 +17119,9 @@ namespace {
         }
     }
     /**
+     * @package Polylang
+     */
+    /**
      * Base class to choose the language
      *
      * @since 1.2
@@ -17110,7 +17131,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var Options
+         * @var \WP_Syntex\Polylang\Options\Options
          */
         public $options;
         /**
@@ -17554,6 +17575,9 @@ namespace {
         }
     }
     /**
+     * @package Polylang
+     */
+    /**
      * Manages links filters needed on both frontend and admin
      *
      * @since 1.8
@@ -17563,7 +17587,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var Options
+         * @var \WP_Syntex\Polylang\Options\Options
          */
         public $options;
         /**
@@ -18227,6 +18251,9 @@ namespace {
         }
     }
     /**
+     * @package Polylang
+     */
+    /**
      * Manages the static front page and the page for posts on frontend
      *
      * @since 1.8
@@ -18246,7 +18273,7 @@ namespace {
         /**
          * Stores plugin's options.
          *
-         * @var Options
+         * @var \WP_Syntex\Polylang\Options\Options
          */
         protected $options;
         /**
@@ -18579,70 +18606,6 @@ namespace WP_Syntex\Polylang\Capabilities {
          * @return string[]
          */
         public function map_custom_caps($caps, $cap)
-        {
-        }
-    }
-    /**
-     * A class wrapping `WP_User` with translation management feature.
-     *
-     * @since 3.8
-     */
-    class User
-    {
-        /**
-         * Constructor.
-         *
-         * @since 3.8
-         *
-         * @param WP_User|null $user Optional. An instance of `WP_User`.
-         */
-        public function __construct(?\WP_User $user = null)
-        {
-        }
-        /**
-         * Tells if the user is a translator (has a translator capability).
-         * Note: returns `true` if the user has a capability for a language that doesn't exist anymore. This is intentional,
-         * to prevent the user to suddenly have the rights to translate in all languages while it wasn't allowed until then.
-         *
-         * @since 3.8
-         *
-         * @return bool
-         */
-        public function is_translator(): bool
-        {
-        }
-        /**
-         * Tells if the user can translate to the given language.
-         *
-         * @since 3.8
-         *
-         * @param PLL_Language $language A language object.
-         * @return bool
-         */
-        public function can_translate(\PLL_Language $language): bool
-        {
-        }
-        /**
-         * Tells if the user has the specified capability.
-         *
-         * @since 3.8
-         *
-         * @param string $capability Capability name.
-         * @param mixed  ...$args    Optional further parameters, typically starting with an object ID.
-         * @return bool
-         */
-        public function has_cap($capability, ...$args): bool
-        {
-        }
-        /**
-         * Returns the preferred language of the user.
-         *
-         * @since 3.8
-         *
-         * @param PLL_Model $model The model instance.
-         * @return PLL_Language|null
-         */
-        public function get_preferred_language(\PLL_Model $model): ?\PLL_Language
         {
         }
     }
@@ -20574,6 +20537,9 @@ namespace {
         }
     }
     /**
+     * @package Polylang
+     */
+    /**
      * Adds actions and filters related to languages when creating, updating or deleting posts.
      * Actions and filters triggered when reading posts are handled separately.
      *
@@ -20600,7 +20566,7 @@ namespace {
         /**
          * Reference to the Polylang options array.
          *
-         * @var Options
+         * @var \WP_Syntex\Polylang\Options\Options
          */
         protected $options;
         /**
@@ -20713,19 +20679,10 @@ namespace {
         public function force_tags_translation($post_id, $post_after, $post_before)
         {
         }
-        /**
-         * Returns the language to set for a post creation.
-         *
-         * @since 3.8
-         *
-         * @param User $user    The user object.
-         * @param int  $post_id The post ID for which to set the language. Default `0`.
-         * @return PLL_Language The language context.
-         */
-        public function get_language_from_context(\WP_Syntex\Polylang\Capabilities\User $user, int $post_id = 0): \PLL_Language
-        {
-        }
     }
+    /**
+     * @package Polylang
+     */
     /**
      * Adds actions and filters related to languages when creating, reading, updating or deleting posts
      * Acts both on frontend and backend
@@ -20759,7 +20716,7 @@ namespace {
         /**
          * Reference to the Polylang options array.
          *
-         * @var Options
+         * @var \WP_Syntex\Polylang\Options\Options
          */
         protected $options;
         /**
@@ -20892,19 +20849,6 @@ namespace {
          * @return string Slug with a language suffix if found.
          */
         public function set_pre_term_slug($slug, $taxonomy)
-        {
-        }
-        /**
-         * Returns the language to set for a post creation.
-         *
-         * @since 3.8
-         *
-         * @param User   $user     The user object.
-         * @param int    $term_id  The term ID for which to set the language. Default `0`.
-         * @param string $taxonomy The taxonomy for which to set the language. Default `''`.
-         * @return PLL_Language The language context.
-         */
-        public function get_language_from_context(\WP_Syntex\Polylang\Capabilities\User $user, int $term_id = 0, string $taxonomy = ''): \PLL_Language
         {
         }
     }
@@ -21871,6 +21815,9 @@ namespace {
         }
     }
     /**
+     * @package Polylang
+     */
+    /**
      * Links model abstract class.
      *
      * @since 1.5
@@ -21886,7 +21833,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var Options
+         * @var \WP_Syntex\Polylang\Options\Options
          */
         public $options;
         /**
@@ -23262,7 +23209,7 @@ namespace {
         /**
          * Polylang's options.
          *
-         * @var Options
+         * @var \WP_Syntex\Polylang\Options\Options
          */
         protected $options;
         /**
@@ -26332,6 +26279,9 @@ namespace {
         }
     }
     /**
+     * @package Polylang
+     */
+    /**
      * Handles the core sitemaps for sites using a single domain.
      *
      * @since 2.8
@@ -26349,7 +26299,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var Options
+         * @var \WP_Syntex\Polylang\Options\Options
          */
         protected $options;
         /**
@@ -26409,6 +26359,9 @@ namespace {
         }
     }
     /**
+     * @package Polylang
+     */
+    /**
      * Manages copy and synchronization of terms and post metas on front
      *
      * @since 2.4
@@ -26430,7 +26383,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var Options
+         * @var \WP_Syntex\Polylang\Options\Options
          */
         protected $options;
         /**
@@ -26927,6 +26880,9 @@ namespace {
         }
     }
     /**
+     * @package Polylang
+     */
+    /**
      * A class to manage copy and synchronization of post metas.
      *
      * @since 2.3
@@ -26936,7 +26892,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var Options
+         * @var \WP_Syntex\Polylang\Options\Options
          */
         public $options;
         /**
@@ -26978,6 +26934,9 @@ namespace {
         }
     }
     /**
+     * @package Polylang
+     */
+    /**
      * A class to manage the synchronization of taxonomy terms across posts translations
      *
      * @since 2.3
@@ -26987,7 +26946,7 @@ namespace {
         /**
          * Stores the plugin options.
          *
-         * @var Options
+         * @var \WP_Syntex\Polylang\Options\Options
          */
         protected $options;
         /**
@@ -28922,9 +28881,9 @@ namespace {
     class PLL_Table_String extends \WP_List_Table
     {
         /**
-         * The list of languages.
+         * Languages model.
          *
-         * @var PLL_Language[]
+         * @var Languages
          */
         protected $languages;
         /**
@@ -28949,10 +28908,11 @@ namespace {
          * Constructor.
          *
          * @since 0.6
+         * @since 3.8 The 1st argument is an instance of the languages model.
          *
-         * @param PLL_Language[] $languages List of languages.
+         * @param Languages $languages Languages model.
          */
-        public function __construct($languages)
+        public function __construct(\WP_Syntex\Polylang\Model\Languages $languages)
         {
         }
         /**

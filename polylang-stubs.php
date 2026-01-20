@@ -39,7 +39,7 @@ namespace WP_Syntex\Polylang_Pro\Updater {
         /**
          * Enqueues styles and scripts.
          *
-         * @since 3.7
+         * @since 1.0
          *
          * @return void
          */
@@ -552,7 +552,7 @@ namespace WP_Syntex\Polylang_Pro\Updater {
         /**
          * Name of the ajax action to get the licenses data.
          *
-         * @since 3.7
+         * @since 1.0
          *
          * @var string
          */
@@ -560,7 +560,7 @@ namespace WP_Syntex\Polylang_Pro\Updater {
         /**
          * Name of the action to create the nonce required to deactivate a license.
          *
-         * @since 3.7
+         * @since 1.0
          *
          * @var string
          */
@@ -769,7 +769,7 @@ namespace WP_Syntex\Polylang_Pro\Updater {
         /**
          * Name of the action to create the nonce required to deactivate a license.
          *
-         * @since 3.7
+         * @since 1.0
          *
          * @var string
          */
@@ -1425,7 +1425,7 @@ namespace WP_Syntex\Polylang_Pro\Modules\Capabilities {
      *
      * @since 3.8
      */
-    class Capabilities
+    class Advanced_Capabilities
     {
         /**
          * @var Create_Post
@@ -1640,13 +1640,13 @@ namespace WP_Syntex\Polylang_Pro\Modules\Capabilities\Mapper {
          *
          * @since 3.8
          *
-         * @param string[]                              $caps    Primitive capabilities required of the user.
-         * @param string                                $cap     Capability being checked.
-         * @param \WP_Syntex\Polylang\Capabilities\User $user    The user object.
-         * @param array                                 $args    Adds context to the capability check, typically starting with an object ID.
+         * @param string[] $caps    Primitive capabilities required of the user.
+         * @param string   $cap     Capability being checked.
+         * @param User     $user    The user object.
+         * @param array    $args    Adds context to the capability check, typically starting with an object ID.
          * @return string[] Updated primitive capabilities required of the user.
          */
-        public function map($caps, $cap, $user, $args): array
+        public function map(array $caps, string $cap, \WP_Syntex\Polylang\Capabilities\User $user, array $args): array
         {
         }
         /**
@@ -1698,7 +1698,7 @@ namespace WP_Syntex\Polylang_Pro\Modules\Capabilities\Mapper {
          * @param array    $args Adds context to the capability check, typically starting with an object ID.
          * @return string[] Updated primitive capabilities required of the user.
          */
-        public function map($caps, $cap, $user, $args): array
+        public function map(array $caps, string $cap, \WP_Syntex\Polylang\Capabilities\User $user, array $args): array
         {
         }
     }
@@ -1722,13 +1722,13 @@ namespace WP_Syntex\Polylang_Pro\Modules\Capabilities\Mapper {
          *
          * @since 3.8
          *
-         * @param string[]                              $caps    Primitive capabilities required of the user.
-         * @param string                                $cap     Capability being checked.
-         * @param \WP_Syntex\Polylang\Capabilities\User $user    The user object.
-         * @param array                                 $args    Adds context to the capability check, typically starting with an object ID.
+         * @param string[] $caps    Primitive capabilities required of the user.
+         * @param string   $cap     Capability being checked.
+         * @param User     $user    The user object.
+         * @param array    $args    Adds context to the capability check, typically starting with an object ID.
          * @return string[] Updated primitive capabilities required of the user.
          */
-        public function map($caps, $cap, $user, $args): array
+        public function map(array $caps, string $cap, \WP_Syntex\Polylang\Capabilities\User $user, array $args): array
         {
         }
     }
@@ -1767,7 +1767,7 @@ namespace WP_Syntex\Polylang_Pro\Modules\Capabilities\Mapper {
          * @param array    $args    Adds context to the capability check, typically starting with an object ID.
          * @return string[] Updated primitive capabilities required of the user.
          */
-        public function map($caps, $cap, $user, $args): array
+        public function map(array $caps, string $cap, \WP_Syntex\Polylang\Capabilities\User $user, array $args): array
         {
         }
     }
@@ -1799,7 +1799,7 @@ namespace WP_Syntex\Polylang_Pro\Modules\Capabilities\Mapper {
          * @param array    $args    Adds context to the capability check, typically starting with an object ID.
          * @return string[] Updated primitive capabilities required of the user.
          */
-        public function map($caps, $cap, $user, $args): array
+        public function map(array $caps, string $cap, \WP_Syntex\Polylang\Capabilities\User $user, array $args): array
         {
         }
     }
@@ -3873,6 +3873,7 @@ namespace WP_Syntex\Polylang_Pro\Widget_Blocks {
          * Do not add the 'pll_lang' attribute if the block is a legacy widget.
          *
          * @since 3.1
+         * @since 3.7.6 Removed default value (empty string) for `pll_lang`.
          *
          * @param array $block_properties Array of parameters for registering a block type.
          *                                Each of them becomes a property of the block type object.
@@ -3903,12 +3904,43 @@ namespace WP_Syntex\Polylang_Pro\Widget_Blocks {
         }
     }
 }
+namespace WP_Syntex\Polylang_Pro\Modules\Active_Languages {
+    /**
+     * Class to filter the list of languages to only include active languages, depending on the current user's capabilities.
+     *
+     * @since 3.8
+     */
+    class Languages_Proxy implements \WP_Syntex\Polylang\Model\Languages_Proxy_Interface
+    {
+        public const CAPABILITY = 'edit_posts';
+        /**
+         * Returns the proxy's key.
+         *
+         * @since 3.8
+         *
+         * @return string
+         *
+         * @phpstan-return non-falsy-string
+         */
+        public function key(): string
+        {
+        }
+        /**
+         * Returns the list of available languages after passing it through this proxy.
+         *
+         * @since 3.8
+         *
+         * @param PLL_Language[] $languages List of languages to filter.
+         * @return PLL_Language[]
+         */
+        public function filter(array $languages): array
+        {
+        }
+    }
+}
 namespace {
     /**
-     * @package Polylang-Pro
-     */
-    /**
-     * Manages the ability to enable or disable a language
+     * Manages the ability to enable or disable a language.
      *
      * @since 1.9
      */
@@ -3925,13 +3957,7 @@ namespace {
          */
         public $model;
         /**
-         * Current Language.
-         *
-         * @var PLL_Language|null
-         */
-        public $curlang;
-        /**
-         * Constructor
+         * Constructor.
          *
          * @since 1.9
          *
@@ -3941,7 +3967,7 @@ namespace {
         {
         }
         /**
-         * Adds class inactive / active class
+         * Adds a `inactive` CSS class to inactive language rows.
          *
          * @since 1.9
          *
@@ -3953,7 +3979,7 @@ namespace {
         {
         }
         /**
-         * Remove the default lang action for disabled languages
+         * Removes the default lang action for disabled languages.
          *
          * @since 1.9
          *
@@ -3965,7 +3991,7 @@ namespace {
         {
         }
         /**
-         * Adds disable/enable links to row actions in the languages list table
+         * Adds Disable/Enable links to row actions in the languages list table.
          *
          * @since 1.9
          *
@@ -3977,19 +4003,19 @@ namespace {
         {
         }
         /**
-         * Enables or disables a language
+         * Enables or disables a language.
          *
          * @since 1.9
          *
-         * @param int  $lang_id The language term id.
+         * @param int  $lang_id The language term ID.
          * @param bool $enable  True to enable, false to disable.
          * @return void
          */
-        public function _enable($lang_id, $enable)
+        public function _enable(int $lang_id, bool $enable): void
         {
         }
         /**
-         * Enables a language
+         * Enables a language.
          *
          * @since 1.9
          *
@@ -4001,7 +4027,7 @@ namespace {
         {
         }
         /**
-         * Disables a language
+         * Disables a language.
          *
          * @since 1.9
          *
@@ -4013,44 +4039,58 @@ namespace {
         {
         }
         /**
-         * Sets error 404 if the requested language is not active.
+         * Styles the inactive language rows.
          *
          * @since 1.9
          *
          * @return void
          */
-        public function maybe_set_404()
+        public function print_css(): void
         {
         }
         /**
-         * Styles the border
+         * If the current user is not allowed to see inactive languages, this method:
+         * - registers the language proxy that removes the inactive languages,
+         * - clears the languages cache.
+         * If the current language is inactive, this method:
+         * - replaces it with the default language.
+         *
+         * @since 3.8
+         *
+         * @param mixed $result Response to replace the requested version with. Can be anything
+         *                      a normal endpoint can return, or null to not hijack the request.
+         * @return mixed
+         */
+        public function maybe_filter_languages_in_rest($result = \null)
+        {
+        }
+        /**
+         * If the current user is not allowed to see inactive languages, this method:
+         * - registers the language proxy that removes the inactive languages,
+         * - clears the languages cache
+         * If the given language is inactive, this method:
+         * - replaces it with the default language,
+         * - adds a hook that triggers a 404 status and disables the sitemap.
+         *
+         * @since 3.8
+         *
+         * @param PLL_Language|false $curlang Instance of the current language.
+         * @return PLL_Language|false
+         */
+        public function maybe_filter_languages_in_frontend($curlang)
+        {
+        }
+        /**
+         * Sets an error 404 if the requested language is not active.
+         * Also disables the sitemap.
          *
          * @since 1.9
          *
-         * @return void
-         */
-        public function print_css()
-        {
-        }
-        /**
-         * Removes inactive languages from the list of languages for users who can't edit posts
-         *
-         * @since 1.9
+         * @global WP_Query $wp_query WordPress Query object.
          *
          * @return void
          */
-        public function init()
-        {
-        }
-        /**
-         * Removes inactive languages from the list of languages.
-         *
-         * @since 1.9.3
-         *
-         * @param PLL_Language[] $languages Array of PLL_Language objects.
-         * @return PLL_Language[]
-         */
-        public function remove_inactive_languages($languages)
+        public function maybe_set_404(): void
         {
         }
     }
@@ -6082,6 +6122,7 @@ namespace {
         }
         /**
          * Returns the template post object currently being edited.
+         * Backward compatibility with WordPress < 6.8.
          *
          * @since 3.2
          *
@@ -9003,7 +9044,7 @@ namespace WP_Syntex\Polylang_Pro\REST\Translatable {
          *
          * @param string $lang   Language code.
          * @param object $object Instance of WP_Post or WP_Term.
-         * @return bool
+         * @return bool|WP_Error True or false when setting the language, WP_Error on failure.
          */
         public function set_language($lang, $object)
         {
@@ -9039,6 +9080,17 @@ namespace WP_Syntex\Polylang_Pro\REST\Translatable {
          * @return void
          */
         protected function register_rest_field(string $type): void
+        {
+        }
+        /**
+         * Returns the language object if the user has permission to set the language of the object.
+         *
+         * @since 3.8
+         *
+         * @param string $language_slug Language slug from the request.
+         * @return \PLL_Language|WP_Error Language object if the language is valid, WP_Error otherwise.
+         */
+        protected function get_language_with_permission($language_slug)
         {
         }
     }
@@ -13000,6 +13052,16 @@ namespace {
         {
         }
         /**
+         * Returns the default metas to export.
+         *
+         * @since 3.8
+         *
+         * @return array A multi-dimensional array containing nested meta sub keys to translate. Default empty array.
+         */
+        protected function get_default_metas_to_export(): array
+        {
+        }
+        /**
          * Returns the encodings to use for metas.
          *
          * @since 3.6
@@ -13009,6 +13071,16 @@ namespace {
          * @return array List of custom fields encodings.
          */
         protected function get_meta_encodings(int $from, int $to): array
+        {
+        }
+        /**
+         * Returns the default encodings to use for metas.
+         *
+         * @since 3.8
+         *
+         * @return array A multi-dimensional array containing nested meta sub keys to translate. Default empty array.
+         */
+        protected function get_default_meta_encodings(): array
         {
         }
         /**
@@ -13071,27 +13143,23 @@ namespace {
         {
         }
         /**
-         * Get the meta names to export.
+         * Returns the default post metas to export.
          *
-         * @since 3.3
+         * @since 3.8
          *
-         * @param int $from ID of the source object.
-         * @param int $to   ID of the target object.
-         * @return string[] List of custom fields names.
+         * @return array A multi-dimensional array containing nested meta sub keys to translate.
          */
-        protected function get_meta_names_to_export(int $from, int $to): array
+        protected function get_default_metas_to_export(): array
         {
         }
         /**
-         * Returns the meta formats.
+         * Returns the default encodings to use for post metas.
          *
-         * @since 3.6
+         * @since 3.8
          *
-         * @param int $from ID of the source object.
-         * @param int $to   ID of the target object.
-         * @return array List of custom fields formats.
+         * @return array A multi-dimensional array containing nested meta sub keys to translate.
          */
-        protected function get_meta_encodings(int $from, int $to): array
+        protected function get_default_meta_encodings(): array
         {
         }
     }
@@ -14574,6 +14642,8 @@ namespace {
          *
          * @param string $tab The name of the screen (`lang`, `strings`, `settings`).
          * @return string
+         *
+         * @phpstan-return non-empty-string
          */
         public static function get_screen_id(string $tab): string
         {
@@ -14585,6 +14655,8 @@ namespace {
          *
          * @param string $tab The name of the screen (`lang`, `strings`, `settings`).
          * @return string
+         *
+         * @phpstan-return non-empty-string
          */
         public static function get_screen_slug(string $tab): string
         {
@@ -16534,14 +16606,23 @@ namespace {
         {
         }
         /**
-         * Setups filters and terms
-         * adds the language switcher metabox and create new nav menu locations
+         * Setups filters and terms and create new nav menu locations.
          *
          * @since 1.1
          *
          * @return void
          */
         public function admin_init()
+        {
+        }
+        /**
+         * Adds the language switcher metabox.
+         *
+         * @since 3.7.7
+         *
+         * @return void
+         */
+        public function add_meta_box()
         {
         }
         /**
@@ -17027,11 +17108,14 @@ namespace {
          *
          * @since 1.6
          *
-         * @param string $translation translation to sanitize
-         * @param string $name        unique name for the string
+         * @param string $translation The string translation.
+         * @param string $name        The name as defined in pll_register_string. Unused.
+         * @param string $context     The context as defined in pll_register_string. Unused.
+         * @param string $original    The original string to translate. Unused.
+         * @param string $previous    The previous string translation.
          * @return string
          */
-        public static function sanitize_string_translation($translation, $name)
+        public static function sanitize_string_translation($translation, $name, $context, $original, $previous)
         {
         }
     }
@@ -17374,7 +17458,7 @@ namespace {
         {
         }
         /**
-         * Evaluates the canonical redirect url through the deidcated WP function.
+         * Evaluates the canonical redirect url through the dedicated WP function.
          *
          * @since 3.3
          *
@@ -17443,17 +17527,25 @@ namespace {
         {
         }
         /**
-         * Sets the current language
-         * and fires the action 'pll_language_defined'.
+         * Sets the current language.
+         * Also fires the action 'pll_language_defined'.
          *
          * @since 1.2
          *
-         * @param PLL_Language|false $curlang Current language.
+         * @param PLL_Language|false $curlang Optional. Current language. Default is `false`.
          * @return void
          */
-        protected function set_language($curlang)
+        protected function set_language($curlang = \false): void
         {
         }
+        /**
+         * Returns the language to assign as the current one.
+         *
+         * @since 3.8
+         *
+         * @return PLL_Language|false
+         */
+        abstract protected function get_current_language();
         /**
          * Set a cookie to remember the language.
          * Setting PLL_COOKIE to false will disable cookie although it will break some functionalities
@@ -17489,13 +17581,13 @@ namespace {
         {
         }
         /**
-         * Sets the language when home page is requested
+         * Returns the language when home page is requested.
          *
-         * @since 1.2
+         * @since 3.8
          *
-         * @return void
+         * @return PLL_Language|false
          */
-        protected function home_language()
+        protected function get_home_language()
         {
         }
         /**
@@ -17581,20 +17673,21 @@ namespace {
          *
          * @since 1.2
          *
-         * @param PLL_Language $curlang Current language.
+         * @param PLL_Language|false $curlang Optional. Current language. Default is `false`.
          * @return void
          */
-        protected function set_language($curlang)
+        protected function set_language($curlang = \false): void
         {
         }
         /**
-         * Returns the language based on the queried content
+         * Returns the language based on the queried content.
          *
          * @since 1.2
+         * @since 3.8 Renamed from `get_language_from_content()`.
          *
-         * @return PLL_Language|false detected language, false if none was found
+         * @return PLL_Language|false
          */
-        protected function get_language_from_content()
+        protected function get_current_language()
         {
         }
         /**
@@ -17610,24 +17703,13 @@ namespace {
         {
         }
         /**
-         * Sets the language from content
+         * Sets the language from content.
          *
          * @since 1.2
          *
          * @return void
          */
-        public function wp()
-        {
-        }
-        /**
-         * If no language is found by {@see PLL_Choose_Lang_Content::get_language_from_content()}, returns the preferred one.
-         *
-         * @since 0.9
-         *
-         * @param PLL_Language|false $lang Language found by {@see PLL_Choose_Lang_Content::get_language_from_content()}.
-         * @return PLL_Language|false
-         */
-        public function pll_get_current_language($lang)
+        public function wp(): void
         {
         }
     }
@@ -17662,13 +17744,14 @@ namespace {
         {
         }
         /**
-         * Finds the language according to information found in the url.
+         * Returns the language according to information found in the url.
          *
          * @since 1.2
+         * @since 3.8 Renamed from `get_language_from_url()`.
          *
-         * @return void
+         * @return PLL_Language|false
          */
-        public function set_language_from_url()
+        protected function get_current_language()
         {
         }
         /**
@@ -19350,9 +19433,20 @@ namespace WP_Syntex\Polylang\Model {
          * Cleans language cache.
          *
          * @since 3.7
+         *
          * @return void
          */
         public function clean_cache(): void
+        {
+        }
+        /**
+         * Cleans local language cache.
+         *
+         * @since 3.8
+         *
+         * @return void
+         */
+        public function clean_local_cache(): void
         {
         }
         /**
@@ -19385,9 +19479,15 @@ namespace WP_Syntex\Polylang\Model {
          * @since 3.8
          *
          * @param Languages_Proxy_Interface $proxy Proxy instance.
+         * @param string                    $mode  Optional. Tell how the proxy must be applied. Possible values are:
+         *                                         - `callable`: the proxy must be called manually with `filter()`.
+         *                                         - `automatic`: the proxy is meant to be always called, automatically.
+         *                                         Default is `callable`.
          * @return self
+         *
+         * @phpstan-param 'callable'|'automatic' $mode
          */
-        public function register_proxy(\WP_Syntex\Polylang\Model\Languages_Proxy_Interface $proxy): self
+        public function register_proxy(\WP_Syntex\Polylang\Model\Languages_Proxy_Interface $proxy, string $mode = 'callable'): self
         {
         }
         /**
@@ -19518,25 +19618,6 @@ namespace WP_Syntex\Polylang\Model {
          * @return WP_Term[]
          */
         protected function get_terms(): array
-        {
-        }
-        /**
-         * Filters the ORDERBY clause of the languages query.
-         *
-         * This allows to order languages terms by `taxonomy` first then by `term_group` and `term_id`.
-         * Ordering terms by taxonomy allows not to mix terms between all language taxomonomies.
-         * Having the "language' taxonomy first is important for {@see PLL_Admin_Model:delete_language()}.
-         *
-         * @since 3.2.3
-         * @since 3.7 Moved from `PLL_Model::filter_language_terms_orderby()` to `WP_Syntex\Polylang\Model\Languages::filter_terms_orderby()`.
-         *            Visibility changed from `public` to `protected`.
-         *
-         * @param  string   $orderby    `ORDERBY` clause of the terms query.
-         * @param  array    $args       An array of term query arguments.
-         * @param  string[] $taxonomies An array of taxonomy names.
-         * @return string
-         */
-        protected function filter_terms_orderby($orderby, $args, $taxonomies)
         {
         }
     }
@@ -21608,6 +21689,17 @@ namespace {
          * @return string Slug with a language suffix if found.
          */
         public function set_pre_term_slug($slug, $taxonomy)
+        {
+        }
+        /**
+         * Stores the term ID to use in `pre_term_slug`.
+         *
+         * @since 3.7.7
+         *
+         * @param int $term_id Term ID.
+         * @return int Unmodified term ID.
+         */
+        public function set_pre_term_id($term_id)
         {
         }
     }
@@ -23866,7 +23958,7 @@ namespace {
          * @since 3.7
          *
          * @param string $separator The separator for the slug suffix.
-         * @return string The suffixed slug, or not if the lang isn't defined.
+         * @return string The slug with or without suffix.
          */
         public function get_suffixed_slug(string $separator): string
         {
@@ -26320,6 +26412,16 @@ namespace WP_Syntex\Polylang\REST {
         {
         }
         /**
+         * Returns the parameters of the current request.
+         *
+         * @since 3.8
+         *
+         * @return array Parameters of the current request if any.
+         */
+        public function get_params(): array
+        {
+        }
+        /**
          * Returns the language of the current request.
          *
          * @since 3.8
@@ -26370,6 +26472,26 @@ namespace WP_Syntex\Polylang\REST {
          * @phpstan-return 'post'|'term'|null
          */
         public function get_object_type(): ?string
+        {
+        }
+        /**
+         * Returns the route of the current request.
+         *
+         * @since 3.8
+         *
+         * @return string Route of the current request, or empty string if no request is set.
+         */
+        public function get_route(): string
+        {
+        }
+        /**
+         * Returns the HTTP method of the current request.
+         *
+         * @since 3.8
+         *
+         * @return string
+         */
+        public function get_method(): string
         {
         }
     }
@@ -27128,10 +27250,11 @@ namespace {
          * doesn't include any language.
          *
          * @since 2.8
+         * @since 3.8 Returns a language object instead of a language slug.
          *
-         * @param string|bool $lang  Current language code, false if not set yet.
-         * @param WP_Query    $query Main WP query object.
-         * @return string|bool
+         * @param PLL_Language|false $lang  Current language code, false if not set yet.
+         * @param WP_Query           $query Main WP query object.
+         * @return PLL_Language|false
          */
         public function set_language_from_query($lang, $query)
         {

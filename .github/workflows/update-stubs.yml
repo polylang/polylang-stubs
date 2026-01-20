@@ -1,0 +1,90 @@
+name: Update Stubs
+
+on:
+  repository_dispatch:
+    types: [polylang-commit, polylang-pro-commit]
+  workflow_dispatch:
+
+jobs:
+  update-stubs:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout polylang-stubs
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_ACCESS_TOKEN }}
+      
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+      
+      - name: Get latest Polylang commit hash
+        id: pll_version
+        run: |
+          RESPONSE=$(curl -s -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.GH_ACCESS_TOKEN }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/polylang/polylang/commits/master)
+          COMMIT_HASH=$(echo "$RESPONSE" | jq -r '.sha')
+          echo "commit_hash=$COMMIT_HASH" >> $GITHUB_OUTPUT
+      
+      - name: Get latest Polylang Pro commit hash
+        id: pll_pro_version
+        run: |
+          RESPONSE=$(curl -s -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.GH_ACCESS_TOKEN }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/polylang/polylang-pro/commits/master)
+          COMMIT_HASH=$(echo "$RESPONSE" | jq -r '.sha')
+          echo "commit_hash=$COMMIT_HASH" >> $GITHUB_OUTPUT
+      
+      - name: Clone Polylang Pro
+        run: |
+          git clone --depth 1 --branch master https://${{ secrets.GH_ACCESS_TOKEN }}@github.com/polylang/polylang-pro.git polylang-pro
+      
+      - name: Install Polylang Pro Composer dependencies
+        run: composer install --no-dev --prefer-dist --no-progress
+        working-directory: polylang-pro
+      
+      - name: Install polylang-stubs Composer dependencies
+        run: composer install --no-dev --prefer-dist --no-progress
+      
+      - name: Generate stubs
+        run: bash generate.sh
+      
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if git diff --quiet polylang-stubs.php; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Commit and push changes
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add polylang-stubs.php
+          
+          # Determine which repo triggered the update
+          if [[ "${{ github.event.action }}" == "polylang-pro-commit" ]]; then
+            COMMIT_HASH="${{ steps.pll_pro_version.outputs.commit_hash }}"
+            git commit -m "Update stubs from Polylang Pro ${COMMIT_HASH}"
+          elif [[ "${{ github.event.action }}" == "polylang-commit" ]]; then
+            COMMIT_HASH="${{ steps.pll_version.outputs.commit_hash }}"
+            git commit -m "Update stubs from Polylang ${COMMIT_HASH}"
+          else
+            # Manual workflow_dispatch trigger
+            git commit -m "Update stubs" -m "Polylang: ${{ steps.pll_version.outputs.commit_hash }}" -m "Polylang Pro: ${{ steps.pll_pro_version.outputs.commit_hash }}"
+          fi
+          git push
+      
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -rf polylang-pro

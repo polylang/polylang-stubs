@@ -9044,7 +9044,7 @@ namespace WP_Syntex\Polylang_Pro\REST\Translatable {
          *
          * @param string $lang   Language code.
          * @param object $object Instance of WP_Post or WP_Term.
-         * @return bool|WP_Error True or false when setting the language, WP_Error on failure.
+         * @return bool|\WP_Error True or false when setting the language, WP_Error on failure.
          */
         public function set_language($lang, $object)
         {
@@ -9088,7 +9088,7 @@ namespace WP_Syntex\Polylang_Pro\REST\Translatable {
          * @since 3.8
          *
          * @param string $language_slug Language slug from the request.
-         * @return \PLL_Language|WP_Error Language object if the language is valid, WP_Error otherwise.
+         * @return \PLL_Language|\WP_Error Language object if the language is valid, WP_Error otherwise.
          */
         protected function get_language_with_permission($language_slug)
         {

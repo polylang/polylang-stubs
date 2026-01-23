@@ -16332,6 +16332,7 @@ namespace {
          *
          * @since 1.9
          * @since 2.8 Moved from PLL_Share_Term_Slug::term_exists() to PLL_Model::term_exists_by_slug().
+         * @since 3.8 Refactored to use `get_terms()` instead of direct SQL query.
          *
          * @param string              $slug     The term slug to test.
          * @param string|PLL_Language $language The language slug or object.

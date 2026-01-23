@@ -3979,15 +3979,13 @@ namespace {
         {
         }
         /**
-         * Removes the default lang action for disabled languages.
+         * Styles the inactive language rows.
          *
          * @since 1.9
          *
-         * @param string       $action   HTML markup of the action to define the default language.
-         * @param PLL_Language $language The Language.
-         * @return string Modified row action.
+         * @return void
          */
-        public function remove_default_lang_action($action, $language)
+        public function print_css(): void
         {
         }
         /**
@@ -4039,13 +4037,28 @@ namespace {
         {
         }
         /**
-         * Styles the inactive language rows.
+         * Removes the default lang action for disabled languages.
          *
          * @since 1.9
          *
-         * @return void
+         * @param string       $action   HTML markup of the action to define the default language.
+         * @param PLL_Language $language The Language.
+         * @return string Modified row action.
          */
-        public function print_css(): void
+        public function remove_default_lang_action($action, $language)
+        {
+        }
+        /**
+         * Prevents an inactive language to be set as the default one.
+         * This is done by preventing `PLL_Settings::handle_actions()` to be called on the `default-lang` action.
+         *
+         * @since 3.8
+         *
+         * @return void
+         *
+         * @phpstan-return void|never
+         */
+        public function prevent_default_lang_assignation(): void
         {
         }
         /**

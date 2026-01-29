@@ -838,6 +838,12 @@ namespace WP_Syntex\Polylang\Options {
     abstract class Abstract_Option
     {
         /**
+         * Option value.
+         *
+         * @var mixed
+         */
+        protected $value;
+        /**
          * Validation and sanitization errors.
          *
          * @var WP_Error
@@ -4774,7 +4780,7 @@ namespace {
          *
          * @phpstan-param WP_REST_Request<array> $request
          */
-        public function ensure_translation_data_for_editor($response, $post, $request): \WP_REST_Response
+        public function prepare_response($response, $post, $request): \WP_REST_Response
         {
         }
     }
@@ -19834,6 +19840,12 @@ namespace WP_Syntex\Polylang\Options\Primitive {
     abstract class Abstract_List extends \WP_Syntex\Polylang\Options\Abstract_Option
     {
         /**
+         * Option value.
+         *
+         * @var array
+         */
+        protected $value;
+        /**
          * Prepares a value before validation.
          * Allows to receive a string-keyed array but returns an integer-keyed array.
          *
@@ -19880,6 +19892,29 @@ namespace WP_Syntex\Polylang\Options\Primitive {
          * @phpstan-return array{type: 'array', items: array{type: SchemaType}}
          */
         protected function get_data_structure(): array
+        {
+        }
+        /**
+         * Removes an item from the list.
+         *
+         * @since 3.8
+         *
+         * @param mixed $item The item to remove.
+         * @return bool True if the value has been removed. False otherwise.
+         */
+        public function remove($item): bool
+        {
+        }
+        /**
+         * Adds an item to the list.
+         *
+         * @since 3.8
+         *
+         * @param mixed   $item    The item to add.
+         * @param Options $options The options instance.
+         * @return bool True if the value was added successfully. False otherwise.
+         */
+        public function add($item, \WP_Syntex\Polylang\Options\Options $options): bool
         {
         }
     }
@@ -20077,6 +20112,74 @@ namespace WP_Syntex\Polylang\Options\Business {
         {
         }
     }
+}
+namespace WP_Syntex\Polylang\Options\Primitive {
+    /**
+     * Class defining a map option.
+     *
+     * @since 3.8
+     */
+    abstract class Abstract_Map extends \WP_Syntex\Polylang\Options\Abstract_Option
+    {
+        /**
+         * Option value.
+         *
+         * @var array
+         */
+        protected $value;
+        /**
+         * Returns the JSON schema part specific to this option.
+         *
+         * @since 3.8
+         *
+         * @return array Partial schema.
+         */
+        protected function get_data_structure(): array
+        {
+        }
+        /**
+         * Removes a key from the map.
+         *
+         * @since 3.8
+         *
+         * @param string $key The key to remove.
+         * @return bool True if the key has been removed. False otherwise.
+         */
+        public function remove(string $key): bool
+        {
+        }
+        /**
+         * Adds an item to the map.
+         *
+         * @since 3.8
+         *
+         * @param array<string, mixed> $item The item(s) to add. Must be a key-value pair.
+         * @param Options              $options The options instance.
+         * @return bool True if the value was added successfully. False otherwise.
+         */
+        public function add($item, \WP_Syntex\Polylang\Options\Options $options): bool
+        {
+        }
+        /**
+         * Returns the JSON schema part specific to the inner structure of this option.
+         *
+         * @since 3.8
+         *
+         * @return array Partial schema.
+         */
+        abstract protected function get_inner_structure(): array;
+        /**
+         * Returns the reset value for a key.
+         *
+         * @since 3.8
+         *
+         * @param string $key The key to reset.
+         * @return mixed The reset value.
+         */
+        abstract protected function reset_value(string $key);
+    }
+}
+namespace WP_Syntex\Polylang\Options\Business {
     /**
      * Class defining single associative array of domain as value and language slug as key option.
      * /!\ Sanitization depends on `force_lang`: this option must be set AFTER `force_lang`.
@@ -20085,7 +20188,7 @@ namespace WP_Syntex\Polylang\Options\Business {
      *
      * @phpstan-type DomainsValue array<non-falsy-string, string>
      */
-    class Domains extends \WP_Syntex\Polylang\Options\Abstract_Option
+    class Domains extends \WP_Syntex\Polylang\Options\Primitive\Abstract_Map
     {
         /**
          * Returns option key.
@@ -20110,19 +20213,13 @@ namespace WP_Syntex\Polylang\Options\Business {
         {
         }
         /**
-         * Returns the JSON schema part specific to this option.
+         * Returns the JSON schema part specific to the inner structure of this option.
          *
-         * @since 3.7
+         * @since 3.8
          *
-         * @return array Partial schema.
-         *
-         * @phpstan-return array{
-         *     type: 'object',
-         *     patternProperties: non-empty-array<non-empty-string, array{type: 'string', format: 'uri'}>,
-         *     additionalProperties: false
-         * }
+         * @return array Inner structure.
          */
-        protected function get_data_structure(): array
+        protected function get_inner_structure(): array
         {
         }
         /**
@@ -20161,6 +20258,17 @@ namespace WP_Syntex\Polylang\Options\Business {
          * @return array The updated site health information.
          */
         public function get_site_health_info(\WP_Syntex\Polylang\Options\Options $options): array
+        {
+        }
+        /**
+         * Returns the reset value for a key.
+         *
+         * @since 3.8
+         *
+         * @param string $key The key to reset. Unused.
+         * @return mixed The reset value.
+         */
+        protected function reset_value(string $key)
         {
         }
     }
@@ -21072,6 +21180,30 @@ namespace WP_Syntex\Polylang\Options {
          * @return mixed The new value.
          */
         public function reset(string $key)
+        {
+        }
+        /**
+         * Removes an option sub value from its array.
+         *
+         * @since 3.8
+         *
+         * @param string $key   The name of the option to splice.
+         * @param mixed  $value The value to remove.
+         * @return WP_Error An error object, empty if the value was removed successfully.
+         */
+        public function remove(string $key, $value): \WP_Error
+        {
+        }
+        /**
+         * Adds a value to an option.
+         *
+         * @since 3.8
+         *
+         * @param string $key   The name of the option to add the value to.
+         * @param mixed  $value The value to add.
+         * @return WP_Error An error object, empty if the value was added successfully.
+         */
+        public function add(string $key, $value): \WP_Error
         {
         }
         /**

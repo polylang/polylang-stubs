@@ -1646,13 +1646,13 @@ namespace WP_Syntex\Polylang_Pro\Modules\Capabilities\Mapper {
          *
          * @since 3.8
          *
-         * @param string[] $caps    Primitive capabilities required of the user.
-         * @param string   $cap     Capability being checked.
-         * @param User     $user    The user object.
-         * @param array    $args    Adds context to the capability check, typically starting with an object ID.
+         * @param string[]       $caps    Primitive capabilities required of the user.
+         * @param string         $cap     Capability being checked.
+         * @param User_Interface $user    The user object.
+         * @param array          $args    Adds context to the capability check, typically starting with an object ID.
          * @return string[] Updated primitive capabilities required of the user.
          */
-        public function map(array $caps, string $cap, \WP_Syntex\Polylang\Capabilities\User $user, array $args): array
+        public function map(array $caps, string $cap, \WP_Syntex\Polylang\Capabilities\User\User_Interface $user, array $args): array
         {
         }
         /**
@@ -1698,13 +1698,13 @@ namespace WP_Syntex\Polylang_Pro\Modules\Capabilities\Mapper {
          *
          * @since 3.8
          *
-         * @param string[] $caps Primitive capabilities required of the user.
-         * @param string   $cap  Capability being checked.
-         * @param User     $user The user object.
-         * @param array    $args Adds context to the capability check, typically starting with an object ID.
+         * @param string[]       $caps Primitive capabilities required of the user.
+         * @param string         $cap  Capability being checked.
+         * @param User_Interface $user The user object.
+         * @param array          $args Adds context to the capability check, typically starting with an object ID.
          * @return string[] Updated primitive capabilities required of the user.
          */
-        public function map(array $caps, string $cap, \WP_Syntex\Polylang\Capabilities\User $user, array $args): array
+        public function map(array $caps, string $cap, \WP_Syntex\Polylang\Capabilities\User\User_Interface $user, array $args): array
         {
         }
     }
@@ -1728,13 +1728,13 @@ namespace WP_Syntex\Polylang_Pro\Modules\Capabilities\Mapper {
          *
          * @since 3.8
          *
-         * @param string[] $caps    Primitive capabilities required of the user.
-         * @param string   $cap     Capability being checked.
-         * @param User     $user    The user object.
-         * @param array    $args    Adds context to the capability check, typically starting with an object ID.
+         * @param string[]       $caps    Primitive capabilities required of the user.
+         * @param string         $cap     Capability being checked.
+         * @param User_Interface $user    The user object.
+         * @param array          $args    Adds context to the capability check, typically starting with an object ID.
          * @return string[] Updated primitive capabilities required of the user.
          */
-        public function map(array $caps, string $cap, \WP_Syntex\Polylang\Capabilities\User $user, array $args): array
+        public function map(array $caps, string $cap, \WP_Syntex\Polylang\Capabilities\User\User_Interface $user, array $args): array
         {
         }
     }
@@ -1767,13 +1767,13 @@ namespace WP_Syntex\Polylang_Pro\Modules\Capabilities\Mapper {
          *
          * @since 3.8
          *
-         * @param string[] $caps    Primitive capabilities required of the user.
-         * @param string   $cap     Capability being checked.
-         * @param User     $user    The user object.
-         * @param array    $args    Adds context to the capability check, typically starting with an object ID.
+         * @param string[]       $caps Primitive capabilities required of the user.
+         * @param string         $cap  Capability being checked.
+         * @param User_Interface $user The user object.
+         * @param array          $args Adds context to the capability check, typically starting with an object ID.
          * @return string[] Updated primitive capabilities required of the user.
          */
-        public function map(array $caps, string $cap, \WP_Syntex\Polylang\Capabilities\User $user, array $args): array
+        public function map(array $caps, string $cap, \WP_Syntex\Polylang\Capabilities\User\User_Interface $user, array $args): array
         {
         }
     }
@@ -1799,13 +1799,230 @@ namespace WP_Syntex\Polylang_Pro\Modules\Capabilities\Mapper {
          *
          * @since 3.8
          *
-         * @param string[] $caps    Primitive capabilities required of the user.
-         * @param string   $cap     Capability being checked.
-         * @param User     $user    The user object.
-         * @param array    $args    Adds context to the capability check, typically starting with an object ID.
+         * @param string[]       $caps Primitive capabilities required of the user.
+         * @param string         $cap  Capability being checked.
+         * @param User_Interface $user The user object.
+         * @param array          $args Adds context to the capability check, typically starting with an object ID.
          * @return string[] Updated primitive capabilities required of the user.
          */
-        public function map(array $caps, string $cap, \WP_Syntex\Polylang\Capabilities\User $user, array $args): array
+        public function map(array $caps, string $cap, \WP_Syntex\Polylang\Capabilities\User\User_Interface $user, array $args): array
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang\Capabilities\User {
+    /**
+     * An interface for user creators.
+     * Allows to change the user decoration behavior at runtime.
+     *
+     * @since 3.8
+     */
+    interface Creator_Interface
+    {
+        /**
+         * Returns the user instance to be used for capability checks.
+         *
+         * @since 3.8
+         *
+         * @param WP_User $user The user to decorate.
+         * @return User_Interface The user instance.
+         */
+        public function get(\WP_User $user): \WP_Syntex\Polylang\Capabilities\User\User_Interface;
+    }
+}
+namespace WP_Syntex\Polylang_Pro\Modules\Capabilities\User {
+    /**
+     * A class that returns the correct user instance based on the user capabilities.
+     * Completely disables the user decoration.
+     *
+     * @since 3.8
+     */
+    class Creator implements \WP_Syntex\Polylang\Capabilities\User\Creator_Interface
+    {
+        /**
+         * Creates and returns the user.
+         *
+         * @since 3.8
+         *
+         * @param WP_User $user The user to decorate.
+         * @return User_Interface The user instance.
+         */
+        public function get(\WP_User $user): \WP_Syntex\Polylang\Capabilities\User\User_Interface
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang\Capabilities\User {
+    /**
+     * An interface for user with translation management feature.
+     * Implements decorator pattern for `WP_User`.
+     *
+     * @since 3.8
+     */
+    interface User_Interface
+    {
+        /**
+         * Returns the user ID.
+         *
+         * @since 3.8
+         *
+         * @return int
+         */
+        public function get_id(): int;
+        /**
+         * Tells if the user is a translator (has a translator capability).
+         * Note: returns `true` if the user has a capability for a language that doesn't exist anymore. This is intentional,
+         * to prevent the user to suddenly have the rights to translate in all languages while it wasn't allowed until then.
+         *
+         * @since 3.8
+         *
+         * @return bool
+         */
+        public function is_translator(): bool;
+        /**
+         * Tells if the user can translate to the given language.
+         *
+         * @since 3.8
+         *
+         * @param PLL_Language $language A language object.
+         * @return bool
+         */
+        public function can_translate(\PLL_Language $language): bool;
+        /**
+         * Tells if the user can translate to all the given languages.
+         *
+         * @since 3.8
+         *
+         * @param array $languages List of language slugs.
+         * @return bool
+         *
+         * @phpstan-param array<non-empty-string> $languages
+         */
+        public function can_translate_all(array $languages): bool;
+        /**
+         * Tells if the user has the specified capability.
+         *
+         * @since 3.8
+         *
+         * @param string $capability Capability name.
+         * @param mixed  ...$args    Optional further parameters, typically starting with an object ID.
+         * @return bool
+         */
+        public function has_cap($capability, ...$args): bool;
+        /**
+         * Returns the preferred language of the user.
+         *
+         * @since 3.8
+         *
+         * @return string The preferred language slug, empty string if no preferred language is found.
+         */
+        public function get_preferred_language_slug(): string;
+        /**
+         * Checks if the current user has the rights to assign a language to an object and dies if not.
+         *
+         * @since 3.8
+         *
+         * @param PLL_Language $language The language to assign.
+         * @return void|never Dies if the user does not have the rights, does nothing otherwise.
+         */
+        public function can_translate_or_die(\PLL_Language $language): void;
+    }
+}
+namespace WP_Syntex\Polylang_Pro\Modules\Capabilities\User {
+    /**
+     * A decorator for `WP_User` that adds translation management capabilities.
+     *
+     * @since 3.8
+     */
+    class Translator implements \WP_Syntex\Polylang\Capabilities\User\User_Interface
+    {
+        /**
+         * Constructor.
+         *
+         * @since 3.8
+         *
+         * @param WP_User $user An instance of `WP_User`.
+         */
+        public function __construct(\WP_User $user)
+        {
+        }
+        /**
+         * Returns the user ID.
+         *
+         * @since 3.8
+         *
+         * @return int
+         */
+        public function get_id(): int
+        {
+        }
+        /**
+         * Tells if the user is a translator (has a translator capability).
+         * Note: returns `true` if the user has a capability for a language that doesn't exist anymore. This is intentional,
+         * to prevent the user to suddenly have the rights to translate in all languages while it wasn't allowed until then.
+         *
+         * @since 3.8
+         *
+         * @return bool
+         */
+        public function is_translator(): bool
+        {
+        }
+        /**
+         * Tells if the user can translate to the given language.
+         *
+         * @since 3.8
+         *
+         * @param PLL_Language $language A language object.
+         * @return bool
+         */
+        public function can_translate(\PLL_Language $language): bool
+        {
+        }
+        /**
+         * Tells if the user can translate to all the given languages.
+         *
+         * @since 3.8
+         *
+         * @param array $languages List of language slugs.
+         * @return bool
+         *
+         * @phpstan-param array<non-empty-string> $languages
+         */
+        public function can_translate_all(array $languages): bool
+        {
+        }
+        /**
+         * Tells if the user has the specified capability.
+         *
+         * @since 3.8
+         *
+         * @param string $capability Capability name.
+         * @param mixed  ...$args    Optional further parameters, typically starting with an object ID.
+         * @return bool
+         */
+        public function has_cap($capability, ...$args): bool
+        {
+        }
+        /**
+         * Returns the preferred language of the user.
+         *
+         * @since 3.8
+         *
+         * @return string The preferred language slug, empty string if no preferred language is found.
+         */
+        public function get_preferred_language_slug(): string
+        {
+        }
+        /**
+         * Checks if the current user has the rights to assign a language to an object and dies if not.
+         *
+         * @since 3.8
+         *
+         * @param PLL_Language $language The language to assign.
+         * @return void|never Dies if the user does not have the rights, does nothing otherwise.
+         */
+        public function can_translate_or_die(\PLL_Language $language): void
         {
         }
     }
@@ -16023,7 +16240,7 @@ namespace {
         /**
          * Current user.
          *
-         * @var User
+         * @var \WP_Syntex\Polylang\Capabilities\User\User_Interface
          */
         protected $user;
         /**
@@ -18984,6 +19201,31 @@ namespace WP_Syntex\Polylang\Capabilities {
         public function map_custom_caps($caps, $cap)
         {
         }
+        /**
+         * Returns the user instance to be used for capability checks.
+         *
+         * @since 3.8
+         *
+         * @param WP_User|null $user The user to decorate. If null, the current user is used.
+         * @return User_Interface The user instance.
+         */
+        public static function get_user(?\WP_User $user = null): \WP_Syntex\Polylang\Capabilities\User\User_Interface
+        {
+        }
+        /**
+         * Sets the user creator to be used for capability checks.
+         *
+         * Having a separate class to create the decorated user allows for better decoupling.
+         * This allows to set a creator object without dependence to a `WP_User`.
+         *
+         * @since 3.8
+         *
+         * @param Creator_Interface $creator The user creator to be used for capability checks.
+         * @return void
+         */
+        public static function set_user_creator(\WP_Syntex\Polylang\Capabilities\User\Creator_Interface $creator): void
+        {
+        }
     }
 }
 namespace WP_Syntex\Polylang\Capabilities\Create {
@@ -19028,11 +19270,10 @@ namespace WP_Syntex\Polylang\Capabilities\Create {
          *
          * @since 3.8
          *
-         * @param User    $user The user object.
-         * @param integer $id   The object ID.
+         * @param int $id The object ID.
          * @return PLL_Language The language defined from the global context.
          */
-        abstract public function get_language(\WP_Syntex\Polylang\Capabilities\User $user, int $id = 0): \PLL_Language;
+        abstract public function get_language(int $id = 0): \PLL_Language;
     }
     /**
      * Class to manage the language context for posts creation or update.
@@ -19046,11 +19287,10 @@ namespace WP_Syntex\Polylang\Capabilities\Create {
          *
          * @since 3.8
          *
-         * @param User $user The user object.
-         * @param int  $id   The post ID for which to set the language. Default `0`.
+         * @param int $id The post ID for which to set the language. Default `0`.
          * @return PLL_Language The language context.
          */
-        public function get_language(\WP_Syntex\Polylang\Capabilities\User $user, int $id = 0): \PLL_Language
+        public function get_language(int $id = 0): \PLL_Language
         {
         }
     }
@@ -19066,32 +19306,52 @@ namespace WP_Syntex\Polylang\Capabilities\Create {
          *
          * @since 3.8
          *
-         * @param User   $user     The user object.
          * @param int    $id       The term ID for which to set the language. Default `0`.
          * @param string $taxonomy The taxonomy for which to set the language. Default `''`.
          * @return PLL_Language The language context.
          */
-        public function get_language(\WP_Syntex\Polylang\Capabilities\User $user, int $id = 0, string $taxonomy = ''): \PLL_Language
+        public function get_language(int $id = 0, string $taxonomy = ''): \PLL_Language
         {
         }
     }
 }
-namespace WP_Syntex\Polylang\Capabilities {
+namespace WP_Syntex\Polylang\Capabilities\User {
     /**
-     * A class wrapping `WP_User` with translation management feature.
+     * A class to create a decorated user.
+     * Always returns a `NOOP` instance so capabilities features are disabled by default.
      *
      * @since 3.8
      */
-    class User
+    class Creator implements \WP_Syntex\Polylang\Capabilities\User\Creator_Interface
+    {
+        /**
+         * Creates and returns the user.
+         *
+         * @since 3.8
+         *
+         * @param WP_User $user The user to decorate.
+         * @return NOOP New instance of NOOP.
+         */
+        public function get(\WP_User $user): \WP_Syntex\Polylang\Capabilities\User\NOOP
+        {
+        }
+    }
+    /**
+     * A NOOP user class that decorates `WP_User` and deactivates language-related methods.
+     * This class allows all translations but doesn't consider the user as a translator.
+     *
+     * @since 3.8
+     */
+    class NOOP implements \WP_Syntex\Polylang\Capabilities\User\User_Interface
     {
         /**
          * Constructor.
          *
          * @since 3.8
          *
-         * @param WP_User|null $user Optional. An instance of `WP_User`.
+         * @param WP_User $user An instance of `WP_User`.
          */
-        public function __construct(?\WP_User $user = null)
+        public function __construct(\WP_User $user)
         {
         }
         /**
@@ -19106,8 +19366,7 @@ namespace WP_Syntex\Polylang\Capabilities {
         }
         /**
          * Tells if the user is a translator (has a translator capability).
-         * Note: returns `true` if the user has a capability for a language that doesn't exist anymore. This is intentional,
-         * to prevent the user to suddenly have the rights to translate in all languages while it wasn't allowed until then.
+         * Always returns false for NOOP user.
          *
          * @since 3.8
          *
@@ -19118,6 +19377,7 @@ namespace WP_Syntex\Polylang\Capabilities {
         }
         /**
          * Tells if the user can translate to the given language.
+         * Always returns true for NOOP user.
          *
          * @since 3.8
          *
@@ -19129,6 +19389,7 @@ namespace WP_Syntex\Polylang\Capabilities {
         }
         /**
          * Tells if the user can translate to all the given languages.
+         * Always returns true for NOOP user.
          *
          * @since 3.8
          *
@@ -19142,6 +19403,7 @@ namespace WP_Syntex\Polylang\Capabilities {
         }
         /**
          * Tells if the user has the specified capability.
+         * Delegates to WP_User.
          *
          * @since 3.8
          *
@@ -19154,6 +19416,7 @@ namespace WP_Syntex\Polylang\Capabilities {
         }
         /**
          * Returns the preferred language of the user.
+         * Always returns an empty string for NOOP user.
          *
          * @since 3.8
          *
@@ -19164,6 +19427,7 @@ namespace WP_Syntex\Polylang\Capabilities {
         }
         /**
          * Checks if the current user has the rights to assign a language to an object and dies if not.
+         * Does nothing for NOOP user (always allows).
          *
          * @since 3.8
          *

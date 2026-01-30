@@ -1425,6 +1425,575 @@ namespace WP_Syntex\Polylang_Pro {
         }
     }
 }
+namespace WP_Syntex\Polylang_Pro\Modules\CLI\Command {
+    /**
+     * Manages languages.
+     *
+     * @phpstan-import-type LanguageData from PLL_Language
+     */
+    class Language
+    {
+        /**
+         * Constructor.
+         *
+         * @since 3.8
+         *
+         * @param Languages $model The languages model.
+         */
+        public function __construct(\WP_Syntex\Polylang\Model\Languages $model)
+        {
+        }
+        /**
+         * Creates a language.
+         *
+         * ## OPTIONS
+         *
+         * <locale>
+         * : WordPress locale or custom locale. If the locale is not found in the core languages list, it will be created but the name, slug, flag and direction will be mandatory.
+         *
+         * [--name=<name>]
+         * : Language name (used only for display). If not provided, will fallback to Polylang core languages list.
+         *
+         * [--slug=<slug>]
+         * : Language slug (ideally 2-letters ISO 639-1 language code). Must be unique. If not provided, will fallback to Polylang core languages list.
+         *
+         * [--flag=<flag>]
+         * : Country code for the flag. If not provided, will fallback to Polylang core languages list.
+         *
+         * [--dir=<dir>]
+         * : Text direction for the language.
+         * ---
+         * default: ltr
+         * options:
+         *   - ltr
+         *   - rtl
+         * ---
+         *
+         * [--order=<order>]
+         * : Language order when displayed.
+         * ---
+         * default: 0
+         * ---
+         *
+         * [--skip-default-cat]
+         * : If set, no default category will be created for this language.
+         *
+         * ## EXAMPLES
+         *
+         *     # Create a language using locale only (fallback to core languages list)
+         *     wp pll language create en_US
+         *
+         *     # Create a language with custom name and slug
+         *     wp pll language create en_US --name="English" --slug=en
+         *
+         *     # Create a French language with custom flag
+         *     wp pll language create fr_FR --name="Français" --slug=fr --flag=fr --order=1
+         *
+         *     # Create an Arabic language with RTL support
+         *     wp pll language create ar --dir=rtl --order=2
+         *
+         *     # Create a language without default category
+         *     wp pll language create es_ES --name="Español" --slug=es --skip-default-cat
+         *
+         * @param string[] $args       The command arguments.
+         * @param string[] $assoc_args The command associative arguments.
+         * @phpstan-param array{name?: string, slug?: string, flag?: string, dir?: string, order?: string, skip-default-cat?: bool} $assoc_args
+         *
+         * @when after_wp_load
+         */
+        public function create($args, $assoc_args): void
+        {
+        }
+        /**
+         * Updates a language.
+         *
+         * ## OPTIONS
+         *
+         * <id-or-slug>
+         * : The ID or slug of the language to update. Must be unique among all languages.
+         *
+         * [--name=<name>]
+         * : Language name (used only for display).
+         *
+         * [--locale=<locale>]
+         * : WordPress locale. If something wrong is used for the locale, the .mo files will not be loaded.
+         *
+         * [--slug=<slug>]
+         * : New language slug (ideally 2-letters ISO 639-1 language code). Must be unique among all languages.
+         *
+         * [--dir=<dir>]
+         * : Text direction for the language.
+         * ---
+         * options:
+         *   - ltr
+         *   - rtl
+         * ---
+         *
+         * [--order=<order>]
+         * : Language order when displayed.
+         *
+         * [--flag=<flag>]
+         * : Country code for the flag.
+         *
+         * ## EXAMPLES
+         *
+         *     # Update language name only
+         *     wp pll language update en --name="English (US)"
+         *
+         *     # Update multiple properties
+         *     wp pll language update fr --name="Français" --locale=fr_FR --flag=fr --order=1
+         *
+         *     # Change language slug
+         *     wp pll language update en --new-slug=en_us
+         *
+         *     # Update text direction
+         *     wp pll language update ar --dir=rtl
+         *
+         *     # Update language order
+         *     wp pll language update es --order=3
+         *
+         * @param string[] $args       The command arguments.
+         * @param string[] $assoc_args The command associative arguments.
+         * @phpstan-param array{name?: string, locale?: string, new-slug?: string, dir?: string, order?: string, flag?: string} $assoc_args
+         *
+         * @when after_wp_load
+         */
+        public function update($args, $assoc_args): void
+        {
+        }
+        /**
+         * Deletes a language.
+         *
+         * ## OPTIONS
+         *
+         * <id-or-slug>
+         * : The ID or slug of the language to delete.
+         *
+         * [--yes]
+         * : Answer yes to the confirmation message.
+         *
+         * ## EXAMPLES
+         *
+         *     # Delete English language
+         *     wp pll language delete en
+         *
+         * @param string[] $args The command arguments.
+         * @param string[] $assoc_args The command associative arguments.
+         * @phpstan-param array{yes?: bool} $assoc_args
+         *
+         * @when after_wp_load
+         */
+        public function delete($args, $assoc_args): void
+        {
+        }
+        /**
+         * Lists languages.
+         *
+         * ## OPTIONS
+         *
+         * [--<field>=<value>]
+         * : Filter by one or more fields.
+         *
+         * [--format=<format>]
+         * : Render output in a particular format.
+         * ---
+         * default: table
+         * ---
+         * options:
+         *   - table
+         *   - json
+         *   - yaml
+         *   - csv
+         * ---
+         *
+         * [--field=<field>]
+         * : Prints the value of a single field for each language.
+         *
+         * [--fields=<fields>]
+         * : Comma-separated list of fields to display. Available fields are PLL_Language object properties.
+         *
+         * ## AVAILABLE FIELDS
+         *
+         * These fields will be displayed by default for each term:
+         *
+         * * name
+         * * slug
+         * * locale
+         * * term_id
+         * * order (term_group)
+         * * direction (dir)
+         * * active
+         * * default
+         *
+         * These fields are optionally available:
+         *
+         * * w3c
+         * * facebook
+         * * host
+         * * page_on_front
+         * * page_for_posts
+         * * flag_code
+         * * fallbacks
+         *
+         * ## EXAMPLES
+         *
+         *     # List all languages
+         *     wp pll language list
+         *
+         *     # List specific languages by slugs
+         *     wp pll language list --slug=en,fr,es
+         *
+         *     # List languages with specific output fields only
+         *     wp pll language list --fields=name,slug,locale
+         *
+         * @param string[] $args       The command arguments.
+         * @param string[] $assoc_args The command associative arguments.
+         * @phpstan-param array{field?: string, fields?: string, format?: string} $assoc_args
+         *
+         * @when after_wp_load
+         */
+        public function list($args, $assoc_args): void
+        {
+        }
+        /**
+         * Gets a language.
+         *
+         * ## OPTIONS
+         *
+         * <id-or-slug>
+         * : The ID or slug of the language to get.
+         *
+         * [--format=<format>]
+         * : Render output in a particular format.
+         * ---
+         * default: table
+         * ---
+         * options:
+         *   - table
+         *   - json
+         *   - yaml
+         *   - csv
+         * ---
+         *
+         * [--field=<field>]
+         * : Prints the value of a single field for each language.
+         *
+         * [--fields=<fields>]
+         * : Comma-separated list of fields to display. Available fields are PLL_Language object properties.
+         *
+         * ## AVAILABLE FIELDS
+         *
+         * These fields will be displayed by default for each term:
+         *
+         * * name
+         * * slug
+         * * locale
+         * * term_id
+         * * order (term_group)
+         * * direction (dir)
+         * * active
+         * * default
+         *
+         * These fields are optionally available:
+         *
+         * * w3c
+         * * facebook
+         * * host
+         * * page_on_front
+         * * page_for_posts
+         * * flag_code
+         * * fallbacks
+         *
+         * ## EXAMPLES
+         *
+         *     # Get a language by slug
+         *     wp pll language get en
+         *
+         *     # Get a language by ID
+         *     wp pll language get 1
+         *
+         * @param string[] $args       The command arguments.
+         * @param string[] $assoc_args The command associative arguments.
+         * @phpstan-param array{field?: string, fields?: string, format?: string} $assoc_args
+         *
+         * @when after_wp_load
+         */
+        public function get($args, $assoc_args): void
+        {
+        }
+    }
+    /**
+     * Manages Polylang settings.
+     */
+    class Setting
+    {
+        /**
+         * Constructor.
+         *
+         * @since 3.8
+         *
+         * @param Options $options Options instance.
+         */
+        public function __construct(\WP_Syntex\Polylang\Options\Options $options)
+        {
+        }
+        /**
+         * Sets a scalar Polylang setting.
+         *
+         * @since 3.8
+         *
+         * ## OPTIONS
+         *
+         * <key>
+         * : The key of the setting to set.
+         *
+         * <value>
+         * : The value of the setting to set.
+         *
+         * ## EXAMPLES
+         *
+         *     # Activate media translation setting
+         *     wp pll setting set media_support true
+         *
+         *     # Activate media duplication setting
+         *     wp pll setting set media_duplicate true
+         *
+         *     # Set domains using JSON
+         *     wp pll setting set domains '{"fr":"example.fr"}'
+         *
+         * @when after_wp_load
+         *
+         * @param string[] $args The command arguments.
+         */
+        public function set($args): void
+        {
+        }
+        /**
+         * Returns one or more Polylang setting(s) if given key(s), or lists all settings if no key is provided.
+         *
+         * @since 3.8
+         *
+         * ## OPTIONS
+         *
+         * [--keys=<keys>]
+         * : Comma-separated list of keys to get. Default is all.
+         * ---
+         * default: all
+         * ---
+         *
+         * [--format=<format>]
+         * : Render output in a particular format.
+         * ---
+         * default: table
+         * ---
+         * options:
+         *   - table
+         *   - json
+         *   - yaml
+         *   - csv
+         * ---
+         *
+         * ## EXAMPLES
+         *
+         *     # Get specific settings
+         *     wp pll setting get --keys=media_support,force_lang
+         *
+         *     # List all settings
+         *     wp pll setting get
+         *
+         * @when after_wp_load
+         *
+         * @param string[] $args       The command arguments.
+         * @param string[] $assoc_args The command associative arguments.
+         * @phpstan-param array{keys?: string, format?: string} $assoc_args
+         */
+        public function get($args, $assoc_args): void
+        {
+        }
+        /**
+         * Adds a value to a list type Polylang setting.
+         *
+         * @since 3.8
+         *
+         * ## OPTIONS
+         *
+         * <key>
+         * : The key of the setting to add a value to.
+         *
+         * <value>
+         * : The value to add to the setting. For map type settings, this is the subkey to add a value to.
+         *
+         * <subvalue>
+         * : The subvalue to add to the setting. For map type settings, this is the value of the subkey. Not applicable for list type settings.
+         * ---
+         * default: ''
+         * ---
+         *
+         * [--yes]
+         * : Answer yes to the confirmation message.
+         *
+         * ## EXAMPLES
+         *
+         *     # Add a custom post type to the list of translatable post types
+         *     wp pll setting add post_types custom_post_type
+         *
+         *     # Add an English domain to the map of domains
+         *     wp pll setting add domains en example.com
+         *
+         * @when after_wp_load
+         *
+         * @param string[] $args       The command arguments.
+         * @param string[] $assoc_args The command associative arguments.
+         * @phpstan-param array{yes?: bool} $assoc_args
+         */
+        public function add($args, $assoc_args): void
+        {
+        }
+        /**
+         * Removes a value from a list type Polylang setting.
+         *
+         * @since 3.8
+         *
+         * ## OPTIONS
+         *
+         * <key>
+         * : The key of the setting to remove a value from.
+         *
+         * <value>
+         * : The value to remove from the setting. For map type settings, this is the subkey to remove a value from.
+         *
+         * ## EXAMPLES
+         *
+         *     # Remove a custom post type from the list of translatable post types
+         *     wp pll setting remove post_types custom_post_type
+         *
+         *     # Remove an English domain from the map of domains
+         *     wp pll setting remove domains en
+         *
+         * @when after_wp_load
+         *
+         * @param string[] $args The command arguments.
+         */
+        public function remove($args): void
+        {
+        }
+        /**
+         * Resets a Polylang setting to its default value, or all settings if no key is provided.
+         *
+         * @since 3.8
+         *
+         * ## OPTIONS
+         *
+         * [--keys=<keys>]
+         * : Comma-separated list of keys to reset. If not provided, all settings will be reset.
+         *
+         * [--yes]
+         * : Answer yes to the confirmation message.
+         *
+         * ## EXAMPLES
+         *
+         *     # Reset specific settings
+         *     wp pll setting reset --keys=media_support,force_lang
+         *
+         *     # Reset all settings
+         *     wp pll setting reset
+         *
+         * @param string[] $args The command arguments.
+         * @param string[] $assoc_args The command associative arguments.
+         * @phpstan-param array{keys?: string, yes?: bool} $assoc_args
+         */
+        public function reset($args, $assoc_args): void
+        {
+        }
+    }
+    /**
+     * Adapter for setting transformations.
+     *
+     * Adapts between user-facing CLI interface and internal settings structure.
+     * Allows to simplify the interface for the user changing key names or rendering prettier values.
+     *
+     * @since 3.8
+     */
+    class Setting_Adapter
+    {
+        /**
+         * Returns the arguments adapted from user-facing interface to internal structure.
+         *
+         * @since 3.8
+         *
+         * @param array $args The arguments.
+         * @return array The adapted arguments.
+         */
+        public function get_args(array $args): array
+        {
+        }
+        /**
+         * Returns the associative arguments adapted from user-facing interface to internal structure.
+         *
+         * @since 3.8
+         *
+         * @param array $assoc_args The associative arguments.
+         * @return array The adapted associative arguments.
+         */
+        public function get_assoc_args(array $assoc_args): array
+        {
+        }
+        /**
+         * Returns the setting item adapted from internal structure to user-facing interface.
+         *
+         * @since 3.8
+         *
+         * @param string $key      The key of the item.
+         * @param mixed  $value    The value of the item.
+         * @param array  $property  The property of the item.
+         * @return array The adapted item.
+         */
+        public function get_item(string $key, $value, array $property): array
+        {
+        }
+        /**
+         * Formats a setting value for display.
+         *
+         * @since 3.8
+         *
+         * @param mixed $value The setting value.
+         * @return string The formatted value.
+         */
+        public function format_setting_value($value): string
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang_Pro\Modules\CLI {
+    /**
+     * Registers Polylang CLI Commands.
+     *
+     * @since 3.8
+     */
+    class Commands
+    {
+        /**
+         * Constructor.
+         *
+         * @since 3.8
+         *
+         * @param PLL_Model $model The Polylang model.
+         */
+        public function __construct(\PLL_Model $model)
+        {
+        }
+        /**
+         * Registers Polylang CLI Commands.
+         *
+         * @since 3.8
+         *
+         * @return void
+         */
+        public function register(): void
+        {
+        }
+    }
+}
 namespace WP_Syntex\Polylang_Pro\Modules\Capabilities {
     /**
      * Class to orchestrate the capabilities mappers.

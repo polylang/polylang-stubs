@@ -19899,9 +19899,9 @@ namespace WP_Syntex\Polylang\Capabilities\User {
          * @since 3.8
          *
          * @param WP_User $user The user to decorate.
-         * @return NOOP New instance of NOOP.
+         * @return User_Interface Instance of `NOOP`.
          */
-        public function get(\WP_User $user): \WP_Syntex\Polylang\Capabilities\User\NOOP
+        public function get(\WP_User $user): \WP_Syntex\Polylang\Capabilities\User\User_Interface
         {
         }
     }

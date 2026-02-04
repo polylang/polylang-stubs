@@ -7,20 +7,10 @@ function sanitize_locale_name(){}
 return \StubsGenerator\Finder::create()
 	->in(
 		[
+			'polylang-pro/src',
 			'polylang-pro/dependencies',
-			'polylang-pro/modules',
-			'polylang-pro/services',
-			'polylang-pro/vendor/wpsyntex/polylang/admin',
-			'polylang-pro/vendor/wpsyntex/polylang/frontend',
-			'polylang-pro/vendor/wpsyntex/polylang/include',
-			'polylang-pro/vendor/wpsyntex/polylang/install',
-			'polylang-pro/vendor/wpsyntex/polylang/modules',
-			'polylang-pro/vendor/wpsyntex/polylang/settings',
+			'polylang-pro/vendor/wpsyntex/polylang/src',
 		]
 	)
-	->append(
-		\StubsGenerator\Finder::create()
-			->in( ['polylang-pro/include'] )
-			->notPath( 'functions.php' )
-	)
+	->notPath( 'polylang-pro/src/functions.php' )
 	->sortByName();

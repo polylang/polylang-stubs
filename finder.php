@@ -12,5 +12,4 @@ return \StubsGenerator\Finder::create()
 			'polylang-pro/vendor/wpsyntex/polylang/src',
 		]
 	)
-	->notPath( 'polylang-pro/src/functions.php' )
 	->sortByName();

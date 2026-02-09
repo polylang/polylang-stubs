@@ -5,9 +5,10 @@ function sanitize_locale_name(){}
 
 // Generate stubs.
 return \StubsGenerator\Finder::create()
+	->in( 'polylang-pro/src' )
+	->exclude( 'integrations' )
 	->in(
 		[
-			'polylang-pro/src',
 			'polylang-pro/dependencies',
 			'polylang-pro/vendor/wpsyntex/polylang/src',
 		]

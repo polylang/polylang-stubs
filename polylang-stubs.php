@@ -7732,268 +7732,6 @@ namespace {
      * @package Polylang-Pro
      */
     /**
-     * Abstract class for language switcher block.
-     *
-     * @since 3.2
-     */
-    abstract class PLL_Abstract_Language_Switcher_Block
-    {
-        /**
-         * @var PLL_Links
-         */
-        protected $links;
-        /**
-         * @var PLL_Model
-         */
-        protected $model;
-        /**
-         * Current lang to render the language switcher block in an admin context.
-         *
-         * @since 2.8
-         *
-         * @var string|null
-         */
-        protected $admin_current_lang;
-        /**
-         * Is it the edit context?
-         *
-         * @var bool
-         */
-        protected $is_edit_context = \false;
-        /**
-         * Constructor
-         *
-         * @since 2.8
-         *
-         * @param PLL_Base $polylang Polylang object.
-         */
-        public function __construct(&$polylang)
-        {
-        }
-        /**
-         * Adds the required hooks.
-         *
-         * @since 3.2
-         *
-         * @return self
-         */
-        public function init()
-        {
-        }
-        /**
-         * Returns the block name with the Polylang's namespace.
-         *
-         * @since 3.2
-         *
-         * @return string The block name.
-         */
-        abstract protected function get_block_name();
-        /**
-         * Renders the Polylang's block on server.
-         *
-         * @since 3.2
-         * @since 3.3 Accepts two new parameters, $content and $block.
-         *
-         * @param array    $attributes The block attributes.
-         * @param string   $content    The saved content.
-         * @param WP_Block $block      The parsed block.
-         * @return string The HTML string output to serve.
-         */
-        abstract public function render($attributes, $content, $block);
-        /**
-         * Registers the Polylang's block.
-         *
-         * @since 2.8
-         * @since 3.2 Renamed and now handle any type of block registration based on a dynamic name.
-         *
-         * @return void
-         */
-        public function register()
-        {
-        }
-        /**
-         * Returns the REST parameters for language switcher block.
-         * Used to store the request's language and context locally.
-         * Previously was in the `PLL_Block_Editor_Switcher_Block` class.
-         *
-         * @see WP_REST_Server::dispatch()
-         *
-         * @since 2.8
-         *
-         * @param mixed           $result  Response to replace the requested version with. Can be anything
-         *                                 a normal endpoint can return, or null to not hijack the request.
-         * @param WP_REST_Server  $server  Server instance.
-         * @param WP_REST_Request $request Request used to generate the response.
-         * @return mixed
-         * @template T of WP_REST_Request
-         * @phpstan-param T $request
-         */
-        public function get_rest_query_params($result, $server, $request)
-        {
-        }
-        /**
-         * Adds the attributes to render the block correctly.
-         * Also specifies not to echo the switcher in any case.
-         *
-         * @since 3.2
-         *
-         * @param array $attributes The attributes of the currently rendered block.
-         * @return array The modified attributes.
-         */
-        protected function set_attributes_for_block($attributes)
-        {
-        }
-        /**
-         * Returns the path to the block JSON file directory.
-         * The directory name being used to register a block.
-         *
-         * @since 3.8
-         *
-         * @return string The path to the block.
-         */
-        protected function get_path(): string
-        {
-        }
-    }
-    /**
-     * @package Polylang-Pro
-     */
-    /**
-     * Language switcher block for navigation.
-     *
-     * @since 3.2
-     */
-    class PLL_Navigation_Language_Switcher_Block extends \PLL_Abstract_Language_Switcher_Block
-    {
-        /**
-         * Placeholder used to add language name or flag after WordPress renders the link labels.
-         *
-         * @var string
-         */
-        const PLACEHOLDER = '%pll%';
-        /**
-         * Adds the required hooks specific to the navigation language switcher.
-         *
-         * @since 3.2
-         *
-         * @return self
-         */
-        public function init()
-        {
-        }
-        /**
-         * Registers the editor style for the navigation language switcher block.
-         *
-         * @since 3.8
-         *
-         * @return void
-         */
-        public function register_editor_style(): void
-        {
-        }
-        /**
-         * Returns the navigation language switcher block name with the Polylang's namespace.
-         *
-         * @since 3.2
-         *
-         * @return string The block name.
-         */
-        protected function get_block_name()
-        {
-        }
-        /**
-         * Renders the `polylang/navigation-language-switcher` block on server.
-         *
-         * @since 3.1
-         * @since 3.3 Accepts two new parameters, $content and $block.
-         *
-         * @param array    $attributes The block attributes.
-         * @param string   $content The saved content. Unused.
-         * @param WP_Block $block The parsed block.
-         * @return string The HTML string output to serve.
-         */
-        public function render($attributes, $content, $block)
-        {
-        }
-        /**
-         * Register switcher menu item meta options as a REST API field.
-         *
-         * @since 3.2
-         *
-         * @return void
-         */
-        public function register_switcher_menu_item_options_meta_rest_field()
-        {
-        }
-        /**
-         * Filters core/navigation-link and core/navigation-submenu attributes during registration to add our own.
-         *
-         * @since 3.6
-         *
-         * @param array $metadata Metadata for registering a block type.
-         *
-         * @return array The filtered metadata if about a core/navigation-link.
-         */
-        public function register_custom_attributes($metadata)
-        {
-        }
-        /**
-         * Renders a core/naviagation-link or core/naviagation-submenu block by adding hreflang and lang attributes to the <a> tag
-         * and also the language flag if required.
-         *
-         * @since 3.6
-         *
-         * @param string   $block_content The block content.
-         * @param array    $block         The full block, including name and attributes.
-         * @param WP_Block $instance      The block instance.
-         *
-         * @return string A formatted HTML string representing the core/navigation-link or core/navigation-submenu block.
-         */
-        public function render_custom_attributes($block_content, $block, $instance)
-        {
-        }
-    }
-    /**
-     * @package Polylang-Pro
-     */
-    /**
-     * Language switcher block.
-     *
-     * @since 2.8
-     * @since 3.2 Extends now the PLL_Abstract_Language_Switcher_Block abstract class.
-     */
-    class PLL_Language_Switcher_Block extends \PLL_Abstract_Language_Switcher_Block
-    {
-        /**
-         * Returns the language switcher block name with the Polylang's namespace.
-         *
-         * @since 3.2
-         *
-         * @return string The block name.
-         */
-        protected function get_block_name()
-        {
-        }
-        /**
-         * Renders the `polylang/language-switcher` block on server.
-         *
-         * @since 2.8
-         * @since 3.2 Renamed according to its parent abstract class.
-         * @since 3.3 Accepts two new parameters, $content and $block.
-         *
-         * @param array    $attributes The block attributes.
-         * @param string   $content The saved content. Unused.
-         * @param WP_Block $block The parsed block. Unused.
-         * @return string Returns the language switcher.
-         */
-        public function render($attributes, $content, $block)
-        {
-        }
-    }
-    /**
-     * @package Polylang-Pro
-     */
-    /**
      * Define a Bulk_Translate option
      *
      * Should be registered using the pll_bulk_action_options
@@ -28874,6 +28612,288 @@ namespace {
         }
     }
 }
+namespace WP_Syntex\Polylang\Blocks\Language_Switcher {
+    /**
+     * Abstract class for language switcher block.
+     *
+     * @since 3.2
+     * @since 3.8 Moved to Polylang Core and renamed to Language_Switcher\Abstract_Block.
+     */
+    abstract class Abstract_Block
+    {
+        /**
+         * @var \PLL_Links
+         */
+        protected $links;
+        /**
+         * @var \PLL_Model
+         */
+        protected $model;
+        /**
+         * Current lang to render the language switcher block in an admin context.
+         *
+         * @since 2.8
+         *
+         * @var string|null
+         */
+        protected $admin_current_lang;
+        /**
+         * Is it the edit context?
+         *
+         * @var bool
+         */
+        protected $is_edit_context = false;
+        /**
+         * Constructor
+         *
+         * @since 2.8
+         *
+         * @param \PLL_Base $polylang Polylang object.
+         */
+        public function __construct(&$polylang)
+        {
+        }
+        /**
+         * Adds the required hooks.
+         *
+         * @since 3.2
+         *
+         * @return self
+         */
+        public function init()
+        {
+        }
+        /**
+         * Returns the block name with the Polylang's namespace.
+         *
+         * @since 3.2
+         *
+         * @return string The block name.
+         */
+        abstract protected function get_block_name();
+        /**
+         * Renders the Polylang's block on server.
+         *
+         * @since 3.2
+         * @since 3.3 Accepts two new parameters, $content and $block.
+         *
+         * @param array     $attributes The block attributes.
+         * @param string    $content    The saved content.
+         * @param \WP_Block $block      The parsed block.
+         * @return string The HTML string output to serve.
+         */
+        abstract public function render($attributes, $content, $block);
+        /**
+         * Returns the path to the block JSON file directory.
+         * The directory name being used to register a block.
+         *
+         * @since 3.8
+         *
+         * @return string The path to the block.
+         */
+        abstract protected function get_path(): string;
+        /**
+         * Registers the Polylang's block.
+         *
+         * @since 2.8
+         * @since 3.2 Renamed and now handle any type of block registration based on a dynamic name.
+         *
+         * @return void
+         */
+        public function register()
+        {
+        }
+        /**
+         * Returns the REST parameters for language switcher block.
+         * Used to store the request's language and context locally.
+         * Previously was in the `PLL_Block_Editor_Switcher_Block` class.
+         *
+         * @see WP_REST_Server::dispatch()
+         *
+         * @since 2.8
+         *
+         * @param mixed            $result  Response to replace the requested version with. Can be anything
+         *                                  a normal endpoint can return, or null to not hijack the request.
+         * @param \WP_REST_Server  $server  Server instance.
+         * @param \WP_REST_Request $request Request used to generate the response.
+         * @return mixed
+         * @template T of \WP_REST_Request
+         * @phpstan-param T $request
+         */
+        public function get_rest_query_params($result, $server, $request)
+        {
+        }
+        /**
+         * Adds the attributes to render the block correctly.
+         * Also specifies not to echo the switcher in any case.
+         *
+         * @since 3.2
+         *
+         * @param array $attributes The attributes of the currently rendered block.
+         * @return array The modified attributes.
+         */
+        protected function set_attributes_for_block($attributes)
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang\Blocks\Language_Switcher\Navigation {
+    /**
+     * Language switcher block for navigation.
+     *
+     * @since 3.2
+     * @since 3.8 Moved to Polylang Core and renamed to Language_Switcher\Navigation\Block.
+     */
+    class Block extends \WP_Syntex\Polylang\Blocks\Language_Switcher\Abstract_Block
+    {
+        /**
+         * Placeholder used to add language name or flag after WordPress renders the link labels.
+         *
+         * @var string
+         */
+        const PLACEHOLDER = '%pll%';
+        /**
+         * Adds the required hooks specific to the navigation language switcher.
+         *
+         * @since 3.2
+         *
+         * @return self
+         */
+        public function init()
+        {
+        }
+        /**
+         * Registers the editor style for the navigation language switcher block.
+         *
+         * @since 3.8
+         *
+         * @return void
+         */
+        public function register_editor_style(): void
+        {
+        }
+        /**
+         * Returns the navigation language switcher block name with the Polylang's namespace.
+         *
+         * @since 3.2
+         *
+         * @return string The block name.
+         */
+        protected function get_block_name()
+        {
+        }
+        /**
+         * Renders the `polylang/navigation-language-switcher` block on server.
+         *
+         * @since 3.1
+         * @since 3.3 Accepts two new parameters, $content and $block.
+         *
+         * @param array    $attributes The block attributes.
+         * @param string   $content The saved content. Unused.
+         * @param WP_Block $block The parsed block.
+         * @return string The HTML string output to serve.
+         */
+        public function render($attributes, $content, $block)
+        {
+        }
+        /**
+         * Register switcher menu item meta options as a REST API field.
+         *
+         * @since 3.2
+         *
+         * @return void
+         */
+        public function register_switcher_menu_item_options_meta_rest_field()
+        {
+        }
+        /**
+         * Filters core/navigation-link and core/navigation-submenu attributes during registration to add our own.
+         *
+         * @since 3.6
+         *
+         * @param array $metadata Metadata for registering a block type.
+         *
+         * @return array The filtered metadata if about a core/navigation-link.
+         */
+        public function register_custom_attributes($metadata)
+        {
+        }
+        /**
+         * Renders a core/naviagation-link or core/naviagation-submenu block by adding hreflang and lang attributes to the <a> tag
+         * and also the language flag if required.
+         *
+         * @since 3.6
+         *
+         * @param string   $block_content The block content.
+         * @param array    $block         The full block, including name and attributes.
+         * @param WP_Block $instance      The block instance.
+         *
+         * @return string A formatted HTML string representing the core/navigation-link or core/navigation-submenu block.
+         */
+        public function render_custom_attributes($block_content, $block, $instance)
+        {
+        }
+        /**
+         * Returns the path to the block JSON file directory.
+         * The directory name being used to register a block.
+         *
+         * @since 3.8
+         *
+         * @return string The path to the block.
+         */
+        protected function get_path(): string
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang\Blocks\Language_Switcher\Standard {
+    /**
+     * Language switcher block.
+     *
+     * @since 2.8
+     * @since 3.2 Extends now the PLL_Abstract_Language_Switcher_Block abstract class.
+     * @since 3.8 Moved to Polylang Core and renamed to Language_Switcher\Standard\Block.
+     */
+    class Block extends \WP_Syntex\Polylang\Blocks\Language_Switcher\Abstract_Block
+    {
+        /**
+         * Returns the language switcher block name with the Polylang's namespace.
+         *
+         * @since 3.2
+         *
+         * @return string The block name.
+         */
+        protected function get_block_name()
+        {
+        }
+        /**
+         * Renders the `polylang/language-switcher` block on server.
+         *
+         * @since 2.8
+         * @since 3.2 Renamed according to its parent abstract class.
+         * @since 3.3 Accepts two new parameters, $content and $block.
+         *
+         * @param array     $attributes The block attributes.
+         * @param string    $content The saved content. Unused.
+         * @param \WP_Block $block The parsed block. Unused.
+         * @return string Returns the language switcher.
+         */
+        public function render($attributes, $content, $block)
+        {
+        }
+        /**
+         * Returns the path to the block JSON file directory.
+         * The directory name being used to register a block.
+         *
+         * @since 3.8
+         *
+         * @return string The path to the block.
+         */
+        protected function get_path(): string
+        {
+        }
+    }
+}
 namespace WP_Syntex\Polylang\REST {
     /**
      * Sets all Polylang REST controllers up.
@@ -34728,22 +34748,6 @@ namespace {
 }
 namespace {
     /**
-     * @package Polylang
-     */
-    /**
-     * Tells if the given REST request is in the edit context.
-     *
-     * @since 3.5
-     *
-     * @param WP_REST_Request $request A REST request.
-     * @return bool
-     *
-     * @phpstan-param WP_REST_Request<array> $request
-     */
-    function pll_is_edit_rest_request(\WP_REST_Request $request): bool
-    {
-    }
-    /**
      * The Polylang public API.
      *
      * @package Polylang
@@ -35393,6 +35397,19 @@ namespace {
      * @return void
      */
     function pll_add_notice(\WP_Error $error)
+    {
+    }
+    /**
+     * Tells if the given REST request is in the edit context.
+     *
+     * @since 3.5
+     *
+     * @param WP_REST_Request $request A REST request.
+     * @return bool
+     *
+     * @phpstan-param WP_REST_Request<array> $request
+     */
+    function pll_is_edit_rest_request(\WP_REST_Request $request): bool
     {
     }
     /**

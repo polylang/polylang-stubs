@@ -11791,7 +11791,7 @@ namespace {
         {
         }
         /**
-         * Performs the sanitization ( before saving in DB ) of slugs translations
+         * Performs the sanitization (before saving in DB) of slugs translations.
          *
          * @since 1.9
          *

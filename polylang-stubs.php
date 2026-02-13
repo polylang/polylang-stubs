@@ -745,6 +745,16 @@ namespace WP_Syntex\Polylang_Pro\Updater {
         public function load_wizard($polylang): void
         {
         }
+        /**
+         * Returns the updater version.
+         *
+         * @since 1.0
+         *
+         * @return string
+         */
+        public static function get_version(): string
+        {
+        }
     }
     /**
      * A class to handle the wizard license step.

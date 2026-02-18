@@ -1336,6 +1336,8 @@ namespace WP_Syntex\Polylang_Pro\Modules\CLI\Command {
     /**
      * Manages languages.
      *
+     * @since 3.8
+     *
      * @phpstan-import-type LanguageData from PLL_Language
      */
     class Language
@@ -1406,7 +1408,7 @@ namespace WP_Syntex\Polylang_Pro\Modules\CLI\Command {
          * @param string[] $assoc_args The command associative arguments.
          * @phpstan-param array{name?: string, slug?: string, flag?: string, dir?: string, order?: string, skip-default-cat?: bool} $assoc_args
          *
-         * @when after_wp_load
+         * @since 3.8
          */
         public function create($args, $assoc_args): void
         {
@@ -1463,7 +1465,7 @@ namespace WP_Syntex\Polylang_Pro\Modules\CLI\Command {
          * @param string[] $assoc_args The command associative arguments.
          * @phpstan-param array{name?: string, locale?: string, new-slug?: string, dir?: string, order?: string, flag?: string} $assoc_args
          *
-         * @when after_wp_load
+         * @since 3.8
          */
         public function update($args, $assoc_args): void
         {
@@ -1488,7 +1490,7 @@ namespace WP_Syntex\Polylang_Pro\Modules\CLI\Command {
          * @param string[] $assoc_args The command associative arguments.
          * @phpstan-param array{yes?: bool} $assoc_args
          *
-         * @when after_wp_load
+         * @since 3.8
          */
         public function delete($args, $assoc_args): void
         {
@@ -1505,7 +1507,6 @@ namespace WP_Syntex\Polylang_Pro\Modules\CLI\Command {
          * : Render output in a particular format.
          * ---
          * default: table
-         * ---
          * options:
          *   - table
          *   - json
@@ -1557,7 +1558,7 @@ namespace WP_Syntex\Polylang_Pro\Modules\CLI\Command {
          * @param string[] $assoc_args The command associative arguments.
          * @phpstan-param array{field?: string, fields?: string, format?: string} $assoc_args
          *
-         * @when after_wp_load
+         * @since 3.8
          */
         public function list($args, $assoc_args): void
         {
@@ -1574,7 +1575,6 @@ namespace WP_Syntex\Polylang_Pro\Modules\CLI\Command {
          * : Render output in a particular format.
          * ---
          * default: table
-         * ---
          * options:
          *   - table
          *   - json
@@ -1623,7 +1623,7 @@ namespace WP_Syntex\Polylang_Pro\Modules\CLI\Command {
          * @param string[] $assoc_args The command associative arguments.
          * @phpstan-param array{field?: string, fields?: string, format?: string} $assoc_args
          *
-         * @when after_wp_load
+         * @since 3.8
          */
         public function get($args, $assoc_args): void
         {
@@ -1631,6 +1631,8 @@ namespace WP_Syntex\Polylang_Pro\Modules\CLI\Command {
     }
     /**
      * Manages Polylang settings.
+     *
+     * @since 3.8
      */
     class Setting
     {
@@ -1646,8 +1648,6 @@ namespace WP_Syntex\Polylang_Pro\Modules\CLI\Command {
         }
         /**
          * Sets a scalar Polylang setting.
-         *
-         * @since 3.8
          *
          * ## OPTIONS
          *
@@ -1668,17 +1668,15 @@ namespace WP_Syntex\Polylang_Pro\Modules\CLI\Command {
          *     # Set domains using JSON
          *     wp pll setting set domains '{"fr":"example.fr"}'
          *
-         * @when after_wp_load
-         *
          * @param string[] $args The command arguments.
+         *
+         * @since 3.8
          */
         public function set($args): void
         {
         }
         /**
          * Returns one or more Polylang setting(s) if given key(s), or lists all settings if no key is provided.
-         *
-         * @since 3.8
          *
          * ## OPTIONS
          *
@@ -1692,7 +1690,6 @@ namespace WP_Syntex\Polylang_Pro\Modules\CLI\Command {
          * : Render output in a particular format.
          * ---
          * default: table
-         * ---
          * options:
          *   - table
          *   - json
@@ -1708,19 +1705,17 @@ namespace WP_Syntex\Polylang_Pro\Modules\CLI\Command {
          *     # List all settings
          *     wp pll setting get
          *
-         * @when after_wp_load
-         *
          * @param string[] $args       The command arguments.
          * @param string[] $assoc_args The command associative arguments.
          * @phpstan-param array{keys?: string, format?: string} $assoc_args
+         *
+         * @since 3.8
          */
         public function get($args, $assoc_args): void
         {
         }
         /**
          * Adds a value to a list type Polylang setting.
-         *
-         * @since 3.8
          *
          * ## OPTIONS
          *
@@ -1730,7 +1725,7 @@ namespace WP_Syntex\Polylang_Pro\Modules\CLI\Command {
          * <value>
          * : The value to add to the setting. For map type settings, this is the subkey to add a value to.
          *
-         * <subvalue>
+         * [<subvalue>]
          * : The subvalue to add to the setting. For map type settings, this is the value of the subkey. Not applicable for list type settings.
          * ---
          * default: ''
@@ -1747,19 +1742,17 @@ namespace WP_Syntex\Polylang_Pro\Modules\CLI\Command {
          *     # Add an English domain to the map of domains
          *     wp pll setting add domains en example.com
          *
-         * @when after_wp_load
-         *
          * @param string[] $args       The command arguments.
          * @param string[] $assoc_args The command associative arguments.
          * @phpstan-param array{yes?: bool} $assoc_args
+         *
+         * @since 3.8
          */
         public function add($args, $assoc_args): void
         {
         }
         /**
          * Removes a value from a list type Polylang setting.
-         *
-         * @since 3.8
          *
          * ## OPTIONS
          *
@@ -1777,17 +1770,15 @@ namespace WP_Syntex\Polylang_Pro\Modules\CLI\Command {
          *     # Remove an English domain from the map of domains
          *     wp pll setting remove domains en
          *
-         * @when after_wp_load
-         *
          * @param string[] $args The command arguments.
+         *
+         * @since 3.8
          */
         public function remove($args): void
         {
         }
         /**
          * Resets a Polylang setting to its default value, or all settings if no key is provided.
-         *
-         * @since 3.8
          *
          * ## OPTIONS
          *
@@ -1808,6 +1799,8 @@ namespace WP_Syntex\Polylang_Pro\Modules\CLI\Command {
          * @param string[] $args The command arguments.
          * @param string[] $assoc_args The command associative arguments.
          * @phpstan-param array{keys?: string, yes?: bool} $assoc_args
+         *
+         * @since 3.8
          */
         public function reset($args, $assoc_args): void
         {

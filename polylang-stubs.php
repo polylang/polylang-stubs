@@ -2985,11 +2985,13 @@ namespace WP_Syntex\Polylang_Pro\Modules\Machine_Translation\Clients {
          * @see https://github.com/DeepLcom/deepl-php/blob/v1.6.0/src/Translator.php#L691
          *
          * @since 3.6
+         * @since 3.8 The parameter `body` has been added.
          *
-         * @param int $code The HTTP response code.
+         * @param int    $code The HTTP response code.
+         * @param string $body The response body.
          * @return WP_Error
          */
-        protected function check_status_code(int $code): \WP_Error
+        protected function check_status_code(int $code, string $body = ''): \WP_Error
         {
         }
         /**

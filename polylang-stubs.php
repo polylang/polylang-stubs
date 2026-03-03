@@ -6630,13 +6630,15 @@ namespace {
          * Returns a template post from the database.
          *
          * @since 3.2
+         * @since 3.8 Added $language parameter.
          *
-         * @param string $post_name  Post name (slug).
-         * @param string $theme_name Theme name (slug).
-         * @param string $post_type  Post type, either 'wp_template' or 'wp_template_part'.
+         * @param string            $post_name  Post name (slug).
+         * @param string            $theme_name Theme name (slug).
+         * @param string            $post_type  Post type, either 'wp_template' or 'wp_template_part'.
+         * @param PLL_Language|null $language   Optional. Language object to filter by.
          * @return WP_Post|null
          */
-        public static function query_template_post($post_name, $theme_name, $post_type)
+        public static function query_template_post($post_name, $theme_name, $post_type, $language = \null)
         {
         }
         /**

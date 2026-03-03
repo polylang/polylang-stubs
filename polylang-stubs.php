@@ -1845,21 +1845,10 @@ namespace WP_Syntex\Polylang_Pro\Modules\CLI\Command {
          *
          * @param string $key      The key of the item.
          * @param mixed  $value    The value of the item.
-         * @param array  $property  The property of the item.
+         * @param array  $property The property of the item.
          * @return array The adapted item.
          */
         public function get_item(string $key, $value, array $property): array
-        {
-        }
-        /**
-         * Formats a setting value for display.
-         *
-         * @since 3.8
-         *
-         * @param mixed $value The setting value.
-         * @return string The formatted value.
-         */
-        public function format_setting_value($value): string
         {
         }
     }
@@ -1890,6 +1879,37 @@ namespace WP_Syntex\Polylang_Pro\Modules\CLI {
          * @return void
          */
         public function register(): void
+        {
+        }
+    }
+    /**
+     * Adapts the WP CLI formatter to handle booleans correctly.
+     *
+     * @since 3.8
+     */
+    class Formatter
+    {
+        /**
+         * Constructor.
+         *
+         * @since 3.8
+         *
+         * @param array $assoc_args Output format arguments.
+         * @param array $fields     Fields to display of each item.
+         */
+        public function __construct($assoc_args, $fields = null)
+        {
+        }
+        /**
+         * Displays multiple items according to the output arguments.
+         * This displays true/false strings when using formats that don't display booleans nicely (table, csv).
+         *
+         * @since 3.8
+         *
+         * @param array $items The items to display.
+         * @return void
+         */
+        public function display_items($items)
         {
         }
     }

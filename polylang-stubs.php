@@ -29511,7 +29511,7 @@ namespace {
          *
          * @param int[]  $object_ids Array of object IDs.
          * @param string $taxonomy   Taxonomy name.
-         * @return array<int,WP_Term|null> Array of terms with object ID as key.
+         * @return array<int,WP_Term> Array of terms with object ID as key.
          */
         protected function get_object_terms(array $object_ids, string $taxonomy)
         {
@@ -29519,13 +29519,13 @@ namespace {
         /**
          * Caches all object-relationship terms.
          *
-         * @since 3.8
+         * @since 3.8.1
          *
          * @param int[] $object_ids Array of object IDs.
          *
-         * @return void
+         * @return int[][][]
          */
-        protected function prime_object_term_cache(array $object_ids)
+        protected function update_object_term_cache(array $object_ids)
         {
         }
         /**
@@ -29536,9 +29536,9 @@ namespace {
          * @param int[]  $object_ids Array of object IDs to retrieve terms for.
          * @param string $taxonomy   Taxonomy name.
          *
-         * @return int[][]
+         * @return int[] Array of term IDs with object ID as key.
          */
-        protected function get_from_object_term_cache(array $object_ids, string $taxonomy)
+        protected function get_from_object_term_cache(array $object_ids, string $taxonomy): array
         {
         }
         /**

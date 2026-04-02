@@ -26455,16 +26455,6 @@ namespace {
         {
         }
         /**
-         * Removes "added_{$this->meta_type}_meta" action
-         *
-         * @since 2.3
-         *
-         * @return void
-         */
-        protected function remove_add_meta_action()
-        {
-        }
-        /**
          * Removes all meta synchronization actions and filters
          *
          * @since 2.3
@@ -26472,16 +26462,6 @@ namespace {
          * @return void
          */
         public function remove_all_meta_actions()
-        {
-        }
-        /**
-         * Adds "added_{$this->meta_type}_meta" action
-         *
-         * @since 2.3
-         *
-         * @return void
-         */
-        protected function restore_add_meta_action()
         {
         }
         /**

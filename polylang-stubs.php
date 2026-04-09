@@ -18109,14 +18109,12 @@ namespace {
         }
     }
     /**
-     * @package Polylang
-     */
-    /**
-     * Some common code for PLL_Admin_Filters_Post and PLL_Admin_Filters_Media
+     * Manages filters and actions related to media on admin side
+     * Capability to edit / create media is checked before loading this class
      *
-     * @since 1.5
+     * @since 1.2
      */
-    abstract class PLL_Admin_Filters_Post_Base
+    class PLL_Admin_Filters_Media
     {
         /**
          * @var PLL_Model
@@ -18126,53 +18124,6 @@ namespace {
          * @var PLL_Admin_Links
          */
         public $links;
-        /**
-         * Language selected in the admin language filter.
-         *
-         * @var PLL_Language|null
-         */
-        public $filter_lang;
-        /**
-         * Preferred language to assign to new contents.
-         *
-         * @var PLL_Language|null
-         */
-        public $pref_lang;
-        /**
-         * Constructor: setups filters and actions
-         *
-         * @since 1.2
-         *
-         * @param object $polylang The Polylang object.
-         */
-        public function __construct(&$polylang)
-        {
-        }
-        /**
-         * Save translations from the languages metabox.
-         *
-         * @since 1.5
-         *
-         * @param int   $post_id Post id of the post being saved.
-         * @param int[] $arr     An array with language codes as key and post id as value.
-         * @return int[] The array of translated post ids.
-         */
-        protected function save_translations($post_id, $arr)
-        {
-        }
-    }
-    /**
-     * Manages filters and actions related to media on admin side
-     * Capability to edit / create media is checked before loading this class
-     *
-     * @since 1.2
-     */
-    class PLL_Admin_Filters_Media extends \PLL_Admin_Filters_Post_Base
-    {
-        /**
-         * @var PLL_CRUD_Posts|null
-         */
-        public $posts;
         /**
          * Constructor: setups filters and actions
          *
@@ -18225,8 +18176,12 @@ namespace {
      *
      * @since 1.2
      */
-    class PLL_Admin_Filters_Post extends \PLL_Admin_Filters_Post_Base
+    class PLL_Admin_Filters_Post
     {
+        /**
+         * @var PLL_Model
+         */
+        public $model;
         /**
          * Current language (used to filter the content).
          *
@@ -18382,14 +18337,16 @@ namespace {
         {
         }
         /**
-         * Translates term parent if exists when using "Add new" ( translation )
+         * Translates the term parent if it exists when using "Add new".
          *
-         * @since 0.7
+         * @since 3.9
          *
-         * @param string $output html markup for dropdown list of categories
-         * @return string modified html
+         * @param array  $args     The taxonomy parent dropdown arguments.
+         * @param string $taxonomy The taxonomy name.
+         * @param string $context  The filter context, 'new' or 'edit'.
+         * @return array
          */
-        public function wp_dropdown_cats($output)
+        public function taxonomy_parent_dropdown_args($args, $taxonomy, $context)
         {
         }
         /**
@@ -28504,12 +28461,6 @@ namespace {
      */
     class PLL_Settings extends \PLL_Admin_Base
     {
-        /**
-         * Name of the active module.
-         *
-         * @var string|null
-         */
-        protected $active_tab;
         /**
          * Array of modules classes.
          *

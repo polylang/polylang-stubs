@@ -1037,7 +1037,7 @@ namespace WP_Syntex\Polylang\Options {
          *
          * @since 3.8
          *
-         * @param array $array An array of formatted data.
+         * @param array<scalar> $array An array of formatted data.
          * @return string
          */
         protected function format_array_for_site_health_info(array $array): string

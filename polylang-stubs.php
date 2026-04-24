@@ -4681,6 +4681,40 @@ namespace {
         {
         }
         /**
+         * Register the REST field.
+         *
+         * @since 3.9
+         *
+         * @return void
+         */
+        public function register_rest_field(): void
+        {
+        }
+        /**
+         * Adds the active status to the language data.
+         *
+         * @since 3.9
+         *
+         * @param mixed[] $add_data Data to add.
+         * @param mixed[] $args     {
+         *     Arguments used to create the language.
+         *
+         *     @type string $name       Language name (used only for display).
+         *     @type string $slug       Language code (ideally 2-letters ISO 639-1 language code).
+         *     @type string $locale     WordPress locale. If something wrong is used for the locale, the .mo files will
+         *                              not be loaded...
+         *     @type int    $rtl        1 if rtl language, 0 otherwise.
+         *     @type int    $term_group Language order when displayed.
+         *     @type int    $lang_id    Optional, ID of the language to modify. An empty value means the language is
+         *                              being created.
+         *     @type string $flag       Optional, country code, {@see /polylang/src/settings/flags.php}.
+         * }
+         * @return mixed[]
+         */
+        public function add_to_language_metas($add_data, $args)
+        {
+        }
+        /**
          * Adds a `inactive` CSS class to inactive language rows.
          *
          * @since 1.9
@@ -4712,18 +4746,6 @@ namespace {
          * @return string[] Modified list of row actions.
          */
         public function row_actions($actions, $language)
-        {
-        }
-        /**
-         * Enables or disables a language.
-         *
-         * @since 1.9
-         *
-         * @param int  $lang_id The language term ID.
-         * @param bool $enable  True to enable, false to disable.
-         * @return void
-         */
-        public function _enable(int $lang_id, bool $enable): void
         {
         }
         /**
@@ -9004,6 +9026,16 @@ namespace {
          * @return void
          */
         public function init(&$polylang)
+        {
+        }
+        /**
+         * Register the REST field.
+         *
+         * @since 3.9
+         *
+         * @return void
+         */
+        public function register_rest_field(): void
         {
         }
         /**

@@ -22982,16 +22982,6 @@ namespace {
         {
         }
         /**
-         * Check if upgrade is possible otherwise die to avoid activation
-         *
-         * @since 1.2
-         *
-         * @return void
-         */
-        public function can_activate()
-        {
-        }
-        /**
          * Upgrades if possible otherwise returns false to stop Polylang loading
          *
          * @since 1.2
@@ -23014,7 +23004,7 @@ namespace {
         {
         }
         /**
-         * Displays a notice when upgrading from a too old version
+         * Displays a notice when upgrading from a too old version.
          *
          * @since 1.0
          *

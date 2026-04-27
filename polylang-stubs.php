@@ -11629,6 +11629,8 @@ namespace {
      * Links Model for translating slugs
      *
      * @since 1.9
+     *
+     * @phpstan-type TranslatedSlugs array<array{slug: string, translations: array<string>}>
      */
     class PLL_Translate_Slugs_Model
     {
@@ -11647,6 +11649,8 @@ namespace {
          * Stores the information on translatable slugs.
          *
          * @var array
+         *
+         * @phpstan-var TranslatedSlugs
          */
         public $translated_slugs;
         /**
@@ -11710,11 +11714,13 @@ namespace {
         }
         /**
          * Returns information on translatable slugs
-         * and stores them in a transient
+         * and stores them in a transient.
          *
          * @since 1.9
          *
          * @return array
+         *
+         * @phpstan-return TranslatedSlugs
          */
         public function get_translatable_slugs()
         {
@@ -11887,14 +11893,24 @@ namespace {
         {
         }
         /**
-         * Recursively rawurlencode an array of slugs while preserving forward slashes
+         * Recursively rawurlencode an array of slugs while preserving forward slashes.
          *
          * @since 2.6
          *
-         * @param mixed $slug The slug or the array of slug to encode.
-         * @return mixed
+         * @param string|string[] $slug The slug or the array of slug to encode.
+         * @return ( $slug is string ? string : array<string> )
          */
         public function encode_deep($slug)
+        {
+        }
+        /**
+         * Return the list of available post formats.
+         *
+         * @since 3.9
+         *
+         * @return string[]
+         */
+        protected function get_post_formats(): array
         {
         }
     }

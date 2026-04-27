@@ -9619,10 +9619,13 @@ namespace WP_Syntex\Polylang_Pro\REST\Translated {
         /**
          * Returns the object translations.
          *
+         * Cast to `stdClass` to ensure `json_encode` always returns a JSON object `{}`
+         * rather than a JSON array `[]` when there are no translations.
+         *
          * @since 2.2
          *
          * @param array $object Post or Term array.
-         * @return array
+         * @return object
          */
         public function get_translations($object)
         {
@@ -10847,12 +10850,15 @@ namespace {
         {
         }
         /**
-         * Returns the object synchronizations
+         * Returns the object synchronizations.
+         *
+         * Cast to `stdClass` to ensure `json_encode` always returns a JSON object `{}`
+         * rather than a JSON array `[]` when there are no synchronizations.
          *
          * @since 2.4
          *
          * @param array $object Array of post properties.
-         * @return array
+         * @return object
          */
         public function get_synchronizations($object)
         {

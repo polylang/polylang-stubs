@@ -23145,6 +23145,17 @@ namespace {
         {
         }
         /**
+         * Upgrades if the previous version is < 3.9.
+         * Migrates flag codes in language terms.
+         *
+         * @since 3.9
+         *
+         * @return void
+         */
+        protected function upgrade_3_9()
+        {
+        }
+        /**
          * Moves strings translations from post meta to term meta _pll_strings_translations.
          *
          * @since 3.4
@@ -23741,6 +23752,17 @@ namespace {
         {
         }
         /**
+         * Returns a predefined HTML flag.
+         *
+         * @since 3.4
+         *
+         * @param string $flag_code Flag code to render.
+         * @return string HTML code for the flag.
+         */
+        public static function get_predefined_flag($flag_code)
+        {
+        }
+        /**
          * Returns the flag information.
          *
          * @since 2.6
@@ -23860,17 +23882,6 @@ namespace {
         {
         }
         /**
-         * Returns a predefined HTML flag.
-         *
-         * @since 3.4
-         *
-         * @param string $flag_code Flag code to render.
-         * @return string HTML code for the flag.
-         */
-        public static function get_predefined_flag($flag_code)
-        {
-        }
-        /**
          * Returns language's home URL. Takes care to render it dynamically if no cache is allowed.
          *
          * @since 3.4
@@ -23906,6 +23917,18 @@ namespace {
          * )
          */
         public function get_prop($property)
+        {
+        }
+        /**
+         * Prepares a SVG image for use in data uri.
+         *
+         * @see https://codepen.io/tigt/post/optimizing-svgs-in-data-uris.
+         * @since 3.8
+         *
+         * @param string $svg A string representing an SVG image.
+         * @return string Encode SVG.
+         */
+        protected static function encode_svg(string $svg): string
         {
         }
     }
@@ -28632,7 +28655,7 @@ namespace {
         {
         }
         /**
-         * Get the list of predefined languages
+         * Get the list of predefined languages.
          *
          * @since 2.3
          *
@@ -28651,6 +28674,16 @@ namespace {
          * }
          */
         public static function get_predefined_languages()
+        {
+        }
+        /**
+         * Get the list of the default flags, sorted by alphabetical order.
+         *
+         * @since 3.9
+         *
+         * @return string[]
+         */
+        public static function get_default_flags()
         {
         }
     }

@@ -1366,9 +1366,6 @@ namespace WP_Syntex\Polylang_Pro\Modules\CLI\Command {
          * [--slug=<slug>]
          * : Language slug (ideally 2-letters ISO 639-1 language code). Must be unique. If not provided, will fallback to Polylang core languages list.
          *
-         * [--flag=<flag>]
-         * : Country code for the flag. If not provided, will fallback to Polylang core languages list.
-         *
          * [--dir=<dir>]
          * : Text direction for the language.
          * ---
@@ -1378,11 +1375,20 @@ namespace WP_Syntex\Polylang_Pro\Modules\CLI\Command {
          *   - rtl
          * ---
          *
+         * [--flag=<flag>]
+         * : Country code for the flag. If not provided, will fallback to Polylang core languages list.
+         *
          * [--order=<order>]
          * : Language order when displayed.
          * ---
          * default: 0
          * ---
+         *
+         * [--fallbacks=<fallbacks>]
+         * : Comma separated list of WordPress locales to use if a translation file is not available in the main locale.
+         *
+         * [--active=<active>]
+         * : Active status of the language.
          *
          * [--skip-default-cat]
          * : If set, no default category will be created for this language.
@@ -1438,11 +1444,17 @@ namespace WP_Syntex\Polylang_Pro\Modules\CLI\Command {
          *   - rtl
          * ---
          *
+         * [--flag=<flag>]
+         * : Country code for the flag.
+         *
          * [--order=<order>]
          * : Language order when displayed.
          *
-         * [--flag=<flag>]
-         * : Country code for the flag.
+         * [--fallbacks=<fallbacks>]
+         * : Comma separated list of WordPress locales to use if a translation file is not available in the main locale.
+         *
+         * [--active=<active>]
+         * : Active status of the language.
          *
          * ## EXAMPLES
          *

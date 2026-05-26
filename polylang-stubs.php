@@ -9915,6 +9915,20 @@ namespace WP_Syntex\Polylang_Pro\REST\V1 {
     class Translation extends \WP_REST_Controller
     {
         /**
+         * The namespace of this controller's route. Override the parent class property with a default value.
+         *
+         * @var string
+         * @phpstan-var 'pll/v1'
+         */
+        protected $namespace = 'pll/v1';
+        /**
+         * The base of this controller's route. Override the parent class property with a default value.
+         *
+         * @var string
+         * @phpstan-var 'translation'
+         */
+        protected $rest_base = 'translation';
+        /**
          * Constructor.
          *
          * @since 3.8
@@ -17295,6 +17309,743 @@ namespace WP_Syntex\Polylang\Options {
          * @return array The site health information array.
          */
         public function get_site_health_info(): array
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang\Switcher {
+    /**
+     * Class that manages CSS and JS dependencies.
+     *
+     * @since 3.9
+     */
+    class Assets
+    {
+        public const FRONTEND_ASSET_HANDLE = 'pll-language-switcher';
+        /**
+         * Enqueues frontend CSS.
+         *
+         * @since 3.9
+         *
+         * @return void
+         */
+        public static function enqueue_frontend_styles(): void
+        {
+        }
+        /**
+         * Enqueues frontend JS.
+         * Should be called on-the-fly when needed.
+         *
+         * @since 3.9
+         *
+         * @return void
+         */
+        public static function enqueue_frontend_scripts(): void
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang\Switcher\Element {
+    /**
+     * Data representing an item.
+     *
+     * @since 3.9
+     */
+    abstract class Abstract_Element
+    {
+        /**
+         * @since 3.9
+         *
+         * @var int
+         */
+        public int $id;
+        /**
+         * @since 3.9
+         *
+         * @var string
+         *
+         * @phpstan-var non-empty-string
+         */
+        public string $slug;
+        /**
+         * @since 3.9
+         *
+         * @var string
+         *
+         * @phpstan-var non-empty-string
+         */
+        public string $locale;
+        /**
+         * @since 3.9
+         *
+         * @var string
+         */
+        public string $url = '';
+        /**
+         * @since 3.9
+         *
+         * @var string
+         */
+        public string $label = '';
+        /**
+         * @since 3.9
+         *
+         * @var string
+         */
+        public string $flag = '';
+        /**
+         * @since 3.9
+         *
+         * @var string
+         *
+         * @phpstan-var 'ltr'|'rtl'
+         */
+        public string $direction;
+        /**
+         * @since 3.9
+         *
+         * @var int
+         */
+        public int $order;
+        /**
+         * @since 3.9
+         *
+         * @var bool
+         */
+        public bool $has_translations;
+        /**
+         * @since 3.9
+         *
+         * @var bool
+         */
+        public bool $is_empty;
+        /**
+         * @since 3.9
+         *
+         * @var bool
+         */
+        public bool $is_current;
+        /**
+         * @since 3.9
+         *
+         * @var string[]
+         */
+        public array $item_classes;
+        /**
+         * @since 3.9
+         *
+         * @var string[]
+         */
+        public array $link_classes;
+        /**
+         * @var Settings
+         */
+        protected \WP_Syntex\Polylang\Switcher\Settings\Settings $settings;
+        /**
+         * Constructor.
+         *
+         * @since 3.9
+         *
+         * @param PLL_Language $language Instance of `PLL_Language`.
+         * @param Settings     $settings Instance of `Settings`.
+         * @param PLL_Links    $links    Instance of `PLL_Links`.
+         */
+        public function __construct(\PLL_Language $language, \WP_Syntex\Polylang\Switcher\Settings\Settings $settings, \PLL_Links $links)
+        {
+        }
+        /**
+         * Returns the markup of a row.
+         *
+         * @since 3.9
+         *
+         * @return string
+         */
+        abstract public function get(): string;
+        /**
+         * Returns the markup of the label of a row.
+         *
+         * @since 3.9
+         *
+         * @return string
+         */
+        public function get_label(): string
+        {
+        }
+    }
+    /**
+     * Data representing an item.
+     *
+     * @since 3.9
+     */
+    class Nav extends \WP_Syntex\Polylang\Switcher\Element\Abstract_Element
+    {
+        /**
+         * Returns the markup of a row.
+         *
+         * @since 3.9
+         *
+         * @return string
+         */
+        public function get(): string
+        {
+        }
+        /**
+         * Returns the markup of a link.
+         *
+         * @since 3.9
+         *
+         * @return string
+         */
+        public function get_link(): string
+        {
+        }
+        /**
+         * Returns the markup of the label of a row.
+         *
+         * @since 3.9
+         *
+         * @return string
+         */
+        public function get_label(): string
+        {
+        }
+    }
+    /**
+     * Data representing an item.
+     *
+     * @since 3.9
+     */
+    class Select extends \WP_Syntex\Polylang\Switcher\Element\Abstract_Element
+    {
+        /**
+         * Returns the markup of a row.
+         *
+         * @since 3.9
+         *
+         * @return string
+         */
+        public function get(): string
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang\Switcher\Fields {
+    /**
+     * Interface to use to manage setting field data.
+     *
+     * @since 3.9
+     *
+     * @phpstan-type FieldsData array<
+     *     non-falsy-string,
+     *     array{
+     *         label: string,
+     *         default: string|bool,
+     *         choices?: array<string>,
+     *         hide_if?: array<string, string|bool>
+     *     }
+     * >
+     */
+    interface Fields_Interface
+    {
+        /**
+         * Returns setting field data available for the language switcher.
+         *
+         * @since 3.9
+         *
+         * @return array[]
+         *
+         * @phpstan-return FieldsData
+         */
+        public static function get(): array;
+        /**
+         * Validates the given settings.
+         *
+         * @since 3.9
+         *
+         * @param array $settings Switcher settings.
+         * @return array
+         */
+        public static function validate(array $settings): array;
+    }
+}
+namespace WP_Syntex\Polylang\Switcher\Layout {
+    /**
+     * Abstract class to display a certain type of language switcher.
+     *
+     * @since 3.9
+     */
+    abstract class Abstract_Layout
+    {
+        /**
+         * @var Settings
+         */
+        protected \WP_Syntex\Polylang\Switcher\Settings\Settings $settings;
+        /**
+         * @var PLL_Links
+         */
+        protected \PLL_Links $links;
+        /**
+         * @var Abstract_Element[]
+         */
+        protected array $elements = array();
+        /**
+         * Constructor.
+         *
+         * @since 3.9
+         *
+         * @param Settings  $settings Instance of `Settings`.
+         * @param PLL_Links $links    Instance of `PLL_Links`.
+         */
+        public function __construct(\WP_Syntex\Polylang\Switcher\Settings\Settings $settings, \PLL_Links $links)
+        {
+        }
+        /**
+         * Returns the markup of the switcher.
+         *
+         * @since 3.9
+         *
+         * @return string
+         */
+        abstract public function get(): string;
+        /**
+         * Returns the switcher's data.
+         *
+         * @since 3.9
+         *
+         * @return Abstract_Element[]
+         *
+         * @phpstan-return array<non-empty-string, Abstract_Element>
+         */
+        public function get_elements(): array
+        {
+        }
+        /**
+         * Returns an instance of `Abstract_Element`.
+         *
+         * @since 3.9
+         *
+         * @param PLL_Language $language Instance of `PLL_Language`.
+         * @return Abstract_Element
+         */
+        abstract protected function get_element(\PLL_Language $language): \WP_Syntex\Polylang\Switcher\Element\Abstract_Element;
+        /**
+         * Returns the list of HTML classes to add to the wrapper tag.
+         *
+         * @since 3.9
+         *
+         * @return string[]
+         */
+        protected function get_wrapper_classes(): array
+        {
+        }
+        /**
+         * Returns the name of the tag to use as "navigation", depending if the current theme supports HTML5 features.
+         *
+         * @since 3.9
+         *
+         * @return string
+         */
+        protected function get_nav_tag(): string
+        {
+        }
+    }
+    /**
+     * Class that displays a language switcher as a dropdown.
+     *
+     * @since 3.9
+     */
+    class Dropdown extends \WP_Syntex\Polylang\Switcher\Layout\Abstract_Layout
+    {
+        /**
+         * Returns the markup of the switcher.
+         *
+         * @since 3.9
+         *
+         * @return string
+         */
+        public function get(): string
+        {
+        }
+        /**
+         * Returns an instance of `Element\Nav`.
+         *
+         * @since 3.9
+         *
+         * @param PLL_Language $language Instance of `PLL_Language`.
+         * @return Element
+         */
+        protected function get_element(\PLL_Language $language): \WP_Syntex\Polylang\Switcher\Element\Nav
+        {
+        }
+    }
+    /**
+     * Class that displays a language switcher as a list.
+     *
+     * @since 3.9
+     */
+    class Nav extends \WP_Syntex\Polylang\Switcher\Layout\Abstract_Layout
+    {
+        /**
+         * Returns the markup of the switcher.
+         *
+         * @since 3.9
+         *
+         * @return string
+         */
+        public function get(): string
+        {
+        }
+        /**
+         * Returns an instance of `Element\Nav`.
+         *
+         * @since 3.9
+         *
+         * @param PLL_Language $language Instance of `PLL_Language`.
+         * @return Element
+         */
+        protected function get_element(\PLL_Language $language): \WP_Syntex\Polylang\Switcher\Element\Nav
+        {
+        }
+    }
+    /**
+     * Class that displays a language switcher as a selector.
+     *
+     * @since 3.9
+     */
+    class Select extends \WP_Syntex\Polylang\Switcher\Layout\Abstract_Layout
+    {
+        /**
+         * Returns the markup of the switcher.
+         *
+         * @since 3.9
+         *
+         * @return string
+         */
+        public function get(): string
+        {
+        }
+        /**
+         * Returns an instance of `Element\Select`.
+         *
+         * @since 3.9
+         *
+         * @param PLL_Language $language Instance of `PLL_Language`.
+         * @return Element
+         */
+        protected function get_element(\PLL_Language $language): \WP_Syntex\Polylang\Switcher\Element\Select
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang\Switcher\Settings {
+    /**
+     * Compatibility layer between new and legacy switcher settings.
+     *
+     * @since 3.9
+     */
+    abstract class Abstract_Settings_Legacy
+    {
+        /**
+         * Legacy settings that don't exist anymore.
+         */
+        protected const REMOVED_ENTRIES = array('dropdown' => 1, 'echo' => 1, 'show_names' => 1, 'display_names_as' => 1, 'raw' => 1, 'item_spacing' => 1, 'admin_render' => 1, 'admin_current_lang' => 1, 'classes' => 1);
+        /**
+         * Legacy default settings.
+         * Copied from `PLL_Switcher`.
+         */
+        protected const DEFAULTS = array(
+            'dropdown' => 0,
+            // Display as list and not as dropdown.
+            'echo' => 1,
+            // Echoes the list.
+            'hide_if_empty' => 1,
+            // Hides languages with no posts (or pages).
+            'show_flags' => 0,
+            // Don't show flags.
+            'show_names' => 1,
+            // Show language names.
+            'display_names_as' => 'name',
+            // Display the language name.
+            'force_home' => 0,
+            // Tries to find a translation.
+            'hide_if_no_translation' => 0,
+            // Don't hide the link if there is no translation.
+            'hide_current' => 0,
+            // Don't hide the current language.
+            'post_id' => null,
+            // Link to the translations of the current page.
+            'raw' => 0,
+            // Build the language switcher.
+            'item_spacing' => 'preserve',
+            // Preserve whitespace between list items.
+            'admin_render' => 0,
+            // Make the switcher in a frontend context.
+            'admin_current_lang' => null,
+        );
+        /**
+         * Returns the values as an array after converting them to the legacy format.
+         *
+         * @since 3.9
+         *
+         * @return array
+         */
+        public function get_legacy(): array
+        {
+        }
+        /**
+         * Converts new settings structure to the legacy one, then applies the deprecated filter `pll_the_languages_args`,
+         * then converts it back to new settings structure.
+         * This removes legacy settings.
+         *
+         * @since 3.9
+         *
+         * @param array $settings Settings in new structure.
+         * @return array
+         */
+        protected function maybe_filter_legacy(array $settings): array
+        {
+        }
+        /**
+         * Tells if the given settings list contain legacy settings.
+         *
+         * @since 3.9
+         *
+         * @param array $settings Settings.
+         * @return bool
+         */
+        protected function is_legacy(array $settings): bool
+        {
+        }
+        /**
+         * Converts the legacy structure to the new one.
+         * This preserves the legacy structure's keys.
+         *
+         * @since 3.9
+         *
+         * @param array $settings The settings.
+         * @return array
+         */
+        protected function convert_from_legacy(array $settings): array
+        {
+        }
+        /**
+         * Converts the new structure to the legacy one.
+         * This preserves the new structure's keys.
+         *
+         * @since 3.9
+         *
+         * @param array $settings Settings in new structure.
+         * @return array
+         */
+        protected function convert_to_legacy(array $settings): array
+        {
+        }
+    }
+    /**
+     * Class that holds all the language switcher's settings.
+     *
+     * @since 3.9
+     */
+    class Settings extends \WP_Syntex\Polylang\Switcher\Settings\Abstract_Settings_Legacy
+    {
+        /**
+         * @var string
+         *
+         * @phpstan-var 'horizontal'|'vertical'|'dropdown'|'select'
+         */
+        public string $layout = 'vertical';
+        /**
+         * No default value here because it depends on `is_rtl()`. see `self::get_defaults()`.
+         *
+         * @var string
+         *
+         * @phpstan-var 'left'|'center'|'right'|'stretched'
+         */
+        public string $alignment;
+        /**
+         * @var bool
+         */
+        public bool $show_flags = false;
+        /**
+         * @var string
+         *
+         * @phpstan-var '3:2'|'1:1'
+         */
+        public string $flag_aspect_ratio = '3:2';
+        /**
+         * @var string
+         *
+         * @phpstan-var ''|'names'|'codes'
+         */
+        public string $show_labels = 'names';
+        /**
+         * @var bool
+         */
+        public bool $hide_current = false;
+        /**
+         * @var bool
+         */
+        public bool $hide_if_empty = true;
+        /**
+         * @var bool
+         */
+        public bool $hide_if_no_translation = false;
+        /**
+         * @var bool
+         */
+        public bool $force_home = false;
+        /**
+         * @var int
+         */
+        public int $post_id = 0;
+        /**
+         * @var bool
+         */
+        public bool $preserve_spacing = true;
+        /**
+         * @var bool
+         */
+        public bool $show_wrapper = true;
+        /**
+         * @var array
+         *
+         * @phpstan-var non-empty-string[]
+         */
+        public array $wrapper_classes = array();
+        /**
+         * @var array
+         *
+         * @phpstan-var non-empty-string[]
+         */
+        public array $item_classes = array();
+        /**
+         * @var array
+         *
+         * @phpstan-var non-empty-string[]
+         */
+        public array $link_classes = array();
+        /**
+         * @var string
+         */
+        public string $unique_id = '';
+        /**
+         * Constructor.
+         *
+         * @since 3.9
+         *
+         * @param array $settings {
+         *     Optional switcher settings.
+         *
+         *     @type string   $layout                 Layout of the switcher. Possible values are `horizontal`, `vertical`,
+         *                                            `dropdown`, and `select`. Default is `vertical`.
+         *     @type string   $alignment              Alignment of the items. Possible values are `left`, `center`, `right`,
+         *                                            `stretched`. Default is `left` or `right`, depending on `is_rtl()`.
+         *     @type bool     $show_wrapper           Display the wrapper or not. Default is `true`.
+         *     @type bool     $show_flags             Display the flags or not. Default is `false`.
+         *     @type string   $flag_aspect_ratio      Flags aspect ratio. Possible values are `3:2` and `1:1`. Default is `3:2`.
+         *     @type string   $show_labels            Display the labels. Possible values are an empty string (no labels),
+         *                                            `names` (language names), `codes` (languages codes). Default is `names`.
+         *     @type bool     $hide_if_empty          Hide languages that don't have any posts. Default is `true`.
+         *     @type bool     $hide_if_no_translation Hide languages that don't have a translation. Default is `false`.
+         *     @type bool     $hide_current           Hide the current language. Default is `false`.
+         *     @type bool     $force_home             Force elements to link to the home pages instead of the translations.
+         *                                            Default is `false`.
+         *     @type int      $post_id                Build the links according to the translations of the given post ID.
+         *                                            Default is `0`.
+         *     @type bool     $preserve_spacing       Preserve or discard white space characters between tags.
+         *                                            Default is `true` (preserve).
+         *     @type string[] $wrapper_classes        HTML classes to add to the wrapper. Default is an empty array.
+         *     @type string[] $item_classes           HTML classes to add to each item. Default is an empty array.
+         *     @type string[] $link_classes           HTML classes to add to each link. Default is an empty array.
+         *     @type string   $unique_id              A unique identifier. Default is an empty string.
+         * }
+         */
+        public function __construct(array $settings)
+        {
+        }
+        /**
+         * Returns the public default values.
+         *
+         * @since 3.9
+         *
+         * @return array
+         */
+        public static function get_defaults(): array
+        {
+        }
+        /**
+         * Returns an instance of the switcher.
+         *
+         * @since 3.9
+         *
+         * @return string
+         *
+         * @phpstan-return class-string<Layout\Abstract_Layout>|''
+         */
+        public function get_switcher_class(): string
+        {
+        }
+        /**
+         * Validates the settings (value and type).
+         * This removes additional keys.
+         *
+         * @since 3.9
+         *
+         * @param array $settings Switcher settings.
+         * @return array
+         */
+        protected function validate(array $settings): array
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang\Switcher {
+    /**
+     * Class that can display a language switcher.
+     *
+     * @since 3.9
+     */
+    class Switcher
+    {
+        /**
+         * Constructor.
+         *
+         * @since 3.9
+         *
+         * @param Settings  $settings Instance of `Settings`.
+         * @param PLL_Links $links    Instance of `PLL_Links`.
+         */
+        public function __construct(\WP_Syntex\Polylang\Switcher\Settings\Settings $settings, \PLL_Links $links)
+        {
+        }
+        /**
+         * Prints the switcher.
+         *
+         * @since 3.9
+         *
+         * @return void
+         */
+        public function print(): void
+        {
+        }
+        /**
+         * Returns the switcher's markup.
+         *
+         * @since 3.9
+         *
+         * @return string
+         */
+        public function get(): string
+        {
+        }
+        /**
+         * Returns the switcher's raw data.
+         *
+         * @since 3.9
+         *
+         * @return Element\Abstract_Element[]
+         */
+        public function get_elements(): array
         {
         }
     }

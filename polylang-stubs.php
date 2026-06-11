@@ -15552,6 +15552,17 @@ namespace WP_Syntex\Polylang\Model {
         {
         }
         /**
+         * Checks if a given value matches the locale format.
+         *
+         * @since 3.8.5
+         *
+         * @param string $value The value to check.
+         * @return bool
+         */
+        public static function is_locale($value): bool
+        {
+        }
+        /**
          * Builds the language metas into an array and serializes it, to be stored in the term description.
          *
          * @since 3.4
@@ -17531,7 +17542,7 @@ namespace WP_Syntex\Polylang\Switcher\Element {
 }
 namespace WP_Syntex\Polylang\Switcher\Fields {
     /**
-     * Interface to use to manage setting field data.
+     * Abstract class to use to manage setting field data.
      *
      * @since 3.9
      *
@@ -17539,13 +17550,12 @@ namespace WP_Syntex\Polylang\Switcher\Fields {
      *     non-falsy-string,
      *     array{
      *         label: string,
-     *         default: string|bool,
      *         choices?: array<string>,
      *         hide_if?: array<string, string|bool>
      *     }
      * >
      */
-    interface Fields_Interface
+    abstract class Abstract_Fields
     {
         /**
          * Returns setting field data available for the language switcher.
@@ -17556,16 +17566,82 @@ namespace WP_Syntex\Polylang\Switcher\Fields {
          *
          * @phpstan-return FieldsData
          */
-        public static function get(): array;
+        abstract public static function get(): array;
         /**
-         * Validates the given settings.
+         * Removes the legacy keys that were stored in the database alongside the new ones in case of plugin rollback.
+         *
+         * This method is part of the plan to support rollbacks to versions < 3.9.
+         * Backward compatibility with Polylang < 3.9.
+         *
+         * @since 3.9
+         *
+         * @param array $raw_settings Raw settings.
+         * @return array
+         */
+        public static function remove_legacy_settings(array $raw_settings): array
+        {
+        }
+        /**
+         * Adds some legacy keys that we want to keep in the database alongside the new ones in case of plugin rollback.
+         * Must not be called before `Abstract_Fields::filter()`.
+         *
+         * This would be useful in case a user rollbacks to a version < 3.9.
+         * Backward compatibility with Polylang < 3.9.
          *
          * @since 3.9
          *
          * @param array $settings Switcher settings.
          * @return array
          */
-        public static function validate(array $settings): array;
+        abstract public static function add_legacy_settings(array $settings): array;
+        /**
+         * Returns an array containing ONLY the values corresponding to the setting fields.
+         *
+         * @since 3.9
+         *
+         * @param Settings $settings Switcher settings.
+         * @return array
+         */
+        public static function filter(\WP_Syntex\Polylang\Switcher\Settings\Settings $settings): array
+        {
+        }
+    }
+    /**
+     * Class that holds the setting field data when in a "widget".
+     *
+     * @since 3.9
+     *
+     * @phpstan-import-type FieldsData from Abstract_Fields
+     */
+    class Widget extends \WP_Syntex\Polylang\Switcher\Fields\Abstract_Fields
+    {
+        /**
+         * Returns setting field data available for the language switcher.
+         *
+         * @since 3.9
+         *
+         * @return array[]
+         *
+         * @phpstan-return FieldsData
+         */
+        public static function get(): array
+        {
+        }
+        /**
+         * Adds some legacy keys that we want to keep in the database alongside the new ones in case of plugin rollback.
+         * Must not be called before `Abstract_Fields::filter()`.
+         *
+         * This would be useful in case a user rollbacks to a version < 3.9.
+         * Backward compatibility with Polylang < 3.9.
+         *
+         * @since 3.9
+         *
+         * @param array $settings Switcher settings.
+         * @return array
+         */
+        public static function add_legacy_settings(array $settings): array
+        {
+        }
     }
 }
 namespace WP_Syntex\Polylang\Switcher\Layout {
@@ -17748,7 +17824,7 @@ namespace WP_Syntex\Polylang\Switcher\Settings {
         /**
          * Legacy settings that don't exist anymore.
          */
-        protected const REMOVED_ENTRIES = array('dropdown' => 1, 'echo' => 1, 'show_names' => 1, 'display_names_as' => 1, 'raw' => 1, 'item_spacing' => 1, 'admin_render' => 1, 'admin_current_lang' => 1, 'classes' => 1);
+        protected const REMOVED_ENTRIES = array('dropdown' => 1, 'show_names' => 1, 'display_names_as' => 1, 'item_spacing' => 1, 'admin_render' => 1, 'admin_current_lang' => 1, 'classes' => 1);
         /**
          * Legacy default settings.
          * Copied from `PLL_Switcher`.
@@ -17756,8 +17832,6 @@ namespace WP_Syntex\Polylang\Switcher\Settings {
         protected const DEFAULTS = array(
             'dropdown' => 0,
             // Display as list and not as dropdown.
-            'echo' => 1,
-            // Echoes the list.
             'hide_if_empty' => 1,
             // Hides languages with no posts (or pages).
             'show_flags' => 0,
@@ -17774,14 +17848,23 @@ namespace WP_Syntex\Polylang\Switcher\Settings {
             // Don't hide the current language.
             'post_id' => null,
             // Link to the translations of the current page.
-            'raw' => 0,
-            // Build the language switcher.
             'item_spacing' => 'preserve',
             // Preserve whitespace between list items.
             'admin_render' => 0,
             // Make the switcher in a frontend context.
             'admin_current_lang' => null,
         );
+        /**
+         * Tells if the given settings list contain legacy settings.
+         *
+         * @since 3.9
+         *
+         * @param array $settings Settings.
+         * @return bool
+         */
+        public static function is_legacy(array $settings): bool
+        {
+        }
         /**
          * Returns the values as an array after converting them to the legacy format.
          *
@@ -17803,17 +17886,6 @@ namespace WP_Syntex\Polylang\Switcher\Settings {
          * @return array
          */
         protected function maybe_filter_legacy(array $settings): array
-        {
-        }
-        /**
-         * Tells if the given settings list contain legacy settings.
-         *
-         * @since 3.9
-         *
-         * @param array $settings Settings.
-         * @return bool
-         */
-        protected function is_legacy(array $settings): bool
         {
         }
         /**
@@ -17855,7 +17927,7 @@ namespace WP_Syntex\Polylang\Switcher\Settings {
          */
         public string $layout = 'vertical';
         /**
-         * No default value here because it depends on `is_rtl()`. see `self::get_defaults()`.
+         * No default value here because it depends on `is_rtl()`.
          *
          * @var string
          *
@@ -17964,16 +18036,6 @@ namespace WP_Syntex\Polylang\Switcher\Settings {
         {
         }
         /**
-         * Returns the public default values.
-         *
-         * @since 3.9
-         *
-         * @return array
-         */
-        public static function get_defaults(): array
-        {
-        }
-        /**
          * Returns an instance of the switcher.
          *
          * @since 3.9
@@ -18046,6 +18108,154 @@ namespace WP_Syntex\Polylang\Switcher {
          * @return Element\Abstract_Element[]
          */
         public function get_elements(): array
+        {
+        }
+    }
+}
+namespace WP_Syntex\Polylang\Widgets {
+    /**
+     * This classes rewrite the whole Calendar widget functionality as there is no filter on sql queries and only a filter on final output.
+     * Code last checked: WP 5.5.
+     *
+     * A request to add filters on sql queries exists: http://core.trac.wordpress.org/ticket/15202.
+     * Method used in 0.4.x: use of the get_calendar filter and overwrite the output of get_calendar function -> not very efficient (add 4 to 5 sql queries).
+     * Method used since 0.5: remove the WP widget and replace it by our own -> our language filter will not work if get_calendar is called directly by a theme.
+     *
+     * @since 0.5
+     */
+    class Calendar extends \WP_Widget_Calendar
+    {
+        protected static $pll_instance = 0;
+        // Can't use $instance of WP_Widget_Calendar as it's private :/.
+        /**
+         * Outputs the content for the current Calendar widget instance.
+         * Modified version of the parent function to call our own get_calendar() method.
+         *
+         * @since 0.5
+         *
+         * @param array $args     Display arguments including 'before_title', 'after_title',
+         *                        'before_widget', and 'after_widget'.
+         * @param array $instance The settings for the particular instance of the widget.
+         */
+        public function widget($args, $instance)
+        {
+        }
+        /**
+         * Modified version of the WP `get_calendar()` function to filter the queries.
+         *
+         * @since 0.5
+         * @since 3.8 New argument $args added, with backward compatibility (WP 6.8).
+         *
+         * @param array $args {
+         *     Optional. Arguments for the `get_calendar` function.
+         *
+         *     @type bool   $initial   Whether to use initial calendar names. Default true.
+         *     @type bool   $display   Whether to display the calendar output. Default true.
+         *     @type string $post_type Optional. Post type. Default 'post'.
+         * }
+         * @return void|string Void if `$display` argument is true, calendar HTML if `$display` is false.
+         */
+        static function get_calendar($args = array())
+        {
+        }
+    }
+    /**
+     * The advanced language switcher widget.
+     *
+     * @since 3.9
+     *
+     * @phpstan-type NewInstance array{
+     *     title: string,
+     *     layout: 'horizontal'|'vertical'|'dropdown'|'select',
+     *     alignment: 'left'|'center'|'right'|'stretched',
+     *     show_flags: bool,
+     *     flag_aspect_ratio: '3:2'|'1:1',
+     *     show_labels: ''|'names'|'codes',
+     *     hide_if_no_translation: bool,
+     *     hide_current: bool,
+     *     force_home: bool,
+     *     dropdown: 0|1,
+     *     show_names: 0|1
+     * }
+     * @phpstan-type OldInstance array{
+     *     title: string,
+     *     dropdown: 0|1,
+     *     show_flags: 0|1,
+     *     show_names: 0|1,
+     *     hide_if_no_translation: 0|1,
+     *     hide_current: 0|1,
+     *     force_home: 0|1
+     * }
+     * @extends WP_Widget<T>
+     * @phpstan-template T of array
+     */
+    class Languages extends \WP_Widget
+    {
+        /**
+         * Constructor.
+         *
+         * @since 3.9
+         *
+         * @param PLL_Base $polylang The Polylang object.
+         */
+        public function __construct(\PLL_Base &$polylang)
+        {
+        }
+        /**
+         * Displays the widget.
+         *
+         * @since 3.9
+         *
+         * @param array $args     Arguments, including `before_title`, `after_title`, `before_widget`, and `after_widget`.
+         * @param array $instance The settings for the particular instance of the widget.
+         * @return void
+         *
+         * @phpstan-param array{
+         *     name: string,
+         *     id: string,
+         *     description: string,
+         *     class: string,
+         *     before_widget: string,
+         *     after_widget: string,
+         *     before_title: string,
+         *     after_title: string,
+         *     before_sidebar: string,
+         *     after_sidebar: string,
+         *     show_in_rest: boolean,
+         *     widget_id: string,
+         *     widget_name: string
+         * } $args
+         * @phpstan-param NewInstance|OldInstance $instance
+         */
+        public function widget($args, $instance): void
+        {
+        }
+        /**
+         * Updates the widget options.
+         *
+         * @since 3.9
+         *
+         * @param array $new_instance New settings for this instance as input by the user via `form()`.
+         * @param array $old_instance Old settings for this instance.
+         * @return array|bool Settings to save or bool false to cancel saving.
+         *
+         * @phpstan-param NewInstance $new_instance
+         * @phpstan-param OldInstance $old_instance
+         */
+        public function update($new_instance, $old_instance)
+        {
+        }
+        /**
+         * Displays the widget form.
+         *
+         * @since 3.9
+         *
+         * @param array $instance Current settings.
+         * @return void
+         *
+         * @phpstan-param NewInstance|OldInstance $instance
+         */
+        public function form($instance): void
         {
         }
     }
@@ -20061,7 +20271,7 @@ namespace {
          * @param array        $q    {
          *   WP_Query arguments:
          *
-         *   @type string|string[] $post_type   Post type or array of post types.
+         *   @type string|string[] $post_type   Post type or array of post types, defaults to 'post'.
          *   @type int             $m           Combination YearMonth. Accepts any four-digit year and month.
          *   @type int             $year        Four-digit year.
          *   @type int             $monthnum    Two-digit month.
@@ -20069,7 +20279,7 @@ namespace {
          *   @type int             $author      Author id.
          *   @type string          $author_name User 'user_nicename'.
          *   @type string          $post_format Post format.
-         *   @type string          $post_status Post status.
+         *   @type string          $post_status Post status, defaults to 'publish'.
          * }
          * @return int
          *
@@ -20084,7 +20294,6 @@ namespace {
          *     author_name?: non-falsy-string,
          *     post_format?: non-falsy-string
          * } $q
-         * @phpstan-return int<0, max>
          */
         public function count_posts($lang, $q = array()): int
         {
@@ -22048,9 +22257,6 @@ namespace {
         {
         }
     }
-    /**
-     * @package Polylang
-     */
     /**
      * Base class to choose the language
      *
@@ -26123,6 +26329,20 @@ namespace WP_Syntex\Polylang\REST\V1 {
     class Languages extends \WP_Syntex\Polylang\REST\Abstract_Controller
     {
         /**
+         * The namespace of this controller's route. Override the parent class property with a default value.
+         *
+         * @var string
+         * @phpstan-var 'pll/v1'
+         */
+        protected $namespace = 'pll/v1';
+        /**
+         * The base of this controller's route. Override the parent class property with a default value.
+         *
+         * @var string
+         * @phpstan-var 'languages'
+         */
+        protected $rest_base = 'languages';
+        /**
          * Constructor.
          *
          * @since 3.7
@@ -26337,6 +26557,20 @@ namespace WP_Syntex\Polylang\REST\V1 {
      */
     class Settings extends \WP_Syntex\Polylang\REST\Abstract_Controller
     {
+        /**
+         * The namespace of this controller's route. Override the parent class property with a default value.
+         *
+         * @var string
+         * @phpstan-var 'pll/v1'
+         */
+        protected $namespace = 'pll/v1';
+        /**
+         * The base of this controller's route. Override the parent class property with a default value.
+         *
+         * @var string
+         * @phpstan-var 'settings'
+         */
+        protected $rest_base = 'settings';
         /**
          * Constructor.
          *
@@ -31659,139 +31893,6 @@ namespace {
          * @return string The hierarchical item output.
          */
         public function walk($elements, $max_depth, ...$args)
-        {
-        }
-    }
-    /**
-     * This classes rewrite the whole Calendar widget functionality as there is no filter on sql queries and only a filter on final output.
-     * Code last checked: WP 5.5.
-     *
-     * A request to add filters on sql queries exists: http://core.trac.wordpress.org/ticket/15202.
-     * Method used in 0.4.x: use of the get_calendar filter and overwrite the output of get_calendar function -> not very efficient (add 4 to 5 sql queries).
-     * Method used since 0.5: remove the WP widget and replace it by our own -> our language filter will not work if get_calendar is called directly by a theme.
-     *
-     * @since 0.5
-     */
-    class PLL_Widget_Calendar extends \WP_Widget_Calendar
-    {
-        protected static $pll_instance = 0;
-        // Can't use $instance of WP_Widget_Calendar as it's private :/.
-        /**
-         * Outputs the content for the current Calendar widget instance.
-         * Modified version of the parent function to call our own get_calendar() method.
-         *
-         * @since 0.5
-         *
-         * @param array $args     Display arguments including 'before_title', 'after_title',
-         *                        'before_widget', and 'after_widget'.
-         * @param array $instance The settings for the particular instance of the widget.
-         */
-        public function widget($args, $instance)
-        {
-        }
-        /**
-         * Modified version of the WP `get_calendar()` function to filter the queries.
-         *
-         * @since 0.5
-         * @since 3.8 New argument $args added, with backward compatibility (WP 6.8).
-         *
-         * @param array $args {
-         *     Optional. Arguments for the `get_calendar` function.
-         *
-         *     @type bool   $initial   Whether to use initial calendar names. Default true.
-         *     @type bool   $display   Whether to display the calendar output. Default true.
-         *     @type string $post_type Optional. Post type. Default 'post'.
-         * }
-         * @return void|string Void if `$display` argument is true, calendar HTML if `$display` is false.
-         */
-        static function get_calendar($args = array())
-        {
-        }
-    }
-    /**
-     * @package Polylang
-     */
-    /**
-     * The language switcher widget
-     *
-     * @since 0.1
-     *
-     * @extends WP_Widget<T>
-     * @phpstan-template T of array{
-     *     title: string,
-     *     dropdown: 0|1,
-     *     show_names: 0|1,
-     *     show_flags: 0|1,
-     *     force_home: 0|1,
-     *     hide_current: 0|1,
-     *     hide_if_no_translation: 0|1
-     * }
-     */
-    class PLL_Widget_Languages extends \WP_Widget
-    {
-        /**
-         * Constructor
-         *
-         * @since 0.1
-         */
-        public function __construct()
-        {
-        }
-        /**
-         * Displays the widget
-         *
-         * @since 0.1
-         *
-         * @param array $args     Display arguments including before_title, after_title, before_widget, and after_widget.
-         * @param array $instance The settings for the particular instance of the widget
-         * @return void
-         *
-         * @phpstan-param array{
-         *     name: string,
-         *     id: string,
-         *     description: string,
-         *     class: string,
-         *     before_widget: string,
-         *     after_widget: string,
-         *     before_title: string,
-         *     after_title: string,
-         *     before_sidebar: string,
-         *     after_sidebar: string,
-         *     show_in_rest: boolean,
-         *     widget_id: string,
-         *     widget_name: string
-         * } $args
-         * @phpstan-param T $instance
-         */
-        public function widget($args, $instance)
-        {
-        }
-        /**
-         * Updates the widget options
-         *
-         * @since 0.4
-         *
-         * @param array $new_instance New settings for this instance as input by the user via form()
-         * @param array $old_instance Old settings for this instance
-         * @return array Settings to save or bool false to cancel saving
-         *
-         * @phpstan-param T $new_instance
-         * @phpstan-param T $old_instance
-         */
-        public function update($new_instance, $old_instance)
-        {
-        }
-        /**
-         * Displays the widget form.
-         *
-         * @since 0.4
-         *
-         * @param array $instance Current settings.
-         * @return string
-         *
-         * @phpstan-param T $instance
-         */
-        public function form($instance)
         {
         }
     }

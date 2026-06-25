@@ -14131,12 +14131,12 @@ namespace {
          * Tells whether the button is active or not.
          *
          * @since 2.1
+         * @since 3.9 Accepts an optional `$post_type` argument. When omitted, the current post type is used.
          *
-         * @global $post
-         *
+         * @param string $post_type Optional. Post type to check the active state for. Defaults to the global post type.
          * @return bool
          */
-        public function is_active()
+        public function is_active(string $post_type = '')
         {
         }
         /**
@@ -17354,6 +17354,26 @@ namespace WP_Syntex\Polylang\Switcher {
         public static function enqueue_frontend_scripts(): void
         {
         }
+        /**
+         * Registers frontend CSS.
+         *
+         * @since 3.9
+         *
+         * @return void
+         */
+        public static function register_styles(): void
+        {
+        }
+        /**
+         * Registers frontend JS.
+         *
+         * @since 3.9
+         *
+         * @return void
+         */
+        public static function register_scripts(): void
+        {
+        }
     }
 }
 namespace WP_Syntex\Polylang\Switcher\Element {
@@ -17603,6 +17623,43 @@ namespace WP_Syntex\Polylang\Switcher\Fields {
          * @return array
          */
         public static function filter(\WP_Syntex\Polylang\Switcher\Settings\Settings $settings): array
+        {
+        }
+    }
+    /**
+     * Class that holds the setting field data when in a menu.
+     *
+     * @since 3.9
+     *
+     * @phpstan-import-type FieldsData from Abstract_Fields
+     */
+    class Menu extends \WP_Syntex\Polylang\Switcher\Fields\Abstract_Fields
+    {
+        /**
+         * Returns setting field data available for the language switcher.
+         *
+         * @since 3.9
+         *
+         * @return array[]
+         *
+         * @phpstan-return FieldsData
+         */
+        public static function get(): array
+        {
+        }
+        /**
+         * Adds some legacy keys that we want to keep in the database alongside the new ones in case of plugin rollback.
+         * Must not be called before `Abstract_Fields::filter()`.
+         *
+         * This would be useful in case a user rollbacks to a version < 3.9.
+         * Backward compatibility with Polylang < 3.9.
+         *
+         * @since 3.9
+         *
+         * @param array $settings Switcher settings.
+         * @return array
+         */
+        public static function add_legacy_settings(array $settings): array
         {
         }
     }
@@ -17931,7 +17988,7 @@ namespace WP_Syntex\Polylang\Switcher\Settings {
          *
          * @var string
          *
-         * @phpstan-var 'left'|'center'|'right'|'stretched'
+         * @phpstan-var 'left'|'center'|'right'|'stretched'|'inherit'
          */
         public string $alignment;
         /**
@@ -18011,7 +18068,8 @@ namespace WP_Syntex\Polylang\Switcher\Settings {
          *     @type string   $layout                 Layout of the switcher. Possible values are `horizontal`, `vertical`,
          *                                            `dropdown`, and `select`. Default is `vertical`.
          *     @type string   $alignment              Alignment of the items. Possible values are `left`, `center`, `right`,
-         *                                            `stretched`. Default is `left` or `right`, depending on `is_rtl()`.
+         *                                            `stretched`, and `inherit`. Default is `left` or `right`, depending on
+         *                                            `is_rtl()`.
          *     @type bool     $show_wrapper           Display the wrapper or not. Default is `true`.
          *     @type bool     $show_flags             Display the flags or not. Default is `false`.
          *     @type string   $flag_aspect_ratio      Flags aspect ratio. Possible values are `3:2` and `1:1`. Default is `3:2`.
@@ -18057,6 +18115,56 @@ namespace WP_Syntex\Polylang\Switcher\Settings {
          * @return array
          */
         protected function validate(array $settings): array
+        {
+        }
+    }
+    /**
+     * Class that holds the language switcher's settings for a menu.
+     *
+     * @since 3.9
+     */
+    class Menu extends \WP_Syntex\Polylang\Switcher\Settings\Settings
+    {
+        /**
+         * @var string
+         *
+         * @phpstan-var 'horizontal'|'dropdown'
+         */
+        public string $layout = 'horizontal';
+        /**
+         * Validates the settings (value and type).
+         * This removes additional keys.
+         *
+         * @since 3.9
+         *
+         * @param array $settings Switcher settings.
+         * @return array
+         */
+        protected function validate(array $settings): array
+        {
+        }
+        /**
+         * Converts the legacy structure to the new one.
+         * This preserves the legacy structure's keys.
+         *
+         * @since 3.9
+         *
+         * @param array $settings The settings.
+         * @return array
+         */
+        protected function convert_from_legacy(array $settings): array
+        {
+        }
+        /**
+         * Converts the new structure to the legacy one.
+         * This preserves the new structure's keys.
+         *
+         * @since 3.9
+         *
+         * @param array $settings Settings in new structure.
+         * @return array
+         */
+        protected function convert_to_legacy(array $settings): array
         {
         }
     }
@@ -20504,9 +20612,6 @@ namespace {
         {
         }
     }
-    /**
-     * @package Polylang
-     */
     /**
      * Manages custom menus translations as well as the language switcher menu item on admin side
      *
@@ -23119,9 +23224,6 @@ namespace {
         }
     }
     /**
-     * @package Polylang
-     */
-    /**
      * Manages custom menus translations as well as the language switcher menu item on frontend
      *
      * @since 1.2
@@ -23154,19 +23256,6 @@ namespace {
          * @return int -1 or 1 if $a is considered to be respectively less than or greater than $b.
          */
         protected function usort_menu_items($a, $b)
-        {
-        }
-        /**
-         * Format a language switcher menu item title based on options
-         *
-         * @since 2.2.6
-         *
-         * @param string $flag    Formatted flag
-         * @param string $name    Language name
-         * @param array  $options Language switcher options
-         * @return string Formatted menu item title
-         */
-        protected function get_item_title($flag, $name, $options)
         {
         }
         /**
@@ -26129,6 +26218,16 @@ namespace WP_Syntex\Polylang\Blocks\Language_Switcher\Standard {
     class Block extends \WP_Syntex\Polylang\Blocks\Language_Switcher\Abstract_Block
     {
         /**
+         * Adds the required hooks.
+         *
+         * @since 3.9
+         *
+         * @return self
+         */
+        public function init()
+        {
+        }
+        /**
          * Returns the language switcher block name with the Polylang's namespace.
          *
          * @since 3.2
@@ -26883,6 +26982,10 @@ namespace {
     class PLL_Multilingual_Sitemaps_Provider extends \WP_Sitemaps_Provider
     {
         /**
+         * Separator between name and language slug.
+         */
+        public const SEPARATOR = '---pll-sep---';
+        /**
          * The decorated sitemaps provider.
          *
          * @since 2.8
@@ -26952,19 +27055,20 @@ namespace {
         {
         }
         /**
-         * Gets data for a given sitemap type.
+         * Returns data for a given sitemap sub-type.
+         * Suffixes the given sub-type with a language slug, so `get_sitemap_url()` can receive it.
          *
          * @since 2.8
          *
-         * @param string $object_subtype_name Object subtype name if any.
-         * @param string $lang                Optional language name.
+         * @param string $object_subtype_name Object sub-type name if any.
+         * @param string $lang                Optional language slug.
          * @return array
          */
         protected function get_sitemap_data($object_subtype_name, $lang = '')
         {
         }
         /**
-         * Gets data about each sitemap type.
+         * Returns data about each sitemap type.
          *
          * @since 2.8
          *
@@ -26974,7 +27078,7 @@ namespace {
         {
         }
         /**
-         * Gets the URL of a sitemap entry.
+         * Returns the URL of a sitemap entry.
          *
          * @since 2.8
          *
@@ -31899,34 +32003,44 @@ namespace {
 }
 namespace {
     /**
-     * The Polylang public API.
-     *
-     * @package Polylang
-     */
-    /**
      * Template tag: displays the language switcher.
      * The function does nothing if used outside the frontend.
      *
      * @api
      * @since 0.5
+     * @since 3.9 When the layout `select` is used, the value of each `option` is now always a URL, and the `data-lang`
+     *            attributes are not added anymore.
+     *            Returns `void` when printing the markup directly.
      *
      * @param array $args {
-     *   Optional array of arguments.
+     *     Optional switcher settings.
      *
-     *   @type int    $dropdown               The list is displayed as dropdown if set to 1, defaults to 0.
-     *   @type int    $echo                   Echoes the list if set to 1, defaults to 1.
-     *   @type int    $hide_if_empty          Hides languages with no posts ( or pages ) if set to 1, defaults to 1.
-     *   @type int    $show_flags             Displays flags if set to 1, defaults to 0.
-     *   @type int    $show_names             Shows language names if set to 1, defaults to 1.
-     *   @type string $display_names_as       Whether to display the language name or its slug, valid options are 'slug' and 'name', defaults to name.
-     *   @type int    $force_home             Will always link to the homepage in the translated language if set to 1, defaults to 0.
-     *   @type int    $hide_if_no_translation Hides the link if there is no translation if set to 1, defaults to 0.
-     *   @type int    $hide_current           Hides the current language if set to 1, defaults to 0.
-     *   @type int    $post_id                Returns links to the translations of the post defined by post_id if set, defaults to not set.
-     *   @type int    $raw                    Return a raw array instead of html markup if set to 1, defaults to 0.
-     *   @type string $item_spacing           Whether to preserve or discard whitespace between list items, valid options are 'preserve' and 'discard', defaults to 'preserve'.
+     *     @type string   $layout                 Layout of the switcher. Possible values are `horizontal`, `vertical`,
+     *                                            `dropdown`, and `select`. Default is `vertical`.
+     *     @type string   $alignment              Alignment of the items. Possible values are `left`, `center`, `right`,
+     *                                            `stretched`. Default is `left` or `right`, depending on `is_rtl()`.
+     *     @type bool     $show_wrapper           Display the wrapper or not. Default is `true` when the layout is `select`,
+     *                                            and `false` otherwise.
+     *     @type bool     $show_flags             Display the flags or not. Default is `false`.
+     *     @type string   $flag_aspect_ratio      Flags aspect ratio. Possible values are `3:2` and `1:1`. Default is `3:2`.
+     *     @type string   $show_labels            Display the labels. Possible values are an empty string (no labels),
+     *                                            `names` (language names), `codes` (languages codes). Default is `names`.
+     *     @type bool     $hide_if_empty          Hide languages that don't have any posts. Default is `true`.
+     *     @type bool     $hide_if_no_translation Hide languages that don't have translations. Default is `false`.
+     *     @type bool     $hide_current           Hide the current language. Default is `false`.
+     *     @type bool     $force_home             Force elements to link to the home pages instead of the translations.
+     *                                            Default is `false`.
+     *     @type int      $post_id                Build the links according to the translations of the given post ID.
+     *                                            Default is `0`.
+     *     @type string[] $wrapper_classes        HTML classes to add to the wrapper. Default is an empty array.
+     *     @type string[] $item_classes           HTML classes to add to each item. Default is an empty array.
+     *     @type string[] $link_classes           HTML classes to add to each link. Default is an empty array.
+     *     @type string   $unique_id              A unique identifier. Default is an empty string: a default unique
+     *                                            identifier will be automatically generated.
+     *     @type bool     $echo                   Whether to print the HTML markup or return it. Default is `true`.
+     *     @type bool     $raw                    Whether to return a raw array instead of HTML markup. Default is `false`.
      * }
-     * @return string|array Either the html markup of the switcher or the raw elements to build a custom language switcher.
+     * @return string|array|void Either the html markup of the switcher or the raw elements to build a custom language switcher.
      */
     function pll_the_languages($args = array())
     {

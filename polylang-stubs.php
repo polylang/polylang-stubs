@@ -32611,7 +32611,7 @@ namespace {
     {
     }
     /**
-     * Get the the current requested url
+     * Get the current requested url.
      *
      * @since 2.6
      *

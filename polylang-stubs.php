@@ -30726,34 +30726,6 @@ namespace {
         {
         }
         /**
-         * Sanitizes an ID as positive integer.
-         * Kind of similar to `absint()`, but rejects negative integers instead of making them positive.
-         *
-         * @since 3.2
-         *
-         * @param mixed $id A supposedly numeric ID.
-         * @return int A positive integer. `0` for non numeric values and negative integers.
-         *
-         * @phpstan-return int<0,max>
-         */
-        public function sanitize_int_id($id)
-        {
-        }
-        /**
-         * Sanitizes an array of IDs as positive integers.
-         * `0` values are removed.
-         *
-         * @since 3.2
-         *
-         * @param mixed $ids An array of numeric IDs.
-         * @return int[]
-         *
-         * @phpstan-return array<positive-int>
-         */
-        public function sanitize_int_ids_list($ids)
-        {
-        }
-        /**
          * Fetches the IDs of the objects without language.
          *
          * @since 3.7
@@ -32667,6 +32639,34 @@ namespace {
      * @phpstan-param WP_REST_Request<array> $request
      */
     function pll_is_edit_rest_request(\WP_REST_Request $request): bool
+    {
+    }
+    /**
+     * Sanitizes an ID as positive integer.
+     * Kind of similar to `absint()`, but rejects negative integers instead of making them positive.
+     *
+     * @since 3.9
+     *
+     * @param mixed $id A supposedly numeric ID.
+     * @return int A positive integer. `0` for non numeric values and negative integers.
+     *
+     * @phpstan-return int<0, max>
+     */
+    function pll_sanitize_id($id): int
+    {
+    }
+    /**
+     * Sanitizes an array of IDs as positive integers.
+     * `0` values are removed.
+     *
+     * @since 3.9
+     *
+     * @param mixed $ids A supposedly array of numeric IDs.
+     * @return int[]
+     *
+     * @phpstan-return array<positive-int>
+     */
+    function pll_sanitize_ids($ids): array
     {
     }
     /**

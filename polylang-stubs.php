@@ -12466,6 +12466,7 @@ namespace {
          * This allows plugins requiring Polylang to work with Polylang Pro too.
          *
          * @since 3.7
+         * @since 3.9 Also converts the Polylang Pro slug.
          *
          * @param string $slug The plugin slug.
          * @return string
@@ -24984,7 +24985,7 @@ namespace {
          * Prepares a SVG image for use in data uri.
          *
          * @see https://codepen.io/tigt/post/optimizing-svgs-in-data-uris.
-         * @since 3.8
+         * @since 3.9
          *
          * @param string $svg A string representing an SVG image.
          * @return string Encode SVG.
@@ -26096,6 +26097,21 @@ namespace WP_Syntex\Polylang\Blocks\Language_Switcher {
         protected function set_attributes_for_block($attributes)
         {
         }
+        /**
+         * Applies flag block attributes to switcher markup.
+         *
+         * Uses WP_HTML_Tag_Processor so the dropdown SVG toggle can stay in the markup
+         * (WP_HTML_Processor aborts on foreign content).
+         *
+         * @since 3.9
+         *
+         * @param string $html       Switcher HTML.
+         * @param array  $attributes Block attributes.
+         * @return string
+         */
+        protected function apply_flag_styles_to_markup(string $html, array $attributes): string
+        {
+        }
     }
 }
 namespace WP_Syntex\Polylang\Blocks\Language_Switcher\Navigation {
@@ -26124,13 +26140,13 @@ namespace WP_Syntex\Polylang\Blocks\Language_Switcher\Navigation {
         {
         }
         /**
-         * Registers the editor style for the navigation language switcher block.
+         * Registers the styles for the navigation language switcher block.
          *
          * @since 3.8
          *
          * @return void
          */
-        public function register_editor_style(): void
+        public function register_styles(): void
         {
         }
         /**

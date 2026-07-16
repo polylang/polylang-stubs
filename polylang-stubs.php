@@ -10483,7 +10483,7 @@ namespace {
          * @param WP_Term $term The term object that the $slug will belong too.
          * @return string Will return a true unique slug.
          */
-        protected function unique_term_slug($slug, $lang, $term)
+        protected function unique_term_slug(string $slug, string $lang, \WP_Term $term): string
         {
         }
         /**

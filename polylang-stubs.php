@@ -19399,6 +19399,17 @@ namespace {
         public function tiny_mce_before_init($mce_init)
         {
         }
+        /**
+         * Displays a dropdown for filtering unstranslated items in the posts list table.
+         *
+         * @since 3.9
+         *
+         * @param string $post_type The post type.
+         * @return void
+         */
+        public function untranslated_dropdown($post_type)
+        {
+        }
     }
     /**
      * Manages filters and actions related to terms on admin side
@@ -21642,6 +21653,45 @@ namespace {
          * @return void
          */
         public function force_tags_translation($post_id, $post_after, $post_before)
+        {
+        }
+        /**
+         * Add public query vars. Currently only 'untranslated in'.
+         *
+         * @since 3.9
+         *
+         * @param string[] $qvars The array of allowed query variable names.
+         * @return string[]
+         */
+        public function add_query_vars($qvars)
+        {
+        }
+        /**
+         * Ensures filters are not suppressed when querying untranslated posts.
+         *
+         * @since 3.9
+         *
+         * @param WP_Query $query The WP_Query instance (passed by reference).
+         * @return void
+         */
+        public function parse_query($query)
+        {
+        }
+        /**
+         * Filters the WP_Query SQL clauses to remove posts:
+         * - translated in the language queried by `unstranslated_in`.
+         * - in the language queried by `unstranslated_in`.
+         *
+         * This second condition is necessary as a post not translated in any language
+         * has no translation group.
+         *
+         * @since 3.9
+         *
+         * @param string[] $clauses The clauses for the query.
+         * @param WP_Query $query   The WP_Query instance (passed by reference).
+         * @return string[]
+         */
+        public function posts_clauses($clauses, $query)
         {
         }
     }

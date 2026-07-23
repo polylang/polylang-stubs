@@ -26294,6 +26294,16 @@ namespace WP_Syntex\Polylang\Blocks\Language_Switcher\Standard {
         {
         }
         /**
+         * Registers the styles for the language switcher block.
+         *
+         * @since 3.9
+         *
+         * @return void
+         */
+        public function register_styles(): void
+        {
+        }
+        /**
          * Returns the language switcher block name with the Polylang's namespace.
          *
          * @since 3.2

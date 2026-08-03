@@ -24110,6 +24110,68 @@ namespace {
         }
     }
     /**
+     * Contract an add-on's updater must fulfil to take part in the leader election.
+     *
+     * Lives in core because each add-on ships the updater under its own namespace: this interface is the only type they
+     * all share, and therefore the only one the registry can type hint against.
+     *
+     * @since 3.9
+     */
+    interface PLL_Updater_Interface
+    {
+        /**
+         * Returns the updater version, used to elect the leader.
+         *
+         * @since 3.9
+         *
+         * @return string
+         */
+        public static function get_version(): string;
+        /**
+         * Sets up what must not be duplicated. Called once, on the elected updater.
+         *
+         * @since 3.9
+         *
+         * @param PLL_Base $polylang Polylang object.
+         * @return void
+         */
+        public function init(\PLL_Base $polylang): void;
+    }
+    /**
+     * Elects a single "leader" among the add-ons' updaters.
+     *
+     * Several add-ons can run at once, each carrying its own namespaced copy of the updater, isolated from the others.
+     * This registry lives in core as the single point they all share, and only arbitrates which updater is the leader.
+     * HTTP and license logic stay in the package.
+     *
+     * @since 3.9
+     */
+    class PLL_Updater_Registry
+    {
+        /**
+         * Announces an updater to the registry. Called from each add-on's Updater constructor.
+         *
+         * @since 3.9
+         *
+         * @param PLL_Updater_Interface $updater The add-on's updater.
+         * @return void
+         */
+        public static function register(\PLL_Updater_Interface $updater): void
+        {
+        }
+        /**
+         * Elects the highest-version updater and runs its setup once. Hooked to `pll_init`.
+         *
+         * @since 3.9
+         *
+         * @param PLL_Base $polylang Polylang object.
+         * @return void
+         */
+        public static function elect(\PLL_Base $polylang): void
+        {
+        }
+    }
+    /**
      * Manages Polylang upgrades
      *
      * @since 1.2

@@ -17885,7 +17885,6 @@ namespace WP_Syntex\Polylang\Switcher\Settings {
         protected const REMOVED_ENTRIES = array('dropdown' => 1, 'show_names' => 1, 'display_names_as' => 1, 'item_spacing' => 1, 'admin_render' => 1, 'admin_current_lang' => 1, 'classes' => 1);
         /**
          * Legacy default settings.
-         * Copied from `PLL_Switcher`.
          */
         protected const DEFAULTS = array(
             'dropdown' => 0,
@@ -26104,20 +26103,6 @@ namespace WP_Syntex\Polylang\Blocks\Language_Switcher {
          */
         protected $model;
         /**
-         * Current lang to render the language switcher block in an admin context.
-         *
-         * @since 2.8
-         *
-         * @var string|null
-         */
-        protected $admin_current_lang;
-        /**
-         * Is it the edit context?
-         *
-         * @var bool
-         */
-        protected $is_edit_context = false;
-        /**
          * Constructor
          *
          * @since 2.8
@@ -26175,38 +26160,6 @@ namespace WP_Syntex\Polylang\Blocks\Language_Switcher {
          * @return void
          */
         public function register()
-        {
-        }
-        /**
-         * Returns the REST parameters for language switcher block.
-         * Used to store the request's language and context locally.
-         * Previously was in the `PLL_Block_Editor_Switcher_Block` class.
-         *
-         * @see WP_REST_Server::dispatch()
-         *
-         * @since 2.8
-         *
-         * @param mixed            $result  Response to replace the requested version with. Can be anything
-         *                                  a normal endpoint can return, or null to not hijack the request.
-         * @param \WP_REST_Server  $server  Server instance.
-         * @param \WP_REST_Request $request Request used to generate the response.
-         * @return mixed
-         * @template T of \WP_REST_Request
-         * @phpstan-param T $request
-         */
-        public function get_rest_query_params($result, $server, $request)
-        {
-        }
-        /**
-         * Adds the attributes to render the block correctly.
-         * Also specifies not to echo the switcher in any case.
-         *
-         * @since 3.2
-         *
-         * @param array $attributes The attributes of the currently rendered block.
-         * @return array The modified attributes.
-         */
-        protected function set_attributes_for_block($attributes)
         {
         }
         /**
@@ -30362,129 +30315,6 @@ namespace {
      * @package Polylang
      */
     /**
-     * A class to display a language switcher on frontend
-     *
-     * @since 1.2
-     */
-    class PLL_Switcher
-    {
-        public const DEFAULTS = array(
-            'dropdown' => 0,
-            // Display as list and not as dropdown.
-            'echo' => 1,
-            // Echoes the list.
-            'hide_if_empty' => 1,
-            // Hides languages with no posts (or pages).
-            'show_flags' => 0,
-            // Don't show flags.
-            'show_names' => 1,
-            // Show language names.
-            'display_names_as' => 'name',
-            // Display the language name.
-            'force_home' => 0,
-            // Tries to find a translation.
-            'hide_if_no_translation' => 0,
-            // Don't hide the link if there is no translation.
-            'hide_current' => 0,
-            // Don't hide the current language.
-            'post_id' => \null,
-            // Link to the translations of the current page.
-            'raw' => 0,
-            // Build the language switcher.
-            'item_spacing' => 'preserve',
-            // Preserve whitespace between list items.
-            'admin_render' => 0,
-            // Make the switcher in a frontend context.
-            'admin_current_lang' => \null,
-        );
-        /**
-         * @var PLL_Links|null
-         */
-        protected $links;
-        /**
-         * Returns options available for the language switcher - menu or widget
-         * either strings to display the options or default values
-         *
-         * @since 0.7
-         *
-         * @param string $type optional either 'menu', 'widget' or 'block', defaults to 'widget'
-         * @param string $key  optional either 'string' or 'default', defaults to 'string'
-         * @return array list of switcher options strings or default values
-         */
-        public static function get_switcher_options($type = 'widget', $key = 'string')
-        {
-        }
-        /**
-         * Returns the current language code.
-         *
-         * @since 3.0
-         *
-         * @param array $args Arguments passed to {@see PLL_Switcher::the_languages()}.
-         * @return string
-         */
-        protected function get_current_language($args)
-        {
-        }
-        /**
-         * Returns the link for a given language.
-         *
-         * @since 3.0
-         *
-         * @param PLL_Language $language Language.
-         * @param array        $args     Arguments passed to {@see PLL_Switcher::the_languages()}.
-         * @return string|null
-         */
-        protected function get_link($language, $args)
-        {
-        }
-        /**
-         * Get the language elements for use in a walker
-         *
-         * @since 1.2
-         *
-         * @param array $args  Arguments passed to {@see PLL_Switcher::the_languages()}.
-         * @return array Language switcher elements.
-         */
-        protected function get_elements($args)
-        {
-        }
-        /**
-         * Displays a language switcher
-         * or returns the raw elements to build a custom language switcher.
-         *
-         * @since 0.1
-         *
-         * @param PLL_Links $links Instance of PLL_Links.
-         * @param array     $args {
-         *   Optional array of arguments.
-         *
-         *   @type int      $dropdown               The list is displayed as dropdown if set, defaults to 0.
-         *   @type int      $echo                   Echoes the list if set to 1, defaults to 1.
-         *   @type int      $hide_if_empty          Hides languages with no posts ( or pages ) if set to 1, defaults to 1.
-         *   @type int      $show_flags             Displays flags if set to 1, defaults to 0.
-         *   @type int      $show_names             Shows language names if set to 1, defaults to 1.
-         *   @type string   $display_names_as       Whether to display the language name or its slug, valid options are 'slug' and 'name', defaults to name.
-         *   @type int      $force_home             Will always link to home in translated language if set to 1, defaults to 0.
-         *   @type int      $hide_if_no_translation Hides the link if there is no translation if set to 1, defaults to 0.
-         *   @type int      $hide_current           Hides the current language if set to 1, defaults to 0.
-         *   @type int      $post_id                Returns links to the translations of the post defined by post_id if set, defaults not set.
-         *   @type int      $raw                    Return a raw array instead of html markup if set to 1, defaults to 0.
-         *   @type string   $item_spacing           Whether to preserve or discard whitespace between list items, valid options are 'preserve' and 'discard', defaults to 'preserve'.
-         *   @type int      $admin_render           Allows to force the current language code in an admin context if set, default to 0. Need to set the admin_current_lang argument below.
-         *   @type string   $admin_current_lang     The current language code in an admin context. Need to set the admin_render to 1, defaults not set.
-         *   @type string[] $classes                A list of CSS classes to set to each elements outputted.
-         *   @type string[] $link_classes           A list of CSS classes to set to each link outputted.
-         * }
-         * @return string|array either the html markup of the switcher or the raw elements to build a custom language switcher
-         */
-        public function the_languages($links, $args = array())
-        {
-        }
-    }
-    /**
-     * @package Polylang
-     */
-    /**
      * Class for handling term slugs.
      *
      * @since 3.7
@@ -32056,55 +31886,6 @@ namespace {
          * @return string The hierarchical item output.
          *
          * @phpstan-param array<PLL_Language|stdClass> $elements
-         */
-        public function walk($elements, $max_depth, ...$args)
-        {
-        }
-    }
-    /**
-     * @package Polylang
-     */
-    /**
-     * Displays a language list
-     *
-     * @since 1.2
-     * @since 3.4 Extends `PLL_Walker` now.
-     */
-    class PLL_Walker_List extends \PLL_Walker
-    {
-        /**
-         * Database fields to use.
-         *
-         * @see https://developer.wordpress.org/reference/classes/walker/#properties Walker::$db_fields.
-         *
-         * @var string[]
-         */
-        public $db_fields = array('parent' => 'parent', 'id' => 'id');
-        /**
-         * Outputs one element
-         *
-         * @since 1.2
-         *
-         * @param string   $output            Passed by reference. Used to append additional content.
-         * @param stdClass $element           The data object.
-         * @param int      $depth             Depth of the item.
-         * @param array    $args              An array of additional arguments.
-         * @param int      $current_object_id ID of the current item.
-         * @return void
-         */
-        public function start_el(&$output, $element, $depth = 0, $args = array(), $current_object_id = 0)
-        {
-        }
-        /**
-         * Overrides Walker:walk to set depth argument
-         *
-         * @since 1.2
-         * @since 2.6.7 Use $max_depth and ...$args parameters to follow the move of WP 5.3
-         *
-         * @param array $elements  An array of elements.
-         * @param int   $max_depth The maximum hierarchical depth.
-         * @param mixed ...$args   Additional arguments.
-         * @return string The hierarchical item output.
          */
         public function walk($elements, $max_depth, ...$args)
         {

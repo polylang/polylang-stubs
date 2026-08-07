@@ -6620,19 +6620,6 @@ namespace {
         {
         }
         /**
-         * Returns the template post object currently being edited.
-         * Backward compatibility with WordPress < 6.8.
-         *
-         * @since 3.2
-         *
-         * @global WP_Post $post
-         *
-         * @return WP_Post|null
-         */
-        public static function get_template_post()
-        {
-        }
-        /**
          * Returns a post associated with the given template ID from the database.
          *
          * @since 3.2

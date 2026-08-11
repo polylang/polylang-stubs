@@ -5156,18 +5156,6 @@ namespace {
         public function display_notices()
         {
         }
-        /**
-         * Fixes the case when no post is selected and a redirect is fired before we can handle the bulk action.
-         *
-         * @since 2.7
-         *
-         * @param string $sendback The destination URL.
-         *
-         * @return string Unmodified $sendback.
-         */
-        public function parse_request_before_redirect($sendback)
-        {
-        }
     }
     /**
      * @package Polylang-Pro

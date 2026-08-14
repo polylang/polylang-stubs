@@ -17826,6 +17826,9 @@ namespace WP_Syntex\Polylang\Switcher\Layout {
         /**
          * Returns the markup of the switcher.
          *
+         * The `<select>` tag is always output. `show_wrapper` only controls the outer
+         * `<div>` and its screen-reader label.
+         *
          * @since 3.9
          *
          * @return string
@@ -31885,8 +31888,11 @@ namespace {
      *                                            `dropdown`, and `select`. Default is `vertical`.
      *     @type string   $alignment              Alignment of the items. Possible values are `left`, `center`, `right`,
      *                                            `stretched`. Default is `left` or `right`, depending on `is_rtl()`.
-     *     @type bool     $show_wrapper           Display the wrapper or not. Default is `true` when the layout is `select`,
-     *                                            and `false` otherwise.
+     *     @type bool     $show_wrapper           Display the wrapper or not. Default is `false` for legacy calls (list
+     *                                            items only, or bare `<select>` for dropdown). Default is `true` when
+     *                                            `layout` is `select`. Omitting this argument on a bare list call triggers
+     *                                            a `_doing_it_wrong()` notice: pass `show_wrapper` => false explicitly to
+     *                                            keep the current behavior.
      *     @type bool     $show_flags             Display the flags or not. Default is `false`.
      *     @type string   $flag_aspect_ratio      Flags aspect ratio. Possible values are `3:2` and `1:1`. Default is `3:2`.
      *     @type string   $show_labels            Display the labels. Possible values are an empty string (no labels),

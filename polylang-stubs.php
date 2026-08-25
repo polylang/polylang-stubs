@@ -18288,6 +18288,17 @@ namespace WP_Syntex\Polylang\Widgets {
         {
         }
         /**
+         * Hides this legacy widget in the block widgets screen.
+         *
+         * @since 3.9
+         *
+         * @param array $widget_ids An array of hidden widget ids.
+         * @return array
+         */
+        public function filter_legacy_widgets($widget_ids)
+        {
+        }
+        /**
          * Displays the widget.
          *
          * @since 3.9

@@ -18681,6 +18681,19 @@ namespace {
         {
         }
         /**
+         * Returns the admin language filter url for a given language.
+         *
+         * @since 3.9
+         *
+         * @param object $language The language or an object for all languages.
+         * @return string
+         *
+         * @phpstan-param object{'slug': string} $language
+         */
+        protected function get_admin_bar_menu_url($language): string
+        {
+        }
+        /**
          * Remove the customize submenu when using a block theme.
          *
          * WordPress removes the Customizer menu if a block theme is activated and no other plugins interact with it.
@@ -22824,19 +22837,6 @@ namespace {
          * @return array Translated tax queries.
          */
         protected function translate_tax_query_recursive($tax_queries)
-        {
-        }
-        /**
-         * Translates a term given one field.
-         *
-         * @since 2.3.3
-         *
-         * @param string     $field    Either 'slug', 'name', 'term_id', or 'term_taxonomy_id'
-         * @param string|int $term     Search for this term value
-         * @param string     $taxonomy Taxonomy name.
-         * @return string|int Translated term slug, name, term_id or term_taxonomy_id
-         */
-        protected function get_translated_term_by($field, $term, $taxonomy)
         {
         }
         /**
@@ -31764,6 +31764,20 @@ namespace {
          *                        WP_Error otherwise.
          */
         public function update(int $term_id, array $args = array())
+        {
+        }
+        /**
+         * Gets a translated term by term field
+         *
+         * @since 3.9
+         *
+         * @param string       $field    The term field. Accepted values are 'term_id', 'slug', 'name', 'term_taxonomy_id'.
+         * @param int|string   $value    Search for this term value.
+         * @param PLL_Language $lang     Language (object, slug, or term ID).
+         * @param string       $taxonomy Taxonomy name. Optional if $field is 'term_id'.
+         * @return int|string The $field of the translated term. Empty if not found.
+         */
+        public function get_by(string $field, $value, \PLL_Language $lang, string $taxonomy = '')
         {
         }
     }

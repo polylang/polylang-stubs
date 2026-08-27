@@ -32596,6 +32596,72 @@ namespace {
     {
     }
     /**
+     * Enqueues a JS script.
+     *
+     * @since 3.9
+     *
+     * @param string   $name         The filename of the script (without the extension).
+     * @param string[] $dependencies Optional. An array of registered script handles this script depends on.
+     * @param array    $args     {
+     *     Optional. An array of additional script loading strategies. Default empty array.
+     *
+     *     @type string    $strategy      Optional. If provided, may be either 'defer' or 'async'.
+     *     @type bool      $in_footer     Optional. Whether to print the script in the footer. Default 'false'.
+     *     @type string    $fetchpriority Optional. The fetch priority for the script. Default 'auto'.
+     * }
+     * @param string   $prefix       Optional. Prefix to use for the script handle. Default 'pll-'.
+     * @return void
+     */
+    function pll_enqueue_script(string $name, array $dependencies = array(), array $args = array(), string $prefix = 'pll-'): void
+    {
+    }
+    /**
+     * Registers a JS script.
+     *
+     * @since 3.9
+     *
+     * @param string   $name         The filename of the script (without the extension).
+     * @param string[] $dependencies Optional. An array of registered script handles this script depends on.
+     * @param array    $args     {
+     *     Optional. An array of additional script loading strategies. Default empty array.
+     *
+     *     @type string    $strategy      Optional. If provided, may be either 'defer' or 'async'.
+     *     @type bool      $in_footer     Optional. Whether to print the script in the footer. Default 'false'.
+     *     @type string    $fetchpriority Optional. The fetch priority for the script. Default 'auto'.
+     * }
+     * @param string   $prefix       Optional. Prefix to use for the script handle. Default 'pll-'.
+     * @return void
+     */
+    function pll_register_script(string $name, array $dependencies = array(), array $args = array(), string $prefix = 'pll-'): void
+    {
+    }
+    /**
+     * Enqueues a CSS stylesheet.
+     *
+     * @since 3.9
+     *
+     * @param string   $name         The filename of the stylesheet (without the extension).
+     * @param string[] $dependencies Optional. An array of registered stylesheet handles this stylesheet depends on.
+     * @param string   $prefix       Optional. Prefix to use for the stylesheet handle. Default 'pll-'.
+     * @return void
+     */
+    function pll_enqueue_style(string $name, array $dependencies = array(), string $prefix = 'pll-'): void
+    {
+    }
+    /**
+     * Registers a CSS stylesheet.
+     *
+     * @since 3.9
+     *
+     * @param string   $name         The filename of the stylesheet (without the extension).
+     * @param string[] $dependencies Optional. An array of registered stylesheet handles this stylesheet depends on.
+     * @param string   $prefix       Optional. Prefix to use for the stylesheet handle. Default 'pll-'.
+     * @return void
+     */
+    function pll_register_style(string $name, array $dependencies = array(), string $prefix = 'pll-'): void
+    {
+    }
+    /**
      * Link to the home page in the active language
      *
      * @since 0.9.4

@@ -17547,7 +17547,8 @@ namespace WP_Syntex\Polylang\Switcher\Fields {
      *     array{
      *         label: string,
      *         choices?: array<string>,
-     *         hide_if?: array<string, string|bool>
+     *         hide_if?: array<string, string|bool>,
+     *         section?: string
      *     }
      * >
      */

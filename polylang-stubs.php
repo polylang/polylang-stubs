@@ -12436,17 +12436,17 @@ namespace {
         {
         }
         /**
-         * Converts the Polylang plugin slug to Polylang Pro for plugin dependencies.
+         * Filters the API response to convert the Polylang plugin slug to Polylang Pro in plugin dependencies.
          *
-         * This allows plugins requiring Polylang to work with Polylang Pro too.
+         * This prevents the "Install now" button from the "Add Plugins" screen to be disabled for plugins requiring Polylang.
          *
-         * @since 3.7
-         * @since 3.9 Also converts the Polylang Pro slug.
+         * @since 3.8.8
          *
-         * @param string $slug The plugin slug.
-         * @return string
+         * @param object|WP_Error $response Response object or `WP_Error`.
+         * @param string          $action The type of information being requested from the Plugin Installation API.
+         * @return object|WP_Error
          */
-        public function convert_plugin_dependency($slug): string
+        public function convert_plugin_dependency_in_api_response($response, $action)
         {
         }
     }

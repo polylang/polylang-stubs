@@ -18349,11 +18349,11 @@ namespace WP_Syntex\Polylang\Widgets {
          * @since 3.9
          *
          * @param array $instance Current settings.
-         * @return void
+         * @return null
          *
          * @phpstan-param NewInstance|OldInstance $instance
          */
-        public function form($instance): void
+        public function form($instance)
         {
         }
     }
@@ -30121,6 +30121,13 @@ namespace {
          * Registered strings.
          *
          * @var array
+         *
+         * @phpstan-var array<non-empty-string, array{
+         *   name: string,
+         *   string: string,
+         *   context: string,
+         *   multiline: bool
+         * }>
          */
         protected $strings;
         /**
@@ -30135,6 +30142,22 @@ namespace {
          * @var string|int
          */
         protected $selected_group;
+        /**
+         * The current list of items.
+         *
+         * @var array<string, array>
+         *
+         * @phpstan-var array<non-empty-string, array{
+         *   name: string,
+         *   string: string,
+         *   context: string,
+         *   multiline: bool,
+         *   translations: array<non-empty-string, string>,
+         *   row: non-empty-string,
+         *   disabled: string
+         * }>
+         */
+        public $items;
         /**
          * Constructor.
          *
@@ -32611,6 +32634,8 @@ namespace {
      * }
      * @param string   $prefix       Optional. Prefix to use for the script handle. Default 'pll-'.
      * @return void
+     *
+     * @phpstan-param non-empty-string $name
      */
     function pll_enqueue_script(string $name, array $dependencies = array(), array $args = array(), string $prefix = 'pll-'): void
     {
@@ -32631,6 +32656,8 @@ namespace {
      * }
      * @param string   $prefix       Optional. Prefix to use for the script handle. Default 'pll-'.
      * @return void
+     *
+     * @phpstan-param non-empty-string $name
      */
     function pll_register_script(string $name, array $dependencies = array(), array $args = array(), string $prefix = 'pll-'): void
     {
@@ -32644,6 +32671,8 @@ namespace {
      * @param string[] $dependencies Optional. An array of registered stylesheet handles this stylesheet depends on.
      * @param string   $prefix       Optional. Prefix to use for the stylesheet handle. Default 'pll-'.
      * @return void
+     *
+     * @phpstan-param non-empty-string $name
      */
     function pll_enqueue_style(string $name, array $dependencies = array(), string $prefix = 'pll-'): void
     {
@@ -32657,6 +32686,8 @@ namespace {
      * @param string[] $dependencies Optional. An array of registered stylesheet handles this stylesheet depends on.
      * @param string   $prefix       Optional. Prefix to use for the stylesheet handle. Default 'pll-'.
      * @return void
+     *
+     * @phpstan-param non-empty-string $name
      */
     function pll_register_style(string $name, array $dependencies = array(), string $prefix = 'pll-'): void
     {

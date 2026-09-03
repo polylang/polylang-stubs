@@ -4739,16 +4739,6 @@ namespace {
         {
         }
         /**
-         * Styles the inactive language rows.
-         *
-         * @since 1.9
-         *
-         * @return void
-         */
-        public function print_css(): void
-        {
-        }
-        /**
          * Adds Disable/Enable links to row actions in the languages list table.
          *
          * @since 1.9

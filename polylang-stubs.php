@@ -19413,6 +19413,17 @@ namespace {
         public function untranslated_dropdown($post_type)
         {
         }
+        /**
+         * Add languages filter views to the list of views available for the post list table.
+         *
+         * @since 3.9
+         *
+         * @param string[] $views Array of available list table views.
+         * @return string[]
+         */
+        public function add_per_language_edit_views($views)
+        {
+        }
     }
     /**
      * Manages filters and actions related to terms on admin side

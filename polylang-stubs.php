@@ -13336,8 +13336,7 @@ namespace {
          *
          * @return void
          */
-        #[\ReturnTypeWillChange]
-        public function rewind()
+        public function rewind(): void
         {
         }
         /**
@@ -13347,8 +13346,7 @@ namespace {
          *
          * @return DOMNode|null
          */
-        #[\ReturnTypeWillChange]
-        public function current()
+        public function current(): ?\DOMNode
         {
         }
         /**
@@ -13359,8 +13357,7 @@ namespace {
          *
          * @return string|null Returns anything on success, or null on failure.
          */
-        #[\ReturnTypeWillChange]
-        public function key()
+        public function key(): ?string
         {
         }
         /**
@@ -13370,8 +13367,7 @@ namespace {
          *
          * @return void
          */
-        #[\ReturnTypeWillChange]
-        public function next()
+        public function next(): void
         {
         }
         /**
@@ -13401,8 +13397,7 @@ namespace {
          *
          * @return self|null Returns an iterator for the current entry if it exists, or null otherwise.
          */
-        #[\ReturnTypeWillChange]
-        public function getChildren()
+        public function getChildren(): ?\PLL_DOM_Nodes_Iterator
         {
         }
     }

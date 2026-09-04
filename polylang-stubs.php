@@ -12426,6 +12426,20 @@ namespace {
         {
         }
         /**
+         * Converts the Polylang plugin slug to Polylang Pro for plugin dependencies.
+         *
+         * This allows plugins requiring Polylang to work with Polylang Pro too.
+         *
+         * @since 3.7
+         * @since 3.8.8 Also converts the Polylang Pro slug.
+         *
+         * @param string $slug The plugin slug.
+         * @return string
+         */
+        public function convert_plugin_dependency($slug): string
+        {
+        }
+        /**
          * Filters the API response to convert the Polylang plugin slug to Polylang Pro in plugin dependencies.
          *
          * This prevents the "Install now" button from the "Add Plugins" screen to be disabled for plugins requiring Polylang.
@@ -30792,8 +30806,7 @@ namespace {
          *
          * @phpstan-return ArrayIterator<string, PLL_Translatable_Object>
          */
-        #[\ReturnTypeWillChange]
-        public function getIterator()
+        public function getIterator(): \ArrayIterator
         {
         }
         /**

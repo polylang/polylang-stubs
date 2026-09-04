@@ -18239,7 +18239,9 @@ namespace WP_Syntex\Polylang\Widgets {
          *     @type bool   $display   Whether to display the calendar output. Default true.
          *     @type string $post_type Optional. Post type. Default 'post'.
          * }
-         * @return void|string Void if `$display` argument is true, calendar HTML if `$display` is false.
+         * @return string|void Calendar HTML when `$display` is false, null when the site has
+         *                     no posts. Nothing otherwise.
+         * @phpstan-return ( $args is array{ display: false|0|''|'0', ... } ? string|null : void )
          */
         static function get_calendar($args = array())
         {

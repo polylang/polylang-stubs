@@ -23474,11 +23474,11 @@ namespace {
         {
         }
         /**
-         * Manages redirections for the static front pages.
+         * Prevents the canonical redirect if we are on a static front page.
          *
          * @since 1.8
          *
-         * @param string|false $redirect_url The redirect URL.
+         * @param string $redirect_url The redirect url.
          * @return string|false
          */
         public function pll_check_canonical_url($redirect_url)

@@ -2,67 +2,6 @@
 
 namespace WP_Syntex\Polylang_Pro\Updater {
     /**
-     * Trait that holds common code between `Settings` and `Wizard_Licenses_Step`.
-     *
-     * @since 1.0
-     */
-    trait Common_Trait
-    {
-        /**
-         * Stores an array of objects allowing to manage a license.
-         * In case of one plugin is using this new system, and another is using the old one, we must allow both classes.
-         *
-         * @var (License|PLL_License)[]|null
-         */
-        private $items;
-        /**
-         * Returns a list of license objects.
-         *
-         * @since 1.0
-         *
-         * @return (License|PLL_License)[] Array of instances of `WP_Syntex\Polylang_Pro\Updater\License` or `PLL_License`,
-         *                                 keyed by string IDs.
-         */
-        private function get_licenses(): array
-        {
-        }
-        /**
-         * Launches hooks.
-         *
-         * @since 1.0
-         *
-         * @return void
-         */
-        private function hooks(): void
-        {
-        }
-        /**
-         * Enqueues styles and scripts.
-         *
-         * @since 1.0
-         *
-         * @return void
-         */
-        public function enqueue_scripts(): void
-        {
-        }
-        /**
-         * Ajax method to deactivate a license.
-         * Hooked to `wp_ajax_pllu_deactivate_license`.
-         *
-         * Requires the class constant `DEACTIVATE_LICENSE_NONCE_ACTION`.
-         *
-         * @since 1.0
-         *
-         * @return void
-         *
-         * @phpstan-return never
-         */
-        public function deactivate_license(): void
-        {
-        }
-    }
-    /**
      * Allows plugins to use their own update API.
      *
      * @author Easy Digital Downloads
@@ -235,18 +174,6 @@ namespace WP_Syntex\Polylang_Pro\Updater {
         {
         }
         /**
-         * Registers the settings module.
-         * Hooked to `pll_settings_modules`.
-         *
-         * @since 1.0
-         *
-         * @param string[] $modules The list of module classes.
-         * @return string[]
-         */
-        public function settings_module($modules)
-        {
-        }
-        /**
          * Registers the licence in the Settings.
          * Hooked to `pll_settings_licenses`.
          *
@@ -273,7 +200,24 @@ namespace WP_Syntex\Polylang_Pro\Updater {
         {
         }
         /**
-         * Deactivates the license key.
+         * Tries to activate a new key for this product without changing its local license state.
+         *
+         * A valid key is really activated on the store and linked to the site. The caller decides what to keep locally and
+         * when to persist it.
+         *
+         * @since 2.0
+         *
+         * @param string $license_key Activation key.
+         * @return \stdClass|null The API response, or null if the request failed.
+         */
+        public function request_activation(
+            #[\SensitiveParameter]
+            string $license_key
+        ): ?\stdClass
+        {
+        }
+        /**
+         * Deactivates the license key, keeping it stored for a later activation.
          *
          * @since 1.0
          *
@@ -283,8 +227,23 @@ namespace WP_Syntex\Polylang_Pro\Updater {
         {
         }
         /**
+         * Deactivates the license key without changing its local license state.
+         *
+         * A key is linked to the site and not to a product, so the caller decides which local states to clear and when to
+         * persist them.
+         *
+         * @since 2.0
+         *
+         * @return \stdClass|null The API response, or null if the request failed.
+         */
+        public function request_deactivation(): ?\stdClass
+        {
+        }
+        /**
          * Checks if the license key is valid.
          * Hooked to `polylang_check_licenses`.
+         *
+         * The check applies to this product only, so only its own state is persisted.
          *
          * @since 1.0
          *
@@ -294,13 +253,249 @@ namespace WP_Syntex\Polylang_Pro\Updater {
         {
         }
         /**
-         * Returns the HTML form field in a table row (one per license key) for display.
+         * Tells whether a license data object represents a valid, active status.
          *
-         * @since 1.0
+         * @since 2.0
+         *
+         * @param \stdClass|null $license_data The license data to check.
+         * @return bool
+         */
+        public static function is_data_valid(?\stdClass $license_data): bool
+        {
+        }
+        /**
+         * Returns the default label for the single license field.
+         *
+         * @since 2.0
          *
          * @return string
          */
-        public function get_form_field(): string
+        public static function get_default_label(): string
+        {
+        }
+        /**
+         * Returns the default attributes for a license row.
+         *
+         * @since 2.0
+         *
+         * @return array<string, mixed>
+         */
+        public static function get_default_row_atts(): array
+        {
+        }
+        /**
+         * Derives a row's display state from a license's stored data: CSS class, active flag and message.
+         *
+         * Static so the single field and `Licenses` can reuse it.
+         *
+         * @since 2.0
+         *
+         * @param \stdClass $license_data The license data returned by the store.
+         * @return array{row_class: string, is_active: bool, message: string} Row attributes reflecting the status.
+         */
+        public static function build_status_atts(\stdClass $license_data): array
+        {
+        }
+    }
+    /**
+     * Trait that handles the licenses UI shared by `Settings` and `Wizard_Licenses_Step`.
+     *
+     * @since 1.0
+     */
+    trait License_UI_Trait
+    {
+        /**
+         * Stores an array of objects allowing to manage a license.
+         * In case of one plugin is using this new system, and another is using the old one, we must allow both classes.
+         *
+         * @var (License|PLL_License)[]|null
+         */
+        private $items;
+        /**
+         * Returns a list of license objects.
+         *
+         * @since 1.0
+         *
+         * @return (License|PLL_License)[] Array of instances of `WP_Syntex\Polylang_Pro\Updater\License` or `PLL_License`,
+         *                                 keyed by string IDs.
+         */
+        private function get_licenses(): array
+        {
+        }
+        /**
+         * Launches hooks.
+         *
+         * @since 1.0
+         * @since 2.0 Added the activate ajax handler.
+         *
+         * @return void
+         */
+        private function hooks(): void
+        {
+        }
+        /**
+         * Enqueues styles and scripts.
+         *
+         * @since 1.0
+         *
+         * @return void
+         */
+        public function enqueue_scripts(): void
+        {
+        }
+        /**
+         * Ajax method to activate one or several licenses.
+         * Hooked to `wp_ajax_pllu_activate_license`.
+         *
+         * @since 2.0
+         *
+         * @return void
+         *
+         * @phpstan-return never
+         */
+        public function ajax_activate(): void
+        {
+        }
+        /**
+         * Ajax method to deactivate a license.
+         * Hooked to `wp_ajax_pllu_deactivate_license`.
+         *
+         * @since 1.0
+         * @since 2.0 Handles the single license field.
+         *
+         * @return void
+         *
+         * @phpstan-return never
+         */
+        public function ajax_deactivate(): void
+        {
+        }
+        /**
+         * Returns the rows to display according to the single/split mode.
+         *
+         * Single mode returns one field for all products; split mode returns one field per product. Used to rebuild the
+         * current state after AJAX actions in both the settings page and the wizard.
+         *
+         * @since 2.0
+         *
+         * @return string[] A single field, or one field per product.
+         */
+        protected function get_rows(): array
+        {
+        }
+        /**
+         * Renders a license field as an HTML table row.
+         *
+         * Product fields are built from the license object so new and legacy licenses share the same markup. Passing null
+         * renders the single field, which has no product ID.
+         *
+         * @since 2.0
+         *
+         * @param License|PLL_License|null $license   Product license, or null for the single field.
+         * @param array<string, mixed>     $overrides Attributes overriding the generated field state.
+         * @return string
+         */
+        protected function render_license_field($license = null, array $overrides = array()): string
+        {
+        }
+    }
+    /**
+     * Manages the registered licenses as a collection.
+     *
+     * It handles activation across several products and decides how the licenses form is displayed: a single field, or one field per product.
+     *
+     * @since 2.0
+     */
+    class Licenses
+    {
+        /**
+         * Constructor.
+         *
+         * @since 2.0
+         *
+         * @param (License|PLL_License)[] $licenses The registered licenses, keyed by product id.
+         */
+        public function __construct(array $licenses)
+        {
+        }
+        /**
+         * Activates a key entered in the single field, on the products it covers.
+         *
+         * Two products covered by the same key identify a business pack. One product covered and one not identify a
+         * standalone key. Once a product accepts the key, one more answer at most is needed to identify it.
+         *
+         * @since 2.0
+         *
+         * @param string $key The key to activate.
+         * @return bool Whether the key is valid for at least one product.
+         */
+        public function activate(string $key): bool
+        {
+        }
+        /**
+         * Activates a key entered in a product field and detects whether it also covers the other products.
+         *
+         * @since 2.0
+         *
+         * @param string $id  Product ID.
+         * @param string $key The key to activate.
+         * @return bool Whether the product accepted the key.
+         */
+        public function activate_for_product(string $id, string $key): bool
+        {
+        }
+        /**
+         * Deactivates a license, and every product sharing its key.
+         *
+         * @since 2.0
+         *
+         * @param string $id Product ID of a registered license, empty for the single field.
+         * @return void
+         */
+        public function deactivate(string $id): void
+        {
+        }
+        /**
+         * Tells whether all registered licenses can be represented by a single field.
+         *
+         * Separate fields are required when only one product is registered, products use different keys, or when one key
+         * is valid for only some registered products. Empty, all-valid and all-invalid states can stay in one field, and so
+         * does a key valid for two products: it is a business pack, so it also covers the products that were never checked.
+         *
+         * @since 2.0
+         *
+         * @return bool
+         */
+        public function uses_single_field(): bool
+        {
+        }
+        /**
+         * Returns the label for the single field, based on how many products the current key covers:
+         * - none (or an invalid key): the default "Enter your license key";
+         * - one product: that product's name;
+         * - several products: a business pack.
+         *
+         * Only per-product activation data is available here, so a key valid for two or more registered products is
+         * displayed as a business pack.
+         *
+         * @since 2.0
+         *
+         * @return string
+         */
+        public function get_single_label(): string
+        {
+        }
+        /**
+         * Retrieves the attributes for the single field (the key and its status).
+         *
+         * Because the key can belong to any product (the first registered one might be empty), this method scans the
+         * registered licenses and extracts the data from the first key it finds that was checked against the store.
+         *
+         * @since 2.0
+         *
+         * @return array<string, mixed> Field attributes. Empty when no key is stored anywhere.
+         */
+        public function get_single_atts(): array
         {
         }
     }
@@ -548,7 +743,7 @@ namespace WP_Syntex\Polylang_Pro\Updater {
      */
     class Settings extends \PLL_Settings_Module
     {
-        use \WP_Syntex\Polylang_Pro\Updater\Common_Trait;
+        use \WP_Syntex\Polylang_Pro\Updater\License_UI_Trait;
         /**
          * Name of the ajax action to get the licenses data.
          *
@@ -558,13 +753,13 @@ namespace WP_Syntex\Polylang_Pro\Updater {
          */
         const GET_LICENSES_DATA_ACTION = 'pllu_get_licenses_data';
         /**
-         * Name of the action to create the nonce required to deactivate a license.
+         * Name of the nonce action shared by the licenses ajax requests.
          *
-         * @since 1.0
+         * @since 2.0
          *
          * @var string
          */
-        const DEACTIVATE_LICENSE_NONCE_ACTION = 'pll_options';
+        const NONCE_ACTION = 'pllu_license';
         /**
          * Stores the display order priority.
          *
@@ -575,6 +770,7 @@ namespace WP_Syntex\Polylang_Pro\Updater {
          * Constructor.
          *
          * @since 1.0
+         * @since 2.0 Removed the "Save Changes" button and the legacy save handler.
          *
          * @param PLL_Settings $polylang Polylang object.
          */
@@ -600,21 +796,11 @@ namespace WP_Syntex\Polylang_Pro\Updater {
         {
         }
         /**
-         * Ajax method to save the license keys and activate the licenses at the same time.
-         * Overrides the parent's method.
-         *
-         * @since 1.0
-         *
-         * @return void
-         */
-        public function save_options(): void
-        {
-        }
-        /**
          * Ajax method to display licenses with their data (deactivation, expiration date).
          * Hooked to `wp_ajax_pllu_get_licenses_data`.
          *
          * @since 1.0
+         * @since 2.0 Built the rows through the single/split mode.
          *
          * @return void
          *
@@ -699,12 +885,44 @@ namespace WP_Syntex\Polylang_Pro\Updater {
         {
         }
     }
+}
+namespace {
+    /**
+     * Contract an add-on's updater must fulfil to take part in the leader election.
+     *
+     * Lives in core because each add-on ships the updater under its own namespace: this interface is the only type they
+     * all share, and therefore the only one the registry can type hint against.
+     *
+     * @since 3.9
+     */
+    interface PLL_Updater_Interface
+    {
+        /**
+         * Returns the updater version, used to elect the leader.
+         *
+         * @since 3.9
+         *
+         * @return string
+         */
+        public static function get_version(): string;
+        /**
+         * Sets up what must not be duplicated. Called once, on the elected updater.
+         *
+         * @since 3.9
+         *
+         * @param PLL_Base $polylang Polylang object.
+         * @return void
+         */
+        public function init(\PLL_Base $polylang): void;
+    }
+}
+namespace WP_Syntex\Polylang_Pro\Updater {
     /**
      * Updater's main object for the given project.
      *
      * @since 1.0
      */
-    class Updater
+    class Updater implements \PLL_Updater_Interface
     {
         /**
          * @var License
@@ -735,14 +953,26 @@ namespace WP_Syntex\Polylang_Pro\Updater {
         {
         }
         /**
-         * Loads the wizard's step.
+         * Sets up what must not be duplicated. Called once, on the elected updater.
          *
-         * @since 1.0
+         * @since 2.0
          *
          * @param PLL_Base $polylang Polylang object.
          * @return void
          */
-        public function load_wizard($polylang): void
+        public function init(\PLL_Base $polylang): void
+        {
+        }
+        /**
+         * Registers the shared licenses tab. Hooked to `pll_settings_modules` by the leader only.
+         *
+         * @since 1.0
+         * @since 2.0 moved from License::settings_module() to Updater::register_settings_module().)
+         *
+         * @param string[] $modules The list of module classes.
+         * @return string[]
+         */
+        public function register_settings_module($modules)
         {
         }
         /**
@@ -775,15 +1005,7 @@ namespace WP_Syntex\Polylang_Pro\Updater {
      */
     class Wizard_Licenses_Step
     {
-        use \WP_Syntex\Polylang_Pro\Updater\Common_Trait;
-        /**
-         * Name of the action to create the nonce required to deactivate a license.
-         *
-         * @since 1.0
-         *
-         * @var string
-         */
-        const DEACTIVATE_LICENSE_NONCE_ACTION = 'pll-wizard';
+        use \WP_Syntex\Polylang_Pro\Updater\License_UI_Trait;
         /**
          * Constructor.
          *
@@ -809,9 +1031,10 @@ namespace WP_Syntex\Polylang_Pro\Updater {
         {
         }
         /**
-         * Displays the languages step form.
+         * Displays the licenses step form.
          *
          * @since 1.0
+         * @since 2.0 Uses the same single/split licenses table as the settings page.
          *
          * @return void
          */
@@ -819,9 +1042,12 @@ namespace WP_Syntex\Polylang_Pro\Updater {
         {
         }
         /**
-         * Executes the languages step.
+         * Executes the licenses step.
+         *
+         * Licenses are activated through their AJAX buttons, so continuing only moves to the next step.
          *
          * @since 1.0
+         * @since 2.0 License activation is handled through AJAX.
          *
          * @return void
          *
@@ -24109,34 +24335,6 @@ namespace {
         public static function clean_translations_cache()
         {
         }
-    }
-    /**
-     * Contract an add-on's updater must fulfil to take part in the leader election.
-     *
-     * Lives in core because each add-on ships the updater under its own namespace: this interface is the only type they
-     * all share, and therefore the only one the registry can type hint against.
-     *
-     * @since 3.9
-     */
-    interface PLL_Updater_Interface
-    {
-        /**
-         * Returns the updater version, used to elect the leader.
-         *
-         * @since 3.9
-         *
-         * @return string
-         */
-        public static function get_version(): string;
-        /**
-         * Sets up what must not be duplicated. Called once, on the elected updater.
-         *
-         * @since 3.9
-         *
-         * @param PLL_Base $polylang Polylang object.
-         * @return void
-         */
-        public function init(\PLL_Base $polylang): void;
     }
     /**
      * Elects a single "leader" among the add-ons' updaters.

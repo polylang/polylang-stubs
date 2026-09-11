@@ -3307,6 +3307,18 @@ namespace WP_Syntex\Polylang_Pro\Modules\Machine_Translation\Clients {
         public function get_route(string $endpoint): string
         {
         }
+        /**
+         * Adds a consumption notice with the cumulative amount of billed characters, and resets the counter for the next translation.
+         *
+         * @since 3.9
+         *
+         * @param WP_Error $error Errors and notices generated during the translation process.
+         *
+         * @return void
+         */
+        public function add_billed_characters_notice(\WP_Error $error): void
+        {
+        }
     }
 }
 namespace {
@@ -4578,25 +4590,11 @@ namespace WP_Syntex\Polylang_Pro\Modules\Machine_Translation\Strings {
         {
         }
         /**
-         * Translates the strings of a given group.
-         *
-         * @since 3.7
-         *
-         * @param PLL_Language $target_language The language to translate the strings to.
-         * @param string       $group           The group of strings to translate.
-         * @return WP_Error Error object, empty if no error.
-         */
-        public function translate(\PLL_Language $target_language, string $group): \WP_Error
-        {
-        }
-        /**
-         * Validates the form and translates the strings.
+         * Validates the form and processes the translations.
          *
          * @since 3.7
          *
          * @return void
-         *
-         * @phpstan-return never
          */
         public function validate_form()
         {

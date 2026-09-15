@@ -18467,7 +18467,7 @@ namespace WP_Syntex\Polylang\Widgets {
          *                     no posts. Nothing otherwise.
          * @phpstan-return ( $args is array{ display: false|0|''|'0', ... } ? string|null : void )
          */
-        static function get_calendar($args = array())
+        public static function get_calendar($args = array())
         {
         }
     }

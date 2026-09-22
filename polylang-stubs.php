@@ -253,6 +253,22 @@ namespace WP_Syntex\Polylang_Pro\Updater {
         {
         }
         /**
+         * Checks a license key for a product without changing its local license state.
+         *
+         * @since 2.0
+         *
+         * @param string $license_key License key to check.
+         * @param string $item_name   Plugin name.
+         * @return \stdClass|null The API response, or null if no request could be made.
+         */
+        public static function check_license_for_product(
+            #[\SensitiveParameter]
+            string $license_key,
+            string $item_name
+        ): ?\stdClass
+        {
+        }
+        /**
          * Tells whether a license data object represents a valid, active status.
          *
          * @since 2.0

@@ -26409,6 +26409,16 @@ namespace WP_Syntex\Polylang\Blocks\Language_Switcher\Navigation {
          */
         const PLACEHOLDER = '%pll%';
         /**
+         * Constructor.
+         *
+         * @since 3.9
+         *
+         * @param \PLL_Base $polylang Polylang object.
+         */
+        public function __construct(&$polylang)
+        {
+        }
+        /**
          * Adds the required hooks specific to the navigation language switcher.
          *
          * @since 3.2
@@ -26460,18 +26470,6 @@ namespace WP_Syntex\Polylang\Blocks\Language_Switcher\Navigation {
          * @return void
          */
         public function register_switcher_menu_item_options_meta_rest_field()
-        {
-        }
-        /**
-         * Filters core/navigation-link and core/navigation-submenu attributes during registration to add our own.
-         *
-         * @since 3.6
-         *
-         * @param array $metadata Metadata for registering a block type.
-         *
-         * @return array The filtered metadata if about a core/navigation-link.
-         */
-        public function register_custom_attributes($metadata)
         {
         }
         /**
@@ -30748,6 +30746,45 @@ namespace {
          * @return void
          */
         protected function register_language_taxonomy(): void
+        {
+        }
+        /**
+         * Hooks sanitization for a Polylang taxonomy that stores serialized data in term descriptions.
+         *
+         * @since 3.8.10
+         *
+         * @param string $taxonomy Taxonomy name.
+         * @return void
+         *
+         * @phpstan-param non-empty-string $taxonomy
+         */
+        protected function add_sanitization_hooks(string $taxonomy): void
+        {
+        }
+        /**
+         * Empties the description of a term hydrated from the database when it holds a disallowed serialized type.
+         *
+         * `get_{$taxonomy}` is fired by `get_term()`, whatever the sanitization context, and thus covers the
+         * terms hydrated by `get_terms()` and `wp_get_object_terms()` too. Only the returned object is modified,
+         * the stored value is left untouched.
+         *
+         * @since 3.8.10
+         *
+         * @param mixed $term Term object, may be anything another callback returned.
+         * @return mixed The term, with a sanitized description.
+         */
+        public function sanitize_term($term)
+        {
+        }
+        /**
+         * Drops serialized values that contain a disallowed PHP type.
+         *
+         * @since 3.8.10
+         *
+         * @param mixed $description Term description.
+         * @return string Empty string for a non-string value or when a disallowed type is found, unchanged otherwise.
+         */
+        public function sanitize_description($description)
         {
         }
         /**

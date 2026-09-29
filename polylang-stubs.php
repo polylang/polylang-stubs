@@ -9273,8 +9273,20 @@ namespace {
          *     @type int    $lang_id    Optional, ID of the language to modify. An empty value means the language is
          *                              being created.
          *     @type string $flag       Optional, country code, {@see /polylang/src/settings/flags.php}.
+         *     @type string $fallbacks  Optional, comma-separated list of fallback locales.
          * }
          * @return mixed[]
+         *
+         * @phpstan-param array{
+         *     name: string,
+         *     slug: string,
+         *     locale: string,
+         *     rtl: int,
+         *     term_group: int,
+         *     lang_id?: int,
+         *     flag?: string,
+         *     fallbacks?: string,
+         * } $args
          */
         public function add_locale_fallback_to_language_metas($add_data, $args)
         {

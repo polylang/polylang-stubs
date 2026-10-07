@@ -7217,6 +7217,18 @@ namespace {
         {
         }
         /**
+         * Returns the format that matches the given file name and content.
+         *
+         * @since 3.9
+         *
+         * @param string $filename  Sanitized file name.
+         * @param string $file_path Path to the uploaded file.
+         * @return PLL_File_Format|WP_Error
+         */
+        public function from_file(string $filename, string $file_path)
+        {
+        }
+        /**
          * Gets the format that matches the given extension.
          *
          * @since 3.1
@@ -7238,17 +7250,6 @@ namespace {
          * @phpstan array{extension:string,version:string}
          */
         public function split_filetype($filetype)
-        {
-        }
-        /**
-         * Gets the format that matches the given mime type.
-         *
-         * @since 3.1
-         *
-         * @param string $mime_type The mime type of the file format to retrieve.
-         * @return PLL_File_Format|WP_Error
-         */
-        public function from_mime_type($mime_type)
         {
         }
         /**
@@ -7287,14 +7288,6 @@ namespace {
     abstract class PLL_File_Format
     {
         /**
-         * @var string
-         */
-        public $extension;
-        /**
-         * @var string[]
-         */
-        public $mime_type;
-        /**
          * Whether the file format is supported by the current environment or not.
          *
          * @since 3.1
@@ -7302,6 +7295,46 @@ namespace {
          * @return true|WP_Error
          */
         abstract public function is_supported();
+        /**
+         * Returns the default extension used by this format.
+         *
+         * @since 3.9
+         *
+         * @return string
+         */
+        public function get_extension(): string
+        {
+        }
+        /**
+         * Returns all extensions accepted for this format.
+         *
+         * @since 3.9
+         *
+         * @return string[]
+         *
+         * @phpstan-return non-empty-list<string>
+         */
+        abstract public function get_extensions(): array;
+        /**
+         * Checks whether the given file name has an extension accepted by this format.
+         *
+         * @since 3.9
+         *
+         * @param string $filename File name.
+         * @return bool
+         */
+        public function is_valid_extension(string $filename): bool
+        {
+        }
+        /**
+         * Checks whether the given file looks like a valid file for this format.
+         *
+         * @since 3.9
+         *
+         * @param string $file_path Path to the file.
+         * @return bool
+         */
+        abstract public static function is_valid_file(string $file_path): bool;
         /**
          * Returns the associated import class.
          *
@@ -7454,14 +7487,6 @@ namespace {
         {
         }
         /**
-         * Deletes the file when no longer needed.
-         *
-         * @since 3.6
-         */
-        public function __destruct()
-        {
-        }
-        /**
          * Launches the import action.
          * Make sure to verify the current user's capabilities first.
          *
@@ -7472,17 +7497,6 @@ namespace {
          * @phpstan-return never
          */
         public function import_action(): void
-        {
-        }
-        /**
-         * Adds translation file formats to the list of allowed mime types.
-         *
-         * @since 3.6
-         *
-         * @param array $mimes List of allowed mime types.
-         * @return array Modified list of allowed mime types.
-         */
-        public function allowed_mimes($mimes)
         {
         }
     }
@@ -8009,14 +8023,6 @@ namespace {
     class PLL_PO_Format extends \PLL_File_Format
     {
         /**
-         * @var string
-         */
-        public $extension = 'po';
-        /**
-         * @var string[]
-         */
-        public $mime_type = array('po' => 'text/x-po');
-        /**
          * Po format is always supported.
          *
          * @since 3.1
@@ -8024,6 +8030,16 @@ namespace {
          * @return true
          */
         public function is_supported()
+        {
+        }
+        /**
+         * Returns all extensions accepted for this format.
+         *
+         * @since 3.9
+         *
+         * @return string[]
+         */
+        public function get_extensions(): array
         {
         }
         /**
@@ -8047,6 +8063,17 @@ namespace {
          * @phpstan-return class-string<PLL_PO_Export>
          */
         public function get_export_class($version = ''): string
+        {
+        }
+        /**
+         * Checks whether the given file looks like a valid PO file.
+         *
+         * @since 3.9
+         *
+         * @param string $file_path Path to the file.
+         * @return bool
+         */
+        public static function is_valid_file(string $file_path): bool
         {
         }
     }
@@ -8633,13 +8660,11 @@ namespace {
     class PLL_Xliff_Format extends \PLL_File_Format
     {
         /**
-         * @var string
-         */
-        public $extension = 'xliff';
-        /**
+         * Supported XLIFF XML namespaces.
+         *
          * @var string[]
          */
-        public $mime_type = array('xlf|xliff' => 'text/xml');
+        const SUPPORTED_NAMESPACES = array('urn:oasis:names:tc:xliff:document:1.2', 'urn:oasis:names:tc:xliff:document:2.0');
         /**
          * Whether the xliff format is supported or not by the current environment.
          *
@@ -8648,6 +8673,16 @@ namespace {
          * @return true|WP_Error
          */
         public function is_supported()
+        {
+        }
+        /**
+         * Returns all extensions accepted for this format.
+         *
+         * @since 3.9
+         *
+         * @return string[]
+         */
+        public function get_extensions(): array
         {
         }
         /**
@@ -8671,6 +8706,19 @@ namespace {
          * @phpstan-return class-string<PLL_Xliff_Export_12>|class-string<PLL_Xliff_Export_20>|class-string<PLL_Xliff_Export_21>
          */
         public function get_export_class($version = ''): string
+        {
+        }
+        /**
+         * Checks whether the given file looks like a valid XLIFF file.
+         *
+         * Uses XMLReader when available, otherwise falls back to a header sniff inspired by #2937.
+         *
+         * @since 3.9
+         *
+         * @param string $file_path Path to the file.
+         * @return bool
+         */
+        public static function is_valid_file(string $file_path): bool
         {
         }
     }
@@ -32192,6 +32240,19 @@ namespace {
     }
 }
 namespace {
+    /**
+     * Tells whether a path is a file uploaded via HTTP POST.
+     *
+     * Wrapper around {@see is_uploaded_file()} so tests can stub upload validation.
+     *
+     * @since 3.9
+     *
+     * @param string $filename Path to the uploaded file temp name.
+     * @return bool
+     */
+    function pll_is_uploaded_file(string $filename): bool
+    {
+    }
     /**
      * Template tag: displays the language switcher.
      * The function does nothing if used outside the frontend.

@@ -1609,9 +1609,8 @@ namespace WP_Syntex\Polylang_Pro\Modules\CLI\Command {
          * : Language slug (ideally 2-letters ISO 639-1 language code). Must be unique. If not provided, will fallback to Polylang core languages list.
          *
          * [--dir=<dir>]
-         * : Text direction for the language.
+         * : Text direction for the language. If not provided, will fallback to Polylang core languages list.
          * ---
-         * default: ltr
          * options:
          *   - ltr
          *   - rtl
@@ -1631,6 +1630,12 @@ namespace WP_Syntex\Polylang_Pro\Modules\CLI\Command {
          *
          * [--active=<active>]
          * : Active status of the language.
+         * ---
+         * default: true
+         * options:
+         *   - true
+         *   - false
+         * ---
          *
          * [--skip-default-cat]
          * : If set, no default category will be created for this language.
@@ -1649,14 +1654,26 @@ namespace WP_Syntex\Polylang_Pro\Modules\CLI\Command {
          *     # Create an Arabic language with RTL support
          *     wp pll language create ar --dir=rtl --order=2
          *
-         *     # Create a language without default category
-         *     wp pll language create es_ES --name="Español" --slug=es --skip-default-cat
-         *
-         * @param string[] $args       The command arguments.
-         * @param string[] $assoc_args The command associative arguments.
-         * @phpstan-param array{name?: string, slug?: string, flag?: string, dir?: string, order?: string, skip-default-cat?: bool} $assoc_args
+         *     # Create an inactive language without default category
+         *     wp pll language create es_ES --name="Español" --slug=es --active=false --skip-default-cat
          *
          * @since 3.8
+         *
+         * @param string[]        $args       The command arguments. Numerically indexed array containing the locale as first value.
+         * @param (string|bool)[] $assoc_args The command associative arguments.
+         * @return void
+         *
+         * @phpstan-param array{0: string} $args
+         * @phpstan-param array{
+         *     name?: string,
+         *     slug?: string,
+         *     dir?: 'ltr'|'rtl',
+         *     flag?: string,
+         *     order?: string,
+         *     fallbacks?: string,
+         *     active?: 'true'|'false',
+         *     skip-default-cat?: bool
+         * } $assoc_args
          */
         public function create($args, $assoc_args): void
         {
@@ -1697,6 +1714,11 @@ namespace WP_Syntex\Polylang_Pro\Modules\CLI\Command {
          *
          * [--active=<active>]
          * : Active status of the language.
+         * ---
+         * options:
+         *   - true
+         *   - false
+         * ---
          *
          * ## EXAMPLES
          *
@@ -1707,7 +1729,7 @@ namespace WP_Syntex\Polylang_Pro\Modules\CLI\Command {
          *     wp pll language update fr --name="Français" --locale=fr_FR --flag=fr --order=1
          *
          *     # Change language slug
-         *     wp pll language update en --new-slug=en_us
+         *     wp pll language update en --slug=en_us
          *
          *     # Update text direction
          *     wp pll language update ar --dir=rtl
@@ -1715,11 +1737,26 @@ namespace WP_Syntex\Polylang_Pro\Modules\CLI\Command {
          *     # Update language order
          *     wp pll language update es --order=3
          *
-         * @param string[] $args       The command arguments.
-         * @param string[] $assoc_args The command associative arguments.
-         * @phpstan-param array{name?: string, locale?: string, new-slug?: string, dir?: string, order?: string, flag?: string} $assoc_args
+         *     # Make a language inactive
+         *     wp pll language update es --active=false
          *
          * @since 3.8
+         *
+         * @param string[] $args       The command arguments. Numerically indexed array containing the language ID or slug as first value.
+         * @param string[] $assoc_args The command associative arguments.
+         * @return void
+         *
+         * @phpstan-param array{0: string} $args
+         * @phpstan-param array{
+         *     name?: string,
+         *     locale?: string,
+         *     slug?: string,
+         *     dir?: 'ltr'|'rtl',
+         *     flag?: string,
+         *     order?: string,
+         *     fallbacks?: string,
+         *     active?: 'true'|'false'
+         * } $assoc_args
          */
         public function update($args, $assoc_args): void
         {
@@ -1740,11 +1777,14 @@ namespace WP_Syntex\Polylang_Pro\Modules\CLI\Command {
          *     # Delete English language
          *     wp pll language delete en
          *
-         * @param string[] $args The command arguments.
-         * @param string[] $assoc_args The command associative arguments.
-         * @phpstan-param array{yes?: bool} $assoc_args
-         *
          * @since 3.8
+         *
+         * @param string[] $args       The command arguments. Numerically indexed array containing the language ID or slug as first value.
+         * @param bool[]   $assoc_args The command associative arguments.
+         * @return void
+         *
+         * @phpstan-param array{0: string} $args
+         * @phpstan-param array{yes?: bool} $assoc_args
          */
         public function delete($args, $assoc_args): void
         {
@@ -1808,11 +1848,17 @@ namespace WP_Syntex\Polylang_Pro\Modules\CLI\Command {
          *     # List languages with specific output fields only
          *     wp pll language list --fields=name,slug,locale
          *
-         * @param string[] $args       The command arguments.
-         * @param string[] $assoc_args The command associative arguments.
-         * @phpstan-param array{field?: string, fields?: string, format?: string} $assoc_args
-         *
          * @since 3.8
+         *
+         * @param string[] $args       The command arguments. Not used.
+         * @param string[] $assoc_args The command associative arguments.
+         * @return void
+         *
+         * @phpstan-param array{
+         *     field?: string,
+         *     fields?: string,
+         *     format?: 'table'|'json'|'yaml'|'csv'
+         * } $assoc_args
          */
         public function list($args, $assoc_args): void
         {
@@ -1873,11 +1919,18 @@ namespace WP_Syntex\Polylang_Pro\Modules\CLI\Command {
          *     # Get a language by ID
          *     wp pll language get 1
          *
-         * @param string[] $args       The command arguments.
-         * @param string[] $assoc_args The command associative arguments.
-         * @phpstan-param array{field?: string, fields?: string, format?: string} $assoc_args
-         *
          * @since 3.8
+         *
+         * @param string[] $args       The command arguments. Numerically indexed array containing the language ID or slug as first value.
+         * @param string[] $assoc_args The command associative arguments.
+         * @return void
+         *
+         * @phpstan-param array{0: string} $args
+         * @phpstan-param array{
+         *     field?: string,
+         *     fields?: string,
+         *     format?: 'table'|'json'|'yaml'|'csv'
+         * } $assoc_args
          */
         public function get($args, $assoc_args): void
         {
